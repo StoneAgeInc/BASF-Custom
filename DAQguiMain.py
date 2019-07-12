@@ -7,11 +7,15 @@ DESCRIPTION:
 STATE:
     GUI launches and runs, labJack shows no errors. Not tested with actual sensors.
 
-MODIFIED DATE:
-    June 3, 2019
+MODIFIED DATE: 7.12.19
 
-Author:
-    Chris Antle
+Author: Chris Antle
+
+
+Configuration Details:
+
+Motor Direction I/O: DIO1
+Motor
 '''
 
 from PyQt5 import QtWidgets, QtGui
@@ -28,15 +32,16 @@ import sys
 
 
 # Define Globals
-motorEnabled = False # Initially have motor stopped
-motorFreq = 1000 # Hz
-motorDuty = 50 # %
-position = True
+motorEnabled = False # Control for motor logic
+handle = ""
+microstep = 4000 # Microstep setting on Kollmorgen stepper drive
 
-#define labjack I/O names
-motorEnable = "DAC0"
-motorDirection = "DIO0"
-motorPWM = "DIO1"
+
+# Define I/O Pins
+motorEnable = 5
+motorDirectionPin = 1 # Defined as DIO pin number
+motorEnablePin = 2 # Defined as DIO pin number
+motorPWM = 0 # Defined as DIO pin number
 pressureVoltage = "AIN0"
 proxStopLow = "AIN6"
 proxStopHigh = "AIN7"
@@ -50,11 +55,17 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui.setupUi(self)
 
         # set up button control
-        self.ui.motorRunBtn.clicked.connect(lambda:self.motorRun())
+        #self.ui.motorRunBtn.clicked.connect(lambda:self.motorRun())
         #self.ui.motorRunBtn.setText("STOP")
-        #self.updateProxBar(
+
+        self.ui.stepFwdBTN.clicked.connect(lambda:self.goStep(motorPWM, 1, self.ui.spinBox.value(),100, 0.1))
+        self.ui.stepRevBTN.clicked.connect(lambda:self.goStep(motorPWM, 0, self.ui.spinBox.value(), 100, 0.1))
+        self.ui.enableBTN.clicked.connect(lambda:self.enableMotorToggle())
 
         #labjack setup
+        self.labJackSetUp()
+
+    def labJackSetUp(self):
         global handle
         handle = ljm.openS("T7", "ANY", "ANY")  # T7 device, Any connection, Any identifier
         info = ljm.getHandleInfo(handle)
@@ -62,116 +73,74 @@ class mywindow(QtWidgets.QMainWindow):
               "Serial number: %i, IP address: %s, Port: %i,\nMax bytes per MB: %i" %
               (info[0], info[1], info[2], ljm.numberToIP(info[3]), info[4], info[5]))
 
-        deviceType = info[0]
-
-
     def motorRun(self):
-        # Check that the motor isn't stopped
-        if self.ui.motorRadioStop.isChecked():
-            #self.ui.motorRunBtn.setDisabled(True)
-            print ("Motor in STOP condition")
+       global motorDirection
+       if motorEnabled:
+            if fwd.ra
+
+    def enableMotorToggle(self):
+        global motorEnabled
+        if self.ui.enableBTN.isChecked(): # If the motor is hot, disable it and reset
+            motorEnabled = True
+            ljm.eWriteName(handle, "DIO" + str(motorEnablePin), 0) # 0V high to disable motor
+            self.ui.enableBTN.setText("DISABLE") # Reset label
         else:
-            global motorEnabled, motorDirection
-            if motorEnabled and not self.ui.motorRadioStop.isChecked(): #motor is running, click to stop
-                #motorEnabled = not motorEnabled
-                print("Motor Stopped")
-                print(" ")
-                self.ui.motorRunBtn.setText("RUN") #change label for next state
-            else: #motor is stopped, click to start running
-                print("Motor Started")
-                #print(" ")
-                #Determine motor direction and set parameter
-                if self.ui.motorRadioFWD.isChecked():
-                    motorDirection = 1
-                    print("Direction: Forward")
-                elif self.ui.motorRadioREV.isChecked():
-                    motorDirection = 0
-                    print("Direction: Reverse")
-                else:
-                    print("No direction defined: ERROR")
-                self.ui.motorRunBtn.setText("STOP") #change label for next state
-
-            motorEnabled = not motorEnabled
-        print(str(motorEnabled))
+            motorEnabled = False
+            ljm.eWriteName(handle, "DIO" + str(motorEnablePin), 5)  # 5V high to disable motor
+            self.ui.enableBTN.setText("ENABLE")  # Reset label
 
     '''
-    Start the PWM signal and configure a test pin to check.
-    Hard coded to test generate signal on DIO1 and test on DIO3
+    Generates a specific number of pulse outputs for motor movement. 
+    Assumes direction and enable are pre-configured
+    Frequency calculation based on desired RPM and configured microstep
+    Outputs on user-defined pin
+    Assumes a low to high transition at 0, and computes high to low based on duty cycle
+    Input duty cycle expressed as decimal (not percent)
     '''
-    def startPWM(self, pin, dutyCycle, targetFreq):
-        pin = motorPWM
+    def goStep(self, pin, direction, steps, RPM, duty):
+        if motorEnabled:
+            ljm.eWriteName(handle, "DAC" + str(pin), direction)
+            # Check output pin valid
+            if pin == 0 or pin in range(2, 6):
+                # Set up math
+                clock = 80E6
+                clockDivisor = 1
+                lowToHigh = 0
 
-        # Set up the clock
-        DIO_EF_CLOCK0_ENABLE = 0
-        DIO_EF_CLOCK0_DIVISOR = 1
-        DIO_EF_CLOCK0_ROLL_VALUE = (80e6) / (DIO_EF_CLOCK0_DIVISOR * targetFreq)  # based on 80MHz clock
-        DIO_EF_CLOCK0_ENABLE = 1
+                freq = RPM / ((1 / microstep) * 60)
+                rollValue = (clock / clockDivisor) / freq
+                dutyConfig = rollValue * duty
+                clockFreq = clock / clockDivisor
+                highToLow = duty * clockFreq + lowToHigh
+                lowToHigh = 0
 
-        # Set up PWM signal
-        DIO1_EF_ENABLE = 0
-        DIO1_EF_INDEX = 0
-        DIO1_EF_CONFIG_A = (dutyCycle * (8000 / 100))
-        DIO1_EF_ENABLE = 1
-        DIO_DUTY_CYCLE = 80000 * (dutyCycle / 100)
+                # Enable clock
+                ljm.eWriteName(handle, "DIO_EF_CLOCK0_DIVISOR", clockDivisor)
+                ljm.eWriteName(handle, "DIO_EF_CLOCK0_ROLL_VALUE", rollValue)
+                ljm.eWriteName(handle, "DIO_EF_CLOCK0_ENABLE", 1)
 
-        # Set up signal check for DIO3
-        DIO3_EF_ENABALE = 0
-        DIO3_EF_INDEX = 5
-        DIO3_EF_OPTONS = 0
-        DIO3_EF_ENABALE = 1
+                # Configure pulse
+                ljm.eWriteName(handle, "DIO" + str(pin) + "_EF_ENABLE", 0)
+                ljm.eWriteName(handle, "DIO" + str(pin), 0)
+                ljm.eWriteName(handle, "DIO" + str(pin) + "_EF_INDEX", 2)
+                ljm.eWriteName(handle, "DIO" + str(pin) + "_EF_CONFIG_A", highToLow)
+                ljm.eWriteName(handle, "DIO" + str(pin) + "_EF_CONFIG_B", lowToHigh)
+                ljm.eWriteName(handle, "DIO" + str(pin) + "_EF_CONFIG_A", highToLow)
+                ljm.eWriteName(handle, "DIO" + str(pin) + "_EF_CONFIG_C", steps)
+                ljm.eWriteName(handle, "DIO" + str(pin) + "_EF_ENABLE", 1)
 
-        print("Roll Value: " + str(DIO_EF_CLOCK0_ROLL_VALUE))
-        print("CONFIG A: " + str(DIO1_EF_CONFIG_A))
-        print("Configuring clock.....")
+                # Print statement for debug
+                print("Output Pin: " + str(pin))
+                print("Total Steps Out: " + str(steps))
+                print("Motor RPM: " + str(RPM))
+                print("PWM Frequency: " + str(freq))
+                print("PWM Duty Cycle: " + str(duty * 100))
+                print("")
 
-        # Configure Clock Registers:
-        ljm.eWriteName(handle, "DIO_EF_CLOCK0_ENABLE", 0)  # Disable clock source
-        # Set Clock0's divisor and roll value to configure frequency: 80MHz/1/80000 = 1kHz
-        ljm.eWriteName(handle, "DIO_EF_CLOCK0_DIVISOR", 1)  # Configure Clock0's divisor
-        # ljm.eWriteName(handle, "DIO_EF_CLOCK0_ROLL_VALUE", 80000)# Configure Clock0's roll value
-        ljm.eWriteName(handle, "DIO_EF_CLOCK0_ROLL_VALUE", DIO_EF_CLOCK0_ROLL_VALUE)  # Configure Clock0's roll value
-        ljm.eWriteName(handle, "DIO_EF_CLOCK0_ENABLE", 1)  # Enable the clock source
-
-        # Configure EF Channel Registers for signal:
-        ljm.eWriteName(handle, "DIO1_EF_ENABLE", 0)  # Disable the EF system for initial configuration
-        ljm.eWriteName(handle, "DIO1_EF_INDEX", 0)  # Configure EF system for PWM
-        ljm.eWriteName(handle, "DIO1_EF_OPTIONS", 0)  # Configure what clock source to use: Clock0
-        # ljm.eWriteName(handle, "DIO0_EF_CONFIG_A",40000)# Configure duty cycle to be: 50%
-        ljm.eWriteName(handle, "DIO1_EF_CONFIG_A", DIO_DUTY_CYCLE)  # Configure duty cycle to be: 50%
-        ljm.eWriteName(handle, "DIO1_EF_ENABLE", 1)  # Enable the EF system, PWM wave is now being outputted
-
-        # Configure EF Channel Registers for digital input check:
-        ljm.eWriteName(handle, "DIO3_EF_ENABLE", 0)
-        ljm.eWriteName(handle, "DIO3_EF_INDEX", 5)
-        ljm.eWriteName(handle, "DIO3_EF_OPTIONS", 0)
-        ljm.eWriteName(handle, "DIO3_EF_ENABLE", 1)
-
-    def motorSpeedCalc(self):
-        print("Calculating Motor Speed")
-        print(" ")
-
-    def sampleProx(self):
-        print("Sampling Proximity Sensor")
-
-    def labJackSetUp(self):
-        handle = ljm.openS("T7", "ANY", "ANY")  # T7 device, Any connection, Any identifier
-        info = ljm.getHandleInfo(handle)
-        print("Opened a LabJack with Device type: %i, Connection type: %i,\n"
-              "Serial number: %i, IP address: %s, Port: %i,\nMax bytes per MB: %i" %
-              (info[0], info[1], info[2], ljm.numberToIP(info[3]), info[4], info[5]))
-
-    # def updateProxBar(self):
-    #     global position
-    #     print("Updating progress bar")
-    #     #self.proxProgBar = QtGui.QProgressBar('', self)
-    #     if position:
-    #         print("Prox detected")
-    #         self.ui.proxProgBar.setValue(100)
-    #     else:
-    #         print("Prox not detected")
-    #         self.ui.proxProgBar.setValue(0)
-    #     position = not position
-    #     time.sleep(1)
+            else:
+                print("IO Input Pin Not Valid *(T7 LabJack DIO 0, 2-5 ONLY)")
+        else:
+            print("MOTOR DISABLED")
 
 
 if __name__ == "__main__":
