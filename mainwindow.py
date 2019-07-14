@@ -174,8 +174,8 @@ class Ui_MainWindow(object):
 "")
         self.revDirRadioBTN.setObjectName("revDirRadioBTN")
         self.horizontalLayout_5.addWidget(self.revDirRadioBTN)
-        self.revFwdRadioBTN = QtWidgets.QRadioButton(self.controlWidget)
-        self.revFwdRadioBTN.setStyleSheet("/**** QRadioButton (enabled) ****/\n"
+        self.fwdDirRadioBTN = QtWidgets.QRadioButton(self.controlWidget)
+        self.fwdDirRadioBTN.setStyleSheet("/**** QRadioButton (enabled) ****/\n"
 "QRadioButton\n"
 "{\n"
 "  background-color: transparent;\n"
@@ -231,9 +231,9 @@ class Ui_MainWindow(object):
 "  image: url(images/radiobutton_checked_disabled.png);\n"
 "}\n"
 "")
-        self.revFwdRadioBTN.setChecked(True)
-        self.revFwdRadioBTN.setObjectName("revFwdRadioBTN")
-        self.horizontalLayout_5.addWidget(self.revFwdRadioBTN)
+        self.fwdDirRadioBTN.setChecked(True)
+        self.fwdDirRadioBTN.setObjectName("fwdDirRadioBTN")
+        self.horizontalLayout_5.addWidget(self.fwdDirRadioBTN)
         self.enableBTN = QtWidgets.QPushButton(self.controlWidget)
         self.enableBTN.setEnabled(True)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
@@ -1002,7 +1002,7 @@ class Ui_MainWindow(object):
         self.label_7.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:14pt; font-weight:600; font-style:italic; color:#bfbfbf;\">MOTOR CONTROL</span></p></body></html>"))
         self.startStopBTN.setText(_translate("MainWindow", "START"))
         self.revDirRadioBTN.setText(_translate("MainWindow", "REV"))
-        self.revFwdRadioBTN.setText(_translate("MainWindow", "FWD"))
+        self.fwdDirRadioBTN.setText(_translate("MainWindow", "FWD"))
         self.enableBTN.setText(_translate("MainWindow", "ENABLE"))
         self.label_5.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" color:#bfbfbf;\">Execution Steps:</span></p></body></html>"))
         self.execStepsEdit.setPlaceholderText(_translate("MainWindow", "(Total Steps)"))
