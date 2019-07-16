@@ -5,7 +5,8 @@ DESCRIPTION:
     Refer to to wiring diagram/hook up guide for connection details (:/FILENAME_HERE)
 
 STATE:
-    GUI launches and runs, labJack shows no errors. Not tested with actual sensors.
+    GUI launches and runs, labJack shows no errors. Not tested with actual sensors. Real time plotting working with
+    two independent axis, two tabs that are for manual control and life cycle testing.
 
 MODIFIED DATE: 7.16.19
 Author: Chris Antle
@@ -21,6 +22,7 @@ from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import *
 from labjack import ljm
 from mainwindow import Ui_MainWindow
+import pyqtgraph as pg
 
 import time
 import datetime
@@ -32,7 +34,7 @@ import sys
 motorEnabled = False # Control for motor logic
 handle = ""
 microstep = 4000 # Microstep setting on Kollmorgen stepper drive
-defaultFreq = 10000 # Default PWM Freq
+defaultFreq = 10000.00 # Default PWM Freq
 defaultDuty = 0.05
 defaultsampleFreq = 1 # Defined in Hz
 
@@ -42,9 +44,14 @@ motorDirectionPin = 1 # Defined as DIO pin number
 motorEnablePin = 1 # Defined as DAC pin number
 motorPWM = 0 # Defined as DIO pin number
 pressureVoltage = "AIN0"
-proxStopLow = "AIN6"
-proxStopHigh = "AIN7"
 loadVoltage = "AIN1"
+px1Low = "AIN6" # Tool stop
+px1High = "AIN7" # Tool stop
+px2Low = "AIN8" # RPM1
+px2High = "AIN9" # RPM1
+px3Low = "AIN10" # RPM2
+px3High = "AIN11" # RPM2
+
 
 
 class mywindow(QtWidgets.QMainWindow):
@@ -53,18 +60,30 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
+        #Plot set up
+        self.ui.plotWidget.setBackground(background=None)
+        self.ui.plotWidget.setBackground(background=[0, 0, 0, 80])
+        self.ui.plotWidget.setYRange(-1000,1000)
+        self.ui.plotWidget.setTitle(title="Real Time Sensor Output")
+        self.ui.plotWidget.showGrid(True, True, 0.5)
+        self.ui.plotWidget.setLimits(xMin=0, xMax=None, yMin=None, yMax=None)
+        self.ui.plotWidget.setLabel('bottom', 'Elapsed Time', 's')
+        self.ui.plotWidget.setLabel('left', 'Pressure', 'PSI')
+        self.ui.plotWidget.setLabel('right', 'Force', 'Lbf')
+
         # set up button control
         self.ui.stepFwdBTN.clicked.connect(lambda:self.goStep(motorPWM, 1, self.ui.spinBox.value(),100, 0.1))
         self.ui.stepRevBTN.clicked.connect(lambda:self.goStep(motorPWM, 0, self.ui.spinBox.value(), 100, 0.1))
         self.ui.enableBTN.clicked.connect(lambda:self.enableMotorToggle())
         self.ui.startStopBTN.clicked.connect(lambda:self.motorRun())
-        self.ui.sensorSampleBTN.clicked.conenct(lambda:self.runSensorSession())
+        self.ui.sensorBTN.clicked.connect(lambda:self.runSensorSession())
 
         #labjack setup
         self.labJackSetUp()
 
         #Set the default LCD info
-        self.ui.PWMLCD.display(str(defaultFreq))
+        self.ui.PWMLCD.display(5.768)
+        self.ui.pressureLCD1.display(254.55)# display data on GUI
 
 
     def labJackSetUp(self):
@@ -249,50 +268,54 @@ class mywindow(QtWidgets.QMainWindow):
         timeStamp = datetime.datetime.now().strftime("%H:%M:%S")
         V1 = ljm.eReadName(handle, pressureVoltage)  # Sample analog pressure input
         L1 = ljm.eReadName(handle, loadVoltage)  # Sample analog load cell input
-        P1 = 61.121 * V1 - 43.622
+        P1 = 61.121*V1-43.622
         #L1 = 61.121 * V2 - 43.622
 
         pressureSample = [timeStamp, P1, L1]  # add data to local list
 
-        self.ui.pressureLCD1.display(P1)  # display data on GUI
+        print(P1)
+        self.ui.pressureLCD1.display(P1)# display data on GUI
         self.ui.load1LCD.display(L1)
         #self.ui.pressureLCD2.display(P2)  # display data on GUI
 
         # Print for debug
         # print("P1 Voltage Reading: " + str(P1))
-        # print("P2 Voltage Reading: " + str(P2))
-
-        #return pressureSample
+        # print("L1 Voltage Reading: " + str(L1))
+        # print("Pressure Sample: " + str(pressureSample))
+        return pressureSample
 
     def runSensorSession(self):
-        sessionActive = self.ui.sampleSensorBTN.isChecked() # Check initial state
+        sessionActive = self.ui.sensorBTN.isChecked() # Check initial state
         global sessionData
         if sessionActive:
             sessionData = []  # Generate empty list for local session data
-            self.ui.sampleSensorBTN.setText("STOP")
+            self.ui.sensorBTN.setText("STOP")
 
             while sessionActive:
                 QApplication.processEvents()  # Check to see if session ended
-                sessionActive = self.ui.sampleSensorBTN.isChecked() # Check that session is running
-
-                #print("While Loop Parameter: " + str(sessionActive))
-                # Dummy data for debug
-                #data1 = random.randint(0,100)
-                #data2 = random.randint(0,100)
-                #sessionData.append([data1,data2]) # Add sampled data to session as 2D component
-
-                sessionData.append(self.sampleData()) # sample data and write to session list
+                sessionActive = self.ui.sensorBTN.isChecked() # Check that session is running
+                sessionData.append(self.sampleSensorData()) # sample data and write to session list
                 self.plotSessionData(sessionData)
 
-                time.sleep(sampleRate)
+                time.sleep(0)
         else:
-            self.ui.sampleSensorBTN.setText("START")
+            self.ui.sensorBTN.setText("START")
 
     def plotSessionData(self, sessionData):
+        global p1, p2
+        #print("Plotting Data")
         self.ui.plotWidget.clear()
         self.ui.plotWidget.addLegend()
-        curve1 = self.ui.plotWidget.plot(pen='r', name="PRESSURE") # Tool pressure curve
+        curve1 = self.ui.plotWidget.plot(pen='r', name="PRESSURE")  # Tool pressure curve
         curve2 = self.ui.plotWidget.plot(pen='g', name="LOAD")
+
+        p2 = pg.ViewBox()
+        self.ui.plotWidget.scene().addItem(p2)
+        self.ui.plotWidget.getAxis('right').linkToView(p2)
+        p2.setXLink(self.ui.plotWidget)
+        p2.setYRange(-15,15)
+        p2.addItem(curve2)
+
         P1 = [] # Local list for pressure data
         L1 = [] # Local list for load cell data
         i = 0 # increment variable
@@ -302,18 +325,29 @@ class mywindow(QtWidgets.QMainWindow):
             L1.append(sessionData[i][2])
             i += 1
 
+        #print("P1: " + str(P1))
+        #print("L1: " + str(L1))
+
         curve1.setData(P1) # Add pressure to curve
         curve2.setData(L1) # Add load cell voltage to curve
         # app.processEvents()
-        timer = QtCore.QTimer()
         P1A = np.array(P1) # format in array for plotting
         L1A = np.array(L1) # format in array for plotting
+
+        def updateViews():
+            global p1, p2
+            p2.setGeometry(self.ui.plotWidget.getViewBox().sceneBoundingRect())
+            p2.linkedViewChanged(self.ui.plotWidget.getViewBox(), p2.XAxis)
 
         def update():
             global curve1, curve2, P1A, L1A
             curve1.setData(P1A) # Plot pressure
             curve2.setData(L1A) # Plot load
 
+        updateViews()
+        #self.ui.plotWidget.getViewBox().sigResized.connect(updateViews)
+
+        timer = QtCore.QTimer()
         timer.timeout.connect(update)
         timer.start(100) # wait to refresh
 

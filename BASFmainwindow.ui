@@ -11,13 +11,12 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>BASF-Custom</string>
   </property>
   <widget class="QWidget" name="W1">
    <property name="styleSheet">
     <string notr="true">QWidget#W1{
-background-color: rgb(80,80,80);
-background-image:  url(&quot;C:/Users/chris.antle/Documents/BASF/backgroundDark.jpg&quot;);
+background-color: black;
 opacity: 0.5;
 background-position: center;
 }
@@ -25,17 +24,44 @@ background-position: center;
 </string>
    </property>
    <layout class="QGridLayout" name="gridLayout">
+    <item row="2" column="0">
+     <layout class="QVBoxLayout" name="plotLayout">
+      <item>
+       <widget class="PlotWidget" name="plotWidget">
+        <property name="styleSheet">
+         <string notr="true">QWidget#plotWidget
+{
+  background-color: transparent;
+  color: rgb(220,220,220, 10);
+  font-size: 11px;
+  outline: none;
+opacity: 0.5;
+}
+
+/**** QWidget (disabled) ****/
+QWidget:disabled
+{
+  color: rgb(40,40,40);
+}</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </item>
     <item row="1" column="0">
      <widget class="QTabWidget" name="T1">
       <property name="styleSheet">
        <string notr="true">QTabWidget#T1
 {
-  background-color: 0,0,0,0;
+background-color: rgb(80,80,80);
+background-image:  url(&quot;C:/Users/chris.antle/Documents/BASF/backgroundDark.jpg&quot;);
+opacity: 0.5;
+background-position: center;
 }
 
-QTabWidget::pane
+QTabWidget#T1::pane
 {
-
+background-color: rgb(200, 200, 200, 0);
 }
 
 /**** QTabWidget (disabled) ****/
@@ -51,33 +77,25 @@ QTabWidget::pane:disabled
        <number>0</number>
       </property>
       <widget class="QWidget" name="controlTab">
+       <property name="styleSheet">
+        <string notr="true">QWidget#controlTab{
+background-color: rgb(80,80,80);
+background-image:  url(&quot;C:/Users/chris.antle/Documents/BASF/backgroundDark.jpg&quot;);
+opacity: 0.5;
+background-position: center;
+
+}</string>
+       </property>
        <attribute name="title">
         <string>CONTROL</string>
        </attribute>
        <layout class="QGridLayout" name="gridLayout_2">
-        <item row="1" column="0" colspan="3">
-         <layout class="QVBoxLayout" name="plotLayout">
-          <item>
-           <widget class="PlotWidget" name="plotWidget">
-            <property name="styleSheet">
-             <string notr="true">QWidget#plotWidget
-{
-  background-color: rgb(0, 0, 0,80);
-  color: rgb(220,220,220);
-  font-size: 11px;
-  outline: none;
-opacity: 0.5;
-}
-
-/**** QWidget (disabled) ****/
-QWidget:disabled
-{
-  color: rgb(40,40,40);
-}</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
+        <item row="0" column="1">
+         <widget class="Line" name="line_5">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+         </widget>
         </item>
         <item row="0" column="0">
          <widget class="QWidget" name="controlWidget" native="true">
@@ -373,6 +391,9 @@ QPushButton:disabled
               <spacer name="horizontalSpacer_7">
                <property name="orientation">
                 <enum>Qt::Horizontal</enum>
+               </property>
+               <property name="sizeType">
+                <enum>QSizePolicy::Minimum</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
@@ -769,6 +790,328 @@ QLCDNumber:disabled
             </layout>
            </item>
            <item>
+            <spacer name="verticalSpacer">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item row="0" column="2">
+         <widget class="QWidget" name="sensorWidget" native="true">
+          <property name="styleSheet">
+           <string notr="true">QWidget#sensorWidget
+{
+  background-color: rgb(0, 0, 0,80);
+  color: rgb(220,220,220);
+  font-size: 11px;
+  outline: none;
+opacity: 0.5;
+}
+
+/**** QWidget (disabled) ****/
+QWidget:disabled
+{
+  color: rgb(40,40,40);
+}</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout">
+           <property name="sizeConstraint">
+            <enum>QLayout::SetMinimumSize</enum>
+           </property>
+           <item>
+            <widget class="QLabel" name="label_8">
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600; font-style:italic; color:#bfbfbf;&quot;&gt;SENSORS&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="Line" name="line_4">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QHBoxLayout" name="pressureLayout"/>
+           </item>
+           <item>
+            <layout class="QGridLayout" name="gridLayout_6">
+             <item row="2" column="1">
+              <widget class="QRadioButton" name="proxRadio2">
+               <property name="styleSheet">
+                <string notr="true">QRadioButton::indicator {width: 15px; height: 15px; border-radius: 7px;} QRadioButton::indicator:unchecked { background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                    stop: 0 rgb(200,50,50), stop: 1 rgb(145,5,5));
+
+border: 2px solid gray;}</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="checkable">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="0">
+              <widget class="QLabel" name="s1MSLabel">
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; color:#bfbfbf;&quot;&gt;PX1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="1">
+              <widget class="QRadioButton" name="proxRadio5">
+               <property name="styleSheet">
+                <string notr="true">QRadioButton::indicator {width: 15px; height: 15px; border-radius: 7px;} QRadioButton::indicator:unchecked { background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                    stop: 0 rgb(200,50,50), stop: 1 rgb(145,5,5));
+
+border: 2px solid gray;}</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="checkable">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="label_10">
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; color:#bfbfbf;&quot;&gt;PX2&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="0">
+              <widget class="QLabel" name="label_17">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; color:#bfbfbf;&quot;&gt;PX3&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QRadioButton" name="proxRadio1">
+               <property name="styleSheet">
+                <string notr="true">QRadioButton::indicator {width: 15px; height: 15px; border-radius: 7px;} QRadioButton::indicator:unchecked {
+background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                    stop: 0 rgb(0, 242, 0), stop: 1 rgb(0, 170, 0));
+border: 2px solid gray;}</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="checkable">
+                <bool>false</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="3">
+              <widget class="QLCDNumber" name="load1LCD">
+               <property name="styleSheet">
+                <string notr="true">QLCDNumber
+{
+  background-color: rgb(40,40,40);
+  border: 1px solid rgb(20,20,20);
+}
+
+/**** QLCDNumber (disabled) ****/
+QLCDNumber:disabled
+{
+  background-color: rgb(120,120,120);
+  border: 1px solid rgb(60,60,60);
+}</string>
+               </property>
+               <property name="digitCount">
+                <number>8</number>
+               </property>
+               <property name="mode">
+                <enum>QLCDNumber::Dec</enum>
+               </property>
+               <property name="value" stdset="0">
+                <double>0.000000000000000</double>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="2">
+              <widget class="QLabel" name="label_6">
+               <property name="styleSheet">
+                <string notr="true">QLabel
+{
+  background-color: transparent;
+  color: rgb(220,220,220);
+  padding: 4px;
+}
+
+/**** QLabel (disabled) ****/
+QLabel
+{
+}</string>
+               </property>
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; color:#bfbfbf;&quot;&gt;P1 (PSI)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="3">
+              <widget class="QLCDNumber" name="pressureLCD1">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Minimum" vsizetype="Minimum">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">QLCDNumber
+{
+  background-color: rgb(40,40,40);
+  border: 1px solid rgb(20,20,20);
+}
+
+/**** QLCDNumber (disabled) ****/
+QLCDNumber:disabled
+{
+  background-color: rgb(120,120,120);
+  border: 1px solid rgb(60,60,60);
+}</string>
+               </property>
+               <property name="digitCount">
+                <number>8</number>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="3">
+              <widget class="QLineEdit" name="lineEdit">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">/**** QLineEdit (enabled) ****/
+QLineEdit
+{
+  background-color: rgb(80,80,80);
+  border: 1px solid rgb(20,20,20);
+  color: rgb(220,220,220);
+  padding: 4px;
+  selection-background-color: rgb(70,110,130);
+  selection-color: white;
+}
+
+QLineEdit:focus
+{
+  border-color: rgb(90,200,255);
+}
+
+/**** QLineEdit (disabled) ****/
+QLineEdit:disabled
+{
+  background-color: rgb(120,120,120);
+  border-color: rgb(60,60,60);
+  color: rgb(40,40,40);
+}</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="2">
+              <widget class="QLabel" name="label">
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-style:italic; color:#bfbfbf;&quot;&gt;Fs (Hz):&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="0" colspan="3">
+              <widget class="QPushButton" name="sensorBTN">
+               <property name="styleSheet">
+                <string notr="true">QPushButton
+{
+  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                    stop: 0 rgb(120,120,120), stop: 1 rgb(80,80,80));
+  border: 1px solid rgb(20,20,20);
+  color: rgb(230,230,230);
+  padding: 4px 8px;
+}
+
+QPushButton:hover
+{
+ background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                    stop: 0 rgb(0, 242, 0), stop: 1 rgb(0, 170, 0));
+}
+
+QPushButton:pressed
+{
+  border-color: rgb(125,75,0);
+  padding: 1px -1px -1px 1px;
+}
+
+/**** QPushButton (checkable) ****/
+QPushButton:checked
+{
+  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                    stop: 0 rgb(200,50,50), stop: 1 rgb(145,5,5));
+  color: rgb(20,20,20);
+}
+
+QPushButton:checked:hover
+{
+  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                    stop: 0 rgb(200,50,50), stop: 1 rgb(145,5,5));
+}
+
+/**** QPushButton (disabled) ****/
+QPushButton:disabled
+{
+  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                    stop: 0 rgb(160,160,160), stop: 1 rgb(120,120,120));
+  border-color: rgb(60,60,60);
+  color: rgb(40,40,40);
+}</string>
+               </property>
+               <property name="text">
+                <string>SAMPLE</string>
+               </property>
+               <property name="checkable">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="2">
+              <widget class="QLabel" name="label_3">
+               <property name="styleSheet">
+                <string notr="true">QLabel
+{
+  background-color: transparent;
+  color: rgb(220,220,220);
+  padding: 4px;
+}
+
+/**** QLabel (disabled) ****/
+QLabel
+{
+}</string>
+               </property>
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; color:#bfbfbf;&quot;&gt;L1 (lbf)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+           <item>
             <widget class="QLabel" name="label_12">
              <property name="text">
               <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; color:#bfbfbf;&quot;&gt;FILE&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
@@ -935,13 +1278,59 @@ QLineEdit:disabled
              </item>
             </layout>
            </item>
+           <item>
+            <layout class="QHBoxLayout" name="horizontalLayout_9"/>
+           </item>
+           <item>
+            <spacer name="verticalSpacer_3">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+             <property name="sizeHint" stdset="0">
+              <size>
+               <width>20</width>
+               <height>40</height>
+              </size>
+             </property>
+            </spacer>
+           </item>
+           <item>
+            <widget class="Line" name="line_11">
+             <property name="orientation">
+              <enum>Qt::Vertical</enum>
+             </property>
+            </widget>
+           </item>
           </layout>
          </widget>
         </item>
-        <item row="0" column="2">
-         <widget class="QWidget" name="sensorWidget" native="true">
+       </layout>
+      </widget>
+      <widget class="QWidget" name="lifeTestTab">
+       <property name="styleSheet">
+        <string notr="true">QWidget#lifeTestTab{
+background-color: rgb(80,80,80);
+background-image:  url(&quot;C:/Users/chris.antle/Documents/BASF/backgroundDark.jpg&quot;);
+opacity: 0.5;
+background-position: center;
+
+}</string>
+       </property>
+       <attribute name="title">
+        <string>LIFE TEST</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_3">
+        <item row="0" column="1">
+         <widget class="Line" name="line">
+          <property name="orientation">
+           <enum>Qt::Vertical</enum>
+          </property>
+         </widget>
+        </item>
+        <item row="0" column="0">
+         <widget class="QWidget" name="paramWidget" native="true">
           <property name="styleSheet">
-           <string notr="true">QWidget#sensorWidget
+           <string notr="true">QWidget#paramWidget
 {
   background-color: rgb(0, 0, 0,80);
   color: rgb(220,220,220);
@@ -956,310 +1345,31 @@ QWidget:disabled
   color: rgb(40,40,40);
 }</string>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout">
-           <property name="sizeConstraint">
-            <enum>QLayout::SetMinimumSize</enum>
-           </property>
+          <layout class="QVBoxLayout" name="cycleParameters">
            <item>
-            <widget class="QLabel" name="label_8">
+            <widget class="QLabel" name="label_20">
              <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:14pt; font-weight:600; color:#bfbfbf;&quot;&gt;SENSORS&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; font-style:italic; color:#bfbfbf;&quot;&gt;PARAMETERS&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="Line" name="line_4">
+            <widget class="Line" name="line_3">
              <property name="orientation">
               <enum>Qt::Horizontal</enum>
              </property>
             </widget>
            </item>
            <item>
-            <widget class="QLabel" name="label_15">
-             <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; font-style:italic; color:#bfbfbf;&quot;&gt;PRESSURE&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <layout class="QHBoxLayout" name="pressureLayout">
-             <item>
-              <widget class="QLabel" name="label_6">
-               <property name="styleSheet">
-                <string notr="true">QLabel
-{
-  background-color: transparent;
-  color: rgb(220,220,220);
-  padding: 4px;
-}
-
-/**** QLabel (disabled) ****/
-QLabel
-{
-}</string>
+            <layout class="QGridLayout" name="gridLayout_5">
+             <item row="0" column="1">
+              <widget class="QLineEdit" name="runTimeEdit">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
                </property>
-               <property name="text">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-style:italic; color:#ffffff;&quot;&gt;P1 (PSI)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLCDNumber" name="pressureLCD1">
-               <property name="styleSheet">
-                <string notr="true">QLCDNumber
-{
-  background-color: rgb(40,40,40);
-  border: 1px solid rgb(20,20,20);
-}
-
-/**** QLCDNumber (disabled) ****/
-QLCDNumber:disabled
-{
-  background-color: rgb(120,120,120);
-  border: 1px solid rgb(60,60,60);
-}</string>
-               </property>
-               <property name="digitCount">
-                <number>2</number>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="label_3">
-               <property name="styleSheet">
-                <string notr="true">QLabel
-{
-  background-color: transparent;
-  color: rgb(220,220,220);
-  padding: 4px;
-}
-
-/**** QLabel (disabled) ****/
-QLabel
-{
-}</string>
-               </property>
-               <property name="text">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-style:italic; color:#ffffff;&quot;&gt;P2 (PSI)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLCDNumber" name="pressureLCD2">
-               <property name="font">
-                <font>
-                 <pointsize>8</pointsize>
-                </font>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">QLCDNumber
-{
-  background-color: rgb(40,40,40);
-  border: 1px solid rgb(20,20,20);
-}
-
-/**** QLCDNumber (disabled) ****/
-QLCDNumber:disabled
-{
-  background-color: rgb(120,120,120);
-  border: 1px solid rgb(60,60,60);
-}</string>
-               </property>
-               <property name="digitCount">
-                <number>2</number>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_19">
-             <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; font-style:italic; color:#bfbfbf;&quot;&gt;LOAD&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_8">
-             <item>
-              <widget class="QLabel" name="label_18">
-               <property name="frameShape">
-                <enum>QFrame::StyledPanel</enum>
-               </property>
-               <property name="text">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-style:italic; color:#ffffff;&quot;&gt;L1 (lbf)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLCDNumber" name="load1LCD">
-               <property name="styleSheet">
-                <string notr="true">QLCDNumber
-{
-  background-color: rgb(40,40,40);
-  border: 1px solid rgb(20,20,20);
-}
-
-/**** QLCDNumber (disabled) ****/
-QLCDNumber:disabled
-{
-  background-color: rgb(120,120,120);
-  border: 1px solid rgb(60,60,60);
-}</string>
-               </property>
-               <property name="digitCount">
-                <number>2</number>
-               </property>
-               <property name="mode">
-                <enum>QLCDNumber::Dec</enum>
-               </property>
-               <property name="value" stdset="0">
-                <double>0.000000000000000</double>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer_2">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <widget class="QLabel" name="label_16">
-             <property name="text">
-              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; font-style:italic; color:#bfbfbf;&quot;&gt;PROXIMITY&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_7">
-             <item>
-              <widget class="QLabel" name="s1MSLabel">
-               <property name="text">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; color:#ffffff;&quot;&gt;PX1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QRadioButton" name="proxRadio1">
-               <property name="styleSheet">
-                <string notr="true">QRadioButton::indicator {width: 15px; height: 15px; border-radius: 7px;} QRadioButton::indicator:unchecked {
-background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                    stop: 0 rgb(0, 242, 0), stop: 1 rgb(0, 170, 0));
-border: 2px solid gray;}</string>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="checkable">
-                <bool>false</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="Line" name="line">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="label_10">
-               <property name="text">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; color:#bfbfbf;&quot;&gt;PX2&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QRadioButton" name="proxRadio2">
-               <property name="styleSheet">
-                <string notr="true">QRadioButton::indicator {width: 15px; height: 15px; border-radius: 7px;} QRadioButton::indicator:unchecked { background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                    stop: 0 rgb(200,50,50), stop: 1 rgb(145,5,5));
-
-border: 2px solid gray;}</string>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="checkable">
-                <bool>false</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="label_17">
-               <property name="enabled">
-                <bool>false</bool>
-               </property>
-               <property name="text">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; color:#ffffff;&quot;&gt;PX3&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QRadioButton" name="proxRadio5">
-               <property name="styleSheet">
-                <string notr="true">QRadioButton::indicator {width: 15px; height: 15px; border-radius: 7px;} QRadioButton::indicator:unchecked { background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                    stop: 0 rgb(200,50,50), stop: 1 rgb(145,5,5));
-
-border: 2px solid gray;}</string>
-               </property>
-               <property name="text">
-                <string/>
-               </property>
-               <property name="checkable">
-                <bool>false</bool>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <spacer name="horizontalSpacer_8">
-               <property name="orientation">
-                <enum>Qt::Horizontal</enum>
-               </property>
-               <property name="sizeHint" stdset="0">
-                <size>
-                 <width>40</width>
-                 <height>20</height>
-                </size>
-               </property>
-              </spacer>
-             </item>
-            </layout>
-           </item>
-           <item>
-            <layout class="QHBoxLayout" name="horizontalLayout_9">
-             <item>
-              <widget class="QLabel" name="label">
-               <property name="text">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-style:italic; color:#bfbfbf;&quot;&gt;Fs (Hz):&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLineEdit" name="lineEdit">
                <property name="styleSheet">
                 <string notr="true">/**** QLineEdit (enabled) ****/
 QLineEdit
@@ -1287,25 +1397,264 @@ QLineEdit:disabled
                </property>
               </widget>
              </item>
-             <item>
-              <spacer name="horizontalSpacer_9">
+             <item row="1" column="0">
+              <widget class="QLabel" name="label_21">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; color:#bfbfbf;&quot;&gt;Steps Out&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="2">
+              <widget class="QLabel" name="label_2">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; color:#bfbfbf;&quot;&gt;Steps In&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="1">
+              <widget class="QLineEdit" name="RPMoutEdit">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">/**** QLineEdit (enabled) ****/
+QLineEdit
+{
+  background-color: rgb(80,80,80);
+  border: 1px solid rgb(20,20,20);
+  color: rgb(220,220,220);
+  padding: 4px;
+  selection-background-color: rgb(70,110,130);
+  selection-color: white;
+}
+
+QLineEdit:focus
+{
+  border-color: rgb(90,200,255);
+}
+
+/**** QLineEdit (disabled) ****/
+QLineEdit:disabled
+{
+  background-color: rgb(120,120,120);
+  border-color: rgb(60,60,60);
+  color: rgb(40,40,40);
+}</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="2">
+              <widget class="QLabel" name="label_24">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#bfbfbf;&quot;&gt;Cut-Off Force (lbf)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="0">
+              <widget class="QLabel" name="label_23">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#bfbfbf;&quot;&gt;Run Time (hrs)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="0" column="3">
+              <widget class="QLineEdit" name="forceCutOffEdit">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">/**** QLineEdit (enabled) ****/
+QLineEdit
+{
+  background-color: rgb(80,80,80);
+  border: 1px solid rgb(20,20,20);
+  color: rgb(220,220,220);
+  padding: 4px;
+  selection-background-color: rgb(70,110,130);
+  selection-color: white;
+}
+
+QLineEdit:focus
+{
+  border-color: rgb(90,200,255);
+}
+
+/**** QLineEdit (disabled) ****/
+QLineEdit:disabled
+{
+  background-color: rgb(120,120,120);
+  border-color: rgb(60,60,60);
+  color: rgb(40,40,40);
+}</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="1">
+              <widget class="QLineEdit" name="stepsOutEdit">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">/**** QLineEdit (enabled) ****/
+QLineEdit
+{
+  background-color: rgb(80,80,80);
+  border: 1px solid rgb(20,20,20);
+  color: rgb(220,220,220);
+  padding: 4px;
+  selection-background-color: rgb(70,110,130);
+  selection-color: white;
+}
+
+QLineEdit:focus
+{
+  border-color: rgb(90,200,255);
+}
+
+/**** QLineEdit (disabled) ****/
+QLineEdit:disabled
+{
+  background-color: rgb(120,120,120);
+  border-color: rgb(60,60,60);
+  color: rgb(40,40,40);
+}</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="0">
+              <widget class="QLabel" name="label_22">
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#bfbfbf;&quot;&gt;RPM Out&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="2">
+              <widget class="QLabel" name="label_25">
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#bfbfbf;&quot;&gt;RPM In&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="2" column="3">
+              <widget class="QLineEdit" name="RPMinEdit">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">/**** QLineEdit (enabled) ****/
+QLineEdit
+{
+  background-color: rgb(80,80,80);
+  border: 1px solid rgb(20,20,20);
+  color: rgb(220,220,220);
+  padding: 4px;
+  selection-background-color: rgb(70,110,130);
+  selection-color: white;
+}
+
+QLineEdit:focus
+{
+  border-color: rgb(90,200,255);
+}
+
+/**** QLineEdit (disabled) ****/
+QLineEdit:disabled
+{
+  background-color: rgb(120,120,120);
+  border-color: rgb(60,60,60);
+  color: rgb(40,40,40);
+}</string>
+               </property>
+              </widget>
+             </item>
+             <item row="1" column="3">
+              <widget class="QLineEdit" name="stepsInEdit">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">/**** QLineEdit (enabled) ****/
+QLineEdit
+{
+  background-color: rgb(80,80,80);
+  border: 1px solid rgb(20,20,20);
+  color: rgb(220,220,220);
+  padding: 4px;
+  selection-background-color: rgb(70,110,130);
+  selection-color: white;
+}
+
+QLineEdit:focus
+{
+  border-color: rgb(90,200,255);
+}
+
+/**** QLineEdit (disabled) ****/
+QLineEdit:disabled
+{
+  background-color: rgb(120,120,120);
+  border-color: rgb(60,60,60);
+  color: rgb(40,40,40);
+}</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="1">
+              <spacer name="verticalSpacer_4">
                <property name="orientation">
-                <enum>Qt::Horizontal</enum>
+                <enum>Qt::Vertical</enum>
                </property>
                <property name="sizeHint" stdset="0">
                 <size>
-                 <width>40</width>
-                 <height>20</height>
+                 <width>20</width>
+                 <height>40</height>
                 </size>
                </property>
               </spacer>
              </item>
-            </layout>
-           </item>
-           <item>
-            <widget class="QPushButton" name="sensorSampleBTN">
-             <property name="styleSheet">
-              <string notr="true">QPushButton
+             <item row="3" column="0" colspan="2">
+              <widget class="QPushButton" name="paramSaveEdit">
+               <property name="styleSheet">
+                <string notr="true">QPushButton
 {
   background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                                     stop: 0 rgb(120,120,120), stop: 1 rgb(80,80,80));
@@ -1348,54 +1697,394 @@ QPushButton:disabled
   border-color: rgb(60,60,60);
   color: rgb(40,40,40);
 }</string>
-             </property>
-             <property name="text">
-              <string>SAMPLE SENSORS</string>
-             </property>
-            </widget>
-           </item>
-           <item>
-            <spacer name="verticalSpacer_3">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-             <property name="sizeHint" stdset="0">
-              <size>
-               <width>20</width>
-               <height>40</height>
-              </size>
-             </property>
-            </spacer>
-           </item>
-           <item>
-            <widget class="Line" name="line_11">
-             <property name="orientation">
-              <enum>Qt::Vertical</enum>
-             </property>
-            </widget>
+               </property>
+               <property name="text">
+                <string>SAVE</string>
+               </property>
+              </widget>
+             </item>
+             <item row="3" column="2" colspan="2">
+              <widget class="QPushButton" name="paramClearEdit">
+               <property name="styleSheet">
+                <string notr="true">QPushButton
+{
+  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                    stop: 0 rgb(120,120,120), stop: 1 rgb(80,80,80));
+  border: 1px solid rgb(20,20,20);
+  color: rgb(230,230,230);
+  padding: 4px 8px;
+}
+
+QPushButton:hover
+{
+ background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                    stop: 0 rgb(0, 242, 0), stop: 1 rgb(0, 170, 0));
+}
+
+QPushButton:pressed
+{
+  border-color: rgb(125,75,0);
+  padding: 1px -1px -1px 1px;
+}
+
+/**** QPushButton (checkable) ****/
+QPushButton:checked
+{
+  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                    stop: 0 rgb(200,50,50), stop: 1 rgb(145,5,5));
+  color: rgb(20,20,20);
+}
+
+QPushButton:checked:hover
+{
+  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                    stop: 0 rgb(200,50,50), stop: 1 rgb(145,5,5));
+}
+
+/**** QPushButton (disabled) ****/
+QPushButton:disabled
+{
+  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                    stop: 0 rgb(160,160,160), stop: 1 rgb(120,120,120));
+  border-color: rgb(60,60,60);
+  color: rgb(40,40,40);
+}</string>
+               </property>
+               <property name="text">
+                <string>CLEAR</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
            </item>
           </layout>
          </widget>
         </item>
-        <item row="0" column="1">
-         <widget class="Line" name="line_5">
-          <property name="orientation">
-           <enum>Qt::Vertical</enum>
+        <item row="0" column="2">
+         <widget class="QWidget" name="statusWidget" native="true">
+          <property name="styleSheet">
+           <string notr="true">QWidget#statusWidget
+{
+  background-color: rgb(0, 0, 0,80);
+  color: rgb(220,220,220);
+  font-size: 11px;
+  outline: none;
+opacity: 0.5;
+}
+
+/**** QWidget (disabled) ****/
+QWidget:disabled
+{
+  color: rgb(40,40,40);
+}</string>
           </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-      <widget class="QWidget" name="lifeTestTab">
-       <attribute name="title">
-        <string>LIFE TEST</string>
-       </attribute>
-       <layout class="QGridLayout" name="gridLayout_3">
-        <item row="0" column="0">
-         <widget class="QPushButton" name="pushButton">
-          <property name="text">
-           <string>PushButton</string>
-          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_3">
+           <item>
+            <widget class="QLabel" name="label_26">
+             <property name="text">
+              <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; font-style:italic; color:#bfbfbf;&quot;&gt;STATUS&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="Line" name="line_7">
+             <property name="orientation">
+              <enum>Qt::Horizontal</enum>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QProgressBar" name="progressBar">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="styleSheet">
+              <string notr="true">QProgressBar
+{
+  background-color: rgb(40,40,40);
+  background-color: rgb(140,80,10,20);
+  border: 1px solid rgb(20,20,20);
+  color: rgb(220,220,220);
+  text-align: center;
+}
+
+QProgressBar::chunk
+{
+  background-color: rgb(30,185,15);
+  margin: 1px;
+  width: 4px;
+}
+
+/**** QProgressBar (disabled) ****/
+QProgressBar:disabled
+{
+  background-color: rgb(120,120,120);
+  border: 1px solid rgb(60,60,60);
+  color: rgb(40,40,40);
+}</string>
+             </property>
+             <property name="value">
+              <number>24</number>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <layout class="QGridLayout" name="gridLayout_4">
+             <item row="5" column="0">
+              <widget class="QLabel" name="label_30">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; color:#bfbfbf;&quot;&gt;PX2&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="0">
+              <widget class="QLabel" name="label_31">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; color:#bfbfbf;&quot;&gt;PX3&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="3">
+              <widget class="QLCDNumber" name="lcdNumber_2"/>
+             </item>
+             <item row="5" column="1">
+              <widget class="QRadioButton" name="radioButton_2">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">QRadioButton::indicator {width: 15px; height: 15px; border-radius: 7px;} QRadioButton::indicator:unchecked {
+background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                    stop: 0 rgb(0, 242, 0), stop: 1 rgb(0, 170, 0));
+border: 2px solid gray;}</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="0">
+              <widget class="QLabel" name="label_29">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; color:#bfbfbf;&quot;&gt;PX1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="5" column="2">
+              <widget class="QLabel" name="label_28">
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; color:#bfbfbf;&quot;&gt;L1 (lbf)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="10" column="0">
+              <spacer name="verticalSpacer_2">
+               <property name="orientation">
+                <enum>Qt::Vertical</enum>
+               </property>
+               <property name="sizeHint" stdset="0">
+                <size>
+                 <width>20</width>
+                 <height>40</height>
+                </size>
+               </property>
+              </spacer>
+             </item>
+             <item row="6" column="1">
+              <widget class="QRadioButton" name="radioButton_3">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">QRadioButton::indicator {width: 15px; height: 15px; border-radius: 7px;} QRadioButton::indicator:unchecked {
+background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                    stop: 0 rgb(0, 242, 0), stop: 1 rgb(0, 170, 0));
+border: 2px solid gray;}</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="3">
+              <widget class="QLCDNumber" name="lcdNumber">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Minimum">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+              </widget>
+             </item>
+             <item row="6" column="2" colspan="2">
+              <widget class="QPushButton" name="pushButton_4">
+               <property name="styleSheet">
+                <string notr="true">QPushButton
+{
+  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                    stop: 0 rgb(120,120,120), stop: 1 rgb(80,80,80));
+  border: 1px solid rgb(20,20,20);
+  color: rgb(230,230,230);
+  padding: 4px 8px;
+}
+
+QPushButton:hover
+{
+ background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                    stop: 0 rgb(0, 242, 0), stop: 1 rgb(0, 170, 0));
+}
+
+QPushButton:pressed
+{
+  border-color: rgb(125,75,0);
+  padding: 1px -1px -1px 1px;
+}
+
+/**** QPushButton (checkable) ****/
+QPushButton:checked
+{
+  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                    stop: 0 rgb(200,50,50), stop: 1 rgb(145,5,5));
+  color: rgb(20,20,20);
+}
+
+QPushButton:checked:hover
+{
+  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                    stop: 0 rgb(200,50,50), stop: 1 rgb(145,5,5));
+}
+
+/**** QPushButton (disabled) ****/
+QPushButton:disabled
+{
+  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                    stop: 0 rgb(160,160,160), stop: 1 rgb(120,120,120));
+  border-color: rgb(60,60,60);
+  color: rgb(40,40,40);
+}</string>
+               </property>
+               <property name="text">
+                <string>START</string>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="1">
+              <widget class="QRadioButton" name="radioButton">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="styleSheet">
+                <string notr="true">QRadioButton::indicator {width: 15px; height: 15px; border-radius: 7px;} QRadioButton::indicator:unchecked {
+background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                    stop: 0 rgb(0, 242, 0), stop: 1 rgb(0, 170, 0));
+border: 2px solid gray;}</string>
+               </property>
+               <property name="text">
+                <string/>
+               </property>
+               <property name="autoExclusive">
+                <bool>true</bool>
+               </property>
+              </widget>
+             </item>
+             <item row="4" column="2">
+              <widget class="QLabel" name="label_27">
+               <property name="sizePolicy">
+                <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+                 <horstretch>0</horstretch>
+                 <verstretch>0</verstretch>
+                </sizepolicy>
+               </property>
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; color:#bfbfbf;&quot;&gt;P1 (PSI)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item row="7" column="2" colspan="2">
+              <widget class="QPushButton" name="pushButton_3">
+               <property name="styleSheet">
+                <string notr="true">QPushButton
+{
+  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                    stop: 0 rgb(120,120,120), stop: 1 rgb(80,80,80));
+  border: 1px solid rgb(20,20,20);
+  color: rgb(230,230,230);
+  padding: 4px 8px;
+}
+
+QPushButton:hover
+{
+ background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                    stop: 0 rgb(0, 242, 0), stop: 1 rgb(0, 170, 0));
+}
+
+QPushButton:pressed
+{
+  border-color: rgb(125,75,0);
+  padding: 1px -1px -1px 1px;
+}
+
+/**** QPushButton (checkable) ****/
+QPushButton:checked
+{
+  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                    stop: 0 rgb(200,50,50), stop: 1 rgb(145,5,5));
+  color: rgb(20,20,20);
+}
+
+QPushButton:checked:hover
+{
+  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                    stop: 0 rgb(200,50,50), stop: 1 rgb(145,5,5));
+}
+
+/**** QPushButton (disabled) ****/
+QPushButton:disabled
+{
+  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
+                                    stop: 0 rgb(160,160,160), stop: 1 rgb(120,120,120));
+  border-color: rgb(60,60,60);
+  color: rgb(40,40,40);
+}</string>
+               </property>
+               <property name="text">
+                <string>SUSPEND</string>
+               </property>
+              </widget>
+             </item>
+            </layout>
+           </item>
+          </layout>
          </widget>
         </item>
        </layout>

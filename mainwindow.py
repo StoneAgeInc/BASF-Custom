@@ -15,8 +15,7 @@ class Ui_MainWindow(object):
         MainWindow.resize(885, 793)
         self.W1 = QtWidgets.QWidget(MainWindow)
         self.W1.setStyleSheet("QWidget#W1{\n"
-"background-color: rgb(80,80,80);\n"
-"background-image:  url(\"C:/Users/chris.antle/Documents/BASF/backgroundDark.jpg\");\n"
+"background-color: black;\n"
 "opacity: 0.5;\n"
 "background-position: center;\n"
 "}\n"
@@ -27,16 +26,67 @@ class Ui_MainWindow(object):
         self.gridLayout.setContentsMargins(11, 11, 11, 11)
         self.gridLayout.setSpacing(6)
         self.gridLayout.setObjectName("gridLayout")
-        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout.addItem(spacerItem, 5, 2, 1, 1)
-        self.line_5 = QtWidgets.QFrame(self.W1)
+        self.plotLayout = QtWidgets.QVBoxLayout()
+        self.plotLayout.setSpacing(6)
+        self.plotLayout.setObjectName("plotLayout")
+        self.plotWidget = PlotWidget(self.W1)
+        self.plotWidget.setStyleSheet("QWidget#plotWidget\n"
+"{\n"
+"  background-color: transparent;\n"
+"  color: rgb(220,220,220, 10);\n"
+"  font-size: 11px;\n"
+"  outline: none;\n"
+"opacity: 0.5;\n"
+"}\n"
+"\n"
+"/**** QWidget (disabled) ****/\n"
+"QWidget:disabled\n"
+"{\n"
+"  color: rgb(40,40,40);\n"
+"}")
+        self.plotWidget.setObjectName("plotWidget")
+        self.plotLayout.addWidget(self.plotWidget)
+        self.gridLayout.addLayout(self.plotLayout, 2, 0, 1, 1)
+        self.T1 = QtWidgets.QTabWidget(self.W1)
+        self.T1.setStyleSheet("QTabWidget#T1\n"
+"{\n"
+"background-color: rgb(80,80,80);\n"
+"background-image:  url(\"C:/Users/chris.antle/Documents/BASF/backgroundDark.jpg\");\n"
+"opacity: 0.5;\n"
+"background-position: center;\n"
+"}\n"
+"\n"
+"QTabWidget#T1::pane\n"
+"{\n"
+"background-color: rgb(200, 200, 200, 0);\n"
+"}\n"
+"\n"
+"/**** QTabWidget (disabled) ****/\n"
+"QTabWidget::pane:disabled\n"
+"{\n"
+"  border-color: rgb(60,60,60);\n"
+"}")
+        self.T1.setTabPosition(QtWidgets.QTabWidget.North)
+        self.T1.setObjectName("T1")
+        self.controlTab = QtWidgets.QWidget()
+        self.controlTab.setStyleSheet("QWidget#controlTab{\n"
+"background-color: rgb(80,80,80);\n"
+"background-image:  url(\"C:/Users/chris.antle/Documents/BASF/backgroundDark.jpg\");\n"
+"opacity: 0.5;\n"
+"background-position: center;\n"
+"\n"
+"}")
+        self.controlTab.setObjectName("controlTab")
+        self.gridLayout_2 = QtWidgets.QGridLayout(self.controlTab)
+        self.gridLayout_2.setContentsMargins(11, 11, 11, 11)
+        self.gridLayout_2.setSpacing(6)
+        self.gridLayout_2.setObjectName("gridLayout_2")
+        self.line_5 = QtWidgets.QFrame(self.controlTab)
         self.line_5.setFrameShape(QtWidgets.QFrame.VLine)
         self.line_5.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_5.setObjectName("line_5")
-        self.gridLayout.addWidget(self.line_5, 5, 3, 1, 1)
-        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout.addItem(spacerItem1, 5, 6, 1, 1)
-        self.controlWidget = QtWidgets.QWidget(self.W1)
+        self.gridLayout_2.addWidget(self.line_5, 0, 1, 1, 1)
+        self.controlWidget = QtWidgets.QWidget(self.controlTab)
         self.controlWidget.setStyleSheet("QWidget#controlWidget\n"
 "{\n"
 "  background-color: rgb(0, 0, 0,80);\n"
@@ -287,8 +337,8 @@ class Ui_MainWindow(object):
         self.enableBTN.setCheckable(True)
         self.enableBTN.setObjectName("enableBTN")
         self.horizontalLayout_5.addWidget(self.enableBTN)
-        spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout_5.addItem(spacerItem2)
+        spacerItem = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_5.addItem(spacerItem)
         self.controlLayout.addLayout(self.horizontalLayout_5)
         self.horizontalLayout_6 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_6.setSpacing(6)
@@ -322,8 +372,8 @@ class Ui_MainWindow(object):
         self.execStepsEdit.setAlignment(QtCore.Qt.AlignCenter)
         self.execStepsEdit.setObjectName("execStepsEdit")
         self.horizontalLayout_6.addWidget(self.execStepsEdit)
-        spacerItem3 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout_6.addItem(spacerItem3)
+        spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_6.addItem(spacerItem1)
         self.controlLayout.addLayout(self.horizontalLayout_6)
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setSpacing(6)
@@ -543,8 +593,8 @@ class Ui_MainWindow(object):
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_3.setSpacing(6)
         self.horizontalLayout_3.setObjectName("horizontalLayout_3")
-        spacerItem4 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout_3.addItem(spacerItem4)
+        spacerItem2 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        self.horizontalLayout_3.addItem(spacerItem2)
         self.controlLayout.addLayout(self.horizontalLayout_3)
         self.label_13 = QtWidgets.QLabel(self.controlWidget)
         self.label_13.setObjectName("label_13")
@@ -595,18 +645,243 @@ class Ui_MainWindow(object):
         self.motorRPMLCD.setObjectName("motorRPMLCD")
         self.horizontalLayout_2.addWidget(self.motorRPMLCD)
         self.controlLayout.addLayout(self.horizontalLayout_2)
-        self.label_12 = QtWidgets.QLabel(self.controlWidget)
+        spacerItem3 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.controlLayout.addItem(spacerItem3)
+        self.gridLayout_2.addWidget(self.controlWidget, 0, 0, 1, 1)
+        self.sensorWidget = QtWidgets.QWidget(self.controlTab)
+        self.sensorWidget.setStyleSheet("QWidget#sensorWidget\n"
+"{\n"
+"  background-color: rgb(0, 0, 0,80);\n"
+"  color: rgb(220,220,220);\n"
+"  font-size: 11px;\n"
+"  outline: none;\n"
+"opacity: 0.5;\n"
+"}\n"
+"\n"
+"/**** QWidget (disabled) ****/\n"
+"QWidget:disabled\n"
+"{\n"
+"  color: rgb(40,40,40);\n"
+"}")
+        self.sensorWidget.setObjectName("sensorWidget")
+        self.verticalLayout = QtWidgets.QVBoxLayout(self.sensorWidget)
+        self.verticalLayout.setSizeConstraint(QtWidgets.QLayout.SetMinimumSize)
+        self.verticalLayout.setContentsMargins(11, 11, 11, 11)
+        self.verticalLayout.setSpacing(6)
+        self.verticalLayout.setObjectName("verticalLayout")
+        self.label_8 = QtWidgets.QLabel(self.sensorWidget)
+        self.label_8.setObjectName("label_8")
+        self.verticalLayout.addWidget(self.label_8)
+        self.line_4 = QtWidgets.QFrame(self.sensorWidget)
+        self.line_4.setFrameShape(QtWidgets.QFrame.HLine)
+        self.line_4.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line_4.setObjectName("line_4")
+        self.verticalLayout.addWidget(self.line_4)
+        self.pressureLayout = QtWidgets.QHBoxLayout()
+        self.pressureLayout.setSpacing(6)
+        self.pressureLayout.setObjectName("pressureLayout")
+        self.verticalLayout.addLayout(self.pressureLayout)
+        self.gridLayout_6 = QtWidgets.QGridLayout()
+        self.gridLayout_6.setSpacing(6)
+        self.gridLayout_6.setObjectName("gridLayout_6")
+        self.proxRadio2 = QtWidgets.QRadioButton(self.sensorWidget)
+        self.proxRadio2.setStyleSheet("QRadioButton::indicator {width: 15px; height: 15px; border-radius: 7px;} QRadioButton::indicator:unchecked { background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                    stop: 0 rgb(200,50,50), stop: 1 rgb(145,5,5));\n"
+"\n"
+"border: 2px solid gray;}")
+        self.proxRadio2.setText("")
+        self.proxRadio2.setCheckable(False)
+        self.proxRadio2.setObjectName("proxRadio2")
+        self.gridLayout_6.addWidget(self.proxRadio2, 2, 1, 1, 1)
+        self.s1MSLabel = QtWidgets.QLabel(self.sensorWidget)
+        self.s1MSLabel.setObjectName("s1MSLabel")
+        self.gridLayout_6.addWidget(self.s1MSLabel, 1, 0, 1, 1)
+        self.proxRadio5 = QtWidgets.QRadioButton(self.sensorWidget)
+        self.proxRadio5.setStyleSheet("QRadioButton::indicator {width: 15px; height: 15px; border-radius: 7px;} QRadioButton::indicator:unchecked { background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                    stop: 0 rgb(200,50,50), stop: 1 rgb(145,5,5));\n"
+"\n"
+"border: 2px solid gray;}")
+        self.proxRadio5.setText("")
+        self.proxRadio5.setCheckable(False)
+        self.proxRadio5.setObjectName("proxRadio5")
+        self.gridLayout_6.addWidget(self.proxRadio5, 3, 1, 1, 1)
+        self.label_10 = QtWidgets.QLabel(self.sensorWidget)
+        self.label_10.setObjectName("label_10")
+        self.gridLayout_6.addWidget(self.label_10, 2, 0, 1, 1)
+        self.label_17 = QtWidgets.QLabel(self.sensorWidget)
+        self.label_17.setEnabled(False)
+        self.label_17.setObjectName("label_17")
+        self.gridLayout_6.addWidget(self.label_17, 3, 0, 1, 1)
+        self.proxRadio1 = QtWidgets.QRadioButton(self.sensorWidget)
+        self.proxRadio1.setStyleSheet("QRadioButton::indicator {width: 15px; height: 15px; border-radius: 7px;} QRadioButton::indicator:unchecked {\n"
+"background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                    stop: 0 rgb(0, 242, 0), stop: 1 rgb(0, 170, 0));\n"
+"border: 2px solid gray;}")
+        self.proxRadio1.setText("")
+        self.proxRadio1.setCheckable(False)
+        self.proxRadio1.setObjectName("proxRadio1")
+        self.gridLayout_6.addWidget(self.proxRadio1, 1, 1, 1, 1)
+        self.load1LCD = QtWidgets.QLCDNumber(self.sensorWidget)
+        self.load1LCD.setStyleSheet("QLCDNumber\n"
+"{\n"
+"  background-color: rgb(40,40,40);\n"
+"  border: 1px solid rgb(20,20,20);\n"
+"}\n"
+"\n"
+"/**** QLCDNumber (disabled) ****/\n"
+"QLCDNumber:disabled\n"
+"{\n"
+"  background-color: rgb(120,120,120);\n"
+"  border: 1px solid rgb(60,60,60);\n"
+"}")
+        self.load1LCD.setDigitCount(8)
+        self.load1LCD.setMode(QtWidgets.QLCDNumber.Dec)
+        self.load1LCD.setProperty("value", 0.0)
+        self.load1LCD.setObjectName("load1LCD")
+        self.gridLayout_6.addWidget(self.load1LCD, 2, 3, 1, 1)
+        self.label_6 = QtWidgets.QLabel(self.sensorWidget)
+        self.label_6.setStyleSheet("QLabel\n"
+"{\n"
+"  background-color: transparent;\n"
+"  color: rgb(220,220,220);\n"
+"  padding: 4px;\n"
+"}\n"
+"\n"
+"/**** QLabel (disabled) ****/\n"
+"QLabel\n"
+"{\n"
+"}")
+        self.label_6.setObjectName("label_6")
+        self.gridLayout_6.addWidget(self.label_6, 1, 2, 1, 1)
+        self.pressureLCD1 = QtWidgets.QLCDNumber(self.sensorWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.pressureLCD1.sizePolicy().hasHeightForWidth())
+        self.pressureLCD1.setSizePolicy(sizePolicy)
+        self.pressureLCD1.setStyleSheet("QLCDNumber\n"
+"{\n"
+"  background-color: rgb(40,40,40);\n"
+"  border: 1px solid rgb(20,20,20);\n"
+"}\n"
+"\n"
+"/**** QLCDNumber (disabled) ****/\n"
+"QLCDNumber:disabled\n"
+"{\n"
+"  background-color: rgb(120,120,120);\n"
+"  border: 1px solid rgb(60,60,60);\n"
+"}")
+        self.pressureLCD1.setDigitCount(8)
+        self.pressureLCD1.setObjectName("pressureLCD1")
+        self.gridLayout_6.addWidget(self.pressureLCD1, 1, 3, 1, 1)
+        self.lineEdit = QtWidgets.QLineEdit(self.sensorWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.lineEdit.sizePolicy().hasHeightForWidth())
+        self.lineEdit.setSizePolicy(sizePolicy)
+        self.lineEdit.setStyleSheet("/**** QLineEdit (enabled) ****/\n"
+"QLineEdit\n"
+"{\n"
+"  background-color: rgb(80,80,80);\n"
+"  border: 1px solid rgb(20,20,20);\n"
+"  color: rgb(220,220,220);\n"
+"  padding: 4px;\n"
+"  selection-background-color: rgb(70,110,130);\n"
+"  selection-color: white;\n"
+"}\n"
+"\n"
+"QLineEdit:focus\n"
+"{\n"
+"  border-color: rgb(90,200,255);\n"
+"}\n"
+"\n"
+"/**** QLineEdit (disabled) ****/\n"
+"QLineEdit:disabled\n"
+"{\n"
+"  background-color: rgb(120,120,120);\n"
+"  border-color: rgb(60,60,60);\n"
+"  color: rgb(40,40,40);\n"
+"}")
+        self.lineEdit.setObjectName("lineEdit")
+        self.gridLayout_6.addWidget(self.lineEdit, 3, 3, 1, 1)
+        self.label = QtWidgets.QLabel(self.sensorWidget)
+        self.label.setObjectName("label")
+        self.gridLayout_6.addWidget(self.label, 3, 2, 1, 1)
+        self.sensorBTN = QtWidgets.QPushButton(self.sensorWidget)
+        self.sensorBTN.setStyleSheet("QPushButton\n"
+"{\n"
+"  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                    stop: 0 rgb(120,120,120), stop: 1 rgb(80,80,80));\n"
+"  border: 1px solid rgb(20,20,20);\n"
+"  color: rgb(230,230,230);\n"
+"  padding: 4px 8px;\n"
+"}\n"
+"\n"
+"QPushButton:hover\n"
+"{\n"
+" background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                    stop: 0 rgb(0, 242, 0), stop: 1 rgb(0, 170, 0));\n"
+"}\n"
+"\n"
+"QPushButton:pressed\n"
+"{\n"
+"  border-color: rgb(125,75,0);\n"
+"  padding: 1px -1px -1px 1px;\n"
+"}\n"
+"\n"
+"/**** QPushButton (checkable) ****/\n"
+"QPushButton:checked\n"
+"{\n"
+"  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                    stop: 0 rgb(200,50,50), stop: 1 rgb(145,5,5));\n"
+"  color: rgb(20,20,20);\n"
+"}\n"
+"\n"
+"QPushButton:checked:hover\n"
+"{\n"
+"  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                    stop: 0 rgb(200,50,50), stop: 1 rgb(145,5,5));\n"
+"}\n"
+"\n"
+"/**** QPushButton (disabled) ****/\n"
+"QPushButton:disabled\n"
+"{\n"
+"  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                    stop: 0 rgb(160,160,160), stop: 1 rgb(120,120,120));\n"
+"  border-color: rgb(60,60,60);\n"
+"  color: rgb(40,40,40);\n"
+"}")
+        self.sensorBTN.setCheckable(True)
+        self.sensorBTN.setObjectName("sensorBTN")
+        self.gridLayout_6.addWidget(self.sensorBTN, 4, 0, 1, 3)
+        self.label_3 = QtWidgets.QLabel(self.sensorWidget)
+        self.label_3.setStyleSheet("QLabel\n"
+"{\n"
+"  background-color: transparent;\n"
+"  color: rgb(220,220,220);\n"
+"  padding: 4px;\n"
+"}\n"
+"\n"
+"/**** QLabel (disabled) ****/\n"
+"QLabel\n"
+"{\n"
+"}")
+        self.label_3.setObjectName("label_3")
+        self.gridLayout_6.addWidget(self.label_3, 2, 2, 1, 1)
+        self.verticalLayout.addLayout(self.gridLayout_6)
+        self.label_12 = QtWidgets.QLabel(self.sensorWidget)
         self.label_12.setObjectName("label_12")
-        self.controlLayout.addWidget(self.label_12)
-        self.line_13 = QtWidgets.QFrame(self.controlWidget)
+        self.verticalLayout.addWidget(self.label_12)
+        self.line_13 = QtWidgets.QFrame(self.sensorWidget)
         self.line_13.setFrameShape(QtWidgets.QFrame.HLine)
         self.line_13.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_13.setObjectName("line_13")
-        self.controlLayout.addWidget(self.line_13)
+        self.verticalLayout.addWidget(self.line_13)
         self.horizontalLayout_4 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_4.setSpacing(6)
         self.horizontalLayout_4.setObjectName("horizontalLayout_4")
-        self.newSessionBTN = QtWidgets.QPushButton(self.controlWidget)
+        self.newSessionBTN = QtWidgets.QPushButton(self.sensorWidget)
         self.newSessionBTN.setEnabled(False)
         self.newSessionBTN.setStyleSheet("QPushButton\n"
 "{\n"
@@ -651,7 +926,7 @@ class Ui_MainWindow(object):
 "}")
         self.newSessionBTN.setObjectName("newSessionBTN")
         self.horizontalLayout_4.addWidget(self.newSessionBTN)
-        self.saveSessionBTN = QtWidgets.QPushButton(self.controlWidget)
+        self.saveSessionBTN = QtWidgets.QPushButton(self.sensorWidget)
         self.saveSessionBTN.setEnabled(False)
         self.saveSessionBTN.setStyleSheet("QPushButton\n"
 "{\n"
@@ -696,14 +971,14 @@ class Ui_MainWindow(object):
 "}")
         self.saveSessionBTN.setObjectName("saveSessionBTN")
         self.horizontalLayout_4.addWidget(self.saveSessionBTN)
-        self.controlLayout.addLayout(self.horizontalLayout_4)
+        self.verticalLayout.addLayout(self.horizontalLayout_4)
         self.filePathLayout = QtWidgets.QHBoxLayout()
         self.filePathLayout.setSpacing(6)
         self.filePathLayout.setObjectName("filePathLayout")
-        self.label_14 = QtWidgets.QLabel(self.controlWidget)
+        self.label_14 = QtWidgets.QLabel(self.sensorWidget)
         self.label_14.setObjectName("label_14")
         self.filePathLayout.addWidget(self.label_14)
-        self.fileNameEdit = QtWidgets.QLineEdit(self.controlWidget)
+        self.fileNameEdit = QtWidgets.QLineEdit(self.sensorWidget)
         self.fileNameEdit.setStyleSheet("/**** QLineEdit (enabled) ****/\n"
 "QLineEdit\n"
 "{\n"
@@ -730,18 +1005,40 @@ class Ui_MainWindow(object):
         self.fileNameEdit.setReadOnly(True)
         self.fileNameEdit.setObjectName("fileNameEdit")
         self.filePathLayout.addWidget(self.fileNameEdit)
-        self.controlLayout.addLayout(self.filePathLayout)
-        self.gridLayout.addWidget(self.controlWidget, 5, 1, 1, 1)
-        self.label_2 = QtWidgets.QLabel(self.W1)
-        self.label_2.setStyleSheet("")
-        self.label_2.setObjectName("label_2")
-        self.gridLayout.addWidget(self.label_2, 2, 0, 1, 7)
-        spacerItem5 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout.addItem(spacerItem5, 5, 0, 1, 1)
-        spacerItem6 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Minimum)
-        self.gridLayout.addItem(spacerItem6, 5, 4, 1, 1)
-        self.sensorWidget = QtWidgets.QWidget(self.W1)
-        self.sensorWidget.setStyleSheet("QWidget#sensorWidget\n"
+        self.verticalLayout.addLayout(self.filePathLayout)
+        self.horizontalLayout_9 = QtWidgets.QHBoxLayout()
+        self.horizontalLayout_9.setSpacing(6)
+        self.horizontalLayout_9.setObjectName("horizontalLayout_9")
+        self.verticalLayout.addLayout(self.horizontalLayout_9)
+        spacerItem4 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.verticalLayout.addItem(spacerItem4)
+        self.line_11 = QtWidgets.QFrame(self.sensorWidget)
+        self.line_11.setFrameShape(QtWidgets.QFrame.VLine)
+        self.line_11.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line_11.setObjectName("line_11")
+        self.verticalLayout.addWidget(self.line_11)
+        self.gridLayout_2.addWidget(self.sensorWidget, 0, 2, 1, 1)
+        self.T1.addTab(self.controlTab, "")
+        self.lifeTestTab = QtWidgets.QWidget()
+        self.lifeTestTab.setStyleSheet("QWidget#lifeTestTab{\n"
+"background-color: rgb(80,80,80);\n"
+"background-image:  url(\"C:/Users/chris.antle/Documents/BASF/backgroundDark.jpg\");\n"
+"opacity: 0.5;\n"
+"background-position: center;\n"
+"\n"
+"}")
+        self.lifeTestTab.setObjectName("lifeTestTab")
+        self.gridLayout_3 = QtWidgets.QGridLayout(self.lifeTestTab)
+        self.gridLayout_3.setContentsMargins(11, 11, 11, 11)
+        self.gridLayout_3.setSpacing(6)
+        self.gridLayout_3.setObjectName("gridLayout_3")
+        self.line = QtWidgets.QFrame(self.lifeTestTab)
+        self.line.setFrameShape(QtWidgets.QFrame.VLine)
+        self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line.setObjectName("line")
+        self.gridLayout_3.addWidget(self.line, 0, 1, 1, 1)
+        self.paramWidget = QtWidgets.QWidget(self.lifeTestTab)
+        self.paramWidget.setStyleSheet("QWidget#paramWidget\n"
 "{\n"
 "  background-color: rgb(0, 0, 0,80);\n"
 "  color: rgb(220,220,220);\n"
@@ -755,173 +1052,29 @@ class Ui_MainWindow(object):
 "{\n"
 "  color: rgb(40,40,40);\n"
 "}")
-        self.sensorWidget.setObjectName("sensorWidget")
-        self.verticalLayout = QtWidgets.QVBoxLayout(self.sensorWidget)
-        self.verticalLayout.setSizeConstraint(QtWidgets.QLayout.SetMinimumSize)
-        self.verticalLayout.setContentsMargins(11, 11, 11, 11)
-        self.verticalLayout.setSpacing(6)
-        self.verticalLayout.setObjectName("verticalLayout")
-        self.label_8 = QtWidgets.QLabel(self.sensorWidget)
-        self.label_8.setObjectName("label_8")
-        self.verticalLayout.addWidget(self.label_8)
-        self.line_4 = QtWidgets.QFrame(self.sensorWidget)
-        self.line_4.setFrameShape(QtWidgets.QFrame.HLine)
-        self.line_4.setFrameShadow(QtWidgets.QFrame.Sunken)
-        self.line_4.setObjectName("line_4")
-        self.verticalLayout.addWidget(self.line_4)
-        self.label_15 = QtWidgets.QLabel(self.sensorWidget)
-        self.label_15.setObjectName("label_15")
-        self.verticalLayout.addWidget(self.label_15)
-        self.pressureLayout = QtWidgets.QHBoxLayout()
-        self.pressureLayout.setSpacing(6)
-        self.pressureLayout.setObjectName("pressureLayout")
-        self.label_6 = QtWidgets.QLabel(self.sensorWidget)
-        self.label_6.setStyleSheet("QLabel\n"
-"{\n"
-"  background-color: transparent;\n"
-"  color: rgb(220,220,220);\n"
-"  padding: 4px;\n"
-"}\n"
-"\n"
-"/**** QLabel (disabled) ****/\n"
-"QLabel\n"
-"{\n"
-"}")
-        self.label_6.setObjectName("label_6")
-        self.pressureLayout.addWidget(self.label_6)
-        self.pressureLCD1 = QtWidgets.QLCDNumber(self.sensorWidget)
-        self.pressureLCD1.setStyleSheet("QLCDNumber\n"
-"{\n"
-"  background-color: rgb(40,40,40);\n"
-"  border: 1px solid rgb(20,20,20);\n"
-"}\n"
-"\n"
-"/**** QLCDNumber (disabled) ****/\n"
-"QLCDNumber:disabled\n"
-"{\n"
-"  background-color: rgb(120,120,120);\n"
-"  border: 1px solid rgb(60,60,60);\n"
-"}")
-        self.pressureLCD1.setDigitCount(2)
-        self.pressureLCD1.setObjectName("pressureLCD1")
-        self.pressureLayout.addWidget(self.pressureLCD1)
-        self.label_3 = QtWidgets.QLabel(self.sensorWidget)
-        self.label_3.setStyleSheet("QLabel\n"
-"{\n"
-"  background-color: transparent;\n"
-"  color: rgb(220,220,220);\n"
-"  padding: 4px;\n"
-"}\n"
-"\n"
-"/**** QLabel (disabled) ****/\n"
-"QLabel\n"
-"{\n"
-"}")
-        self.label_3.setObjectName("label_3")
-        self.pressureLayout.addWidget(self.label_3)
-        self.pressureLCD2 = QtWidgets.QLCDNumber(self.sensorWidget)
-        font = QtGui.QFont()
-        font.setPointSize(8)
-        self.pressureLCD2.setFont(font)
-        self.pressureLCD2.setStyleSheet("QLCDNumber\n"
-"{\n"
-"  background-color: rgb(40,40,40);\n"
-"  border: 1px solid rgb(20,20,20);\n"
-"}\n"
-"\n"
-"/**** QLCDNumber (disabled) ****/\n"
-"QLCDNumber:disabled\n"
-"{\n"
-"  background-color: rgb(120,120,120);\n"
-"  border: 1px solid rgb(60,60,60);\n"
-"}")
-        self.pressureLCD2.setDigitCount(2)
-        self.pressureLCD2.setObjectName("pressureLCD2")
-        self.pressureLayout.addWidget(self.pressureLCD2)
-        self.verticalLayout.addLayout(self.pressureLayout)
-        self.label_19 = QtWidgets.QLabel(self.sensorWidget)
-        self.label_19.setObjectName("label_19")
-        self.verticalLayout.addWidget(self.label_19)
-        self.horizontalLayout_8 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_8.setSpacing(6)
-        self.horizontalLayout_8.setObjectName("horizontalLayout_8")
-        self.label_18 = QtWidgets.QLabel(self.sensorWidget)
-        self.label_18.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.label_18.setObjectName("label_18")
-        self.horizontalLayout_8.addWidget(self.label_18)
-        self.load1LCD = QtWidgets.QLCDNumber(self.sensorWidget)
-        self.load1LCD.setStyleSheet("QLCDNumber\n"
-"{\n"
-"  background-color: rgb(40,40,40);\n"
-"  border: 1px solid rgb(20,20,20);\n"
-"}\n"
-"\n"
-"/**** QLCDNumber (disabled) ****/\n"
-"QLCDNumber:disabled\n"
-"{\n"
-"  background-color: rgb(120,120,120);\n"
-"  border: 1px solid rgb(60,60,60);\n"
-"}")
-        self.load1LCD.setDigitCount(2)
-        self.load1LCD.setMode(QtWidgets.QLCDNumber.Dec)
-        self.load1LCD.setProperty("value", 0.0)
-        self.load1LCD.setObjectName("load1LCD")
-        self.horizontalLayout_8.addWidget(self.load1LCD)
-        self.verticalLayout.addLayout(self.horizontalLayout_8)
-        self.label_16 = QtWidgets.QLabel(self.sensorWidget)
-        self.label_16.setObjectName("label_16")
-        self.verticalLayout.addWidget(self.label_16)
-        self.horizontalLayout_7 = QtWidgets.QHBoxLayout()
-        self.horizontalLayout_7.setSpacing(6)
-        self.horizontalLayout_7.setObjectName("horizontalLayout_7")
-        self.s1MSLabel = QtWidgets.QLabel(self.sensorWidget)
-        self.s1MSLabel.setObjectName("s1MSLabel")
-        self.horizontalLayout_7.addWidget(self.s1MSLabel)
-        self.proxRadio1 = QtWidgets.QRadioButton(self.sensorWidget)
-        self.proxRadio1.setStyleSheet("QRadioButton::indicator {width: 15px; height: 15px; border-radius: 7px;} QRadioButton::indicator:unchecked {\n"
-"background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                    stop: 0 rgb(0, 242, 0), stop: 1 rgb(0, 170, 0));\n"
-"border: 2px solid gray;}")
-        self.proxRadio1.setText("")
-        self.proxRadio1.setCheckable(False)
-        self.proxRadio1.setObjectName("proxRadio1")
-        self.horizontalLayout_7.addWidget(self.proxRadio1)
-        self.line = QtWidgets.QFrame(self.sensorWidget)
-        self.line.setFrameShape(QtWidgets.QFrame.HLine)
-        self.line.setFrameShadow(QtWidgets.QFrame.Sunken)
-        self.line.setObjectName("line")
-        self.horizontalLayout_7.addWidget(self.line)
-        self.label_10 = QtWidgets.QLabel(self.sensorWidget)
-        self.label_10.setObjectName("label_10")
-        self.horizontalLayout_7.addWidget(self.label_10)
-        self.proxRadio2 = QtWidgets.QRadioButton(self.sensorWidget)
-        self.proxRadio2.setStyleSheet("QRadioButton::indicator {width: 15px; height: 15px; border-radius: 7px;} QRadioButton::indicator:unchecked { background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                    stop: 0 rgb(200,50,50), stop: 1 rgb(145,5,5));\n"
-"\n"
-"border: 2px solid gray;}")
-        self.proxRadio2.setText("")
-        self.proxRadio2.setCheckable(False)
-        self.proxRadio2.setObjectName("proxRadio2")
-        self.horizontalLayout_7.addWidget(self.proxRadio2)
-        self.label_17 = QtWidgets.QLabel(self.sensorWidget)
-        self.label_17.setEnabled(False)
-        self.label_17.setObjectName("label_17")
-        self.horizontalLayout_7.addWidget(self.label_17)
-        self.proxRadio5 = QtWidgets.QRadioButton(self.sensorWidget)
-        self.proxRadio5.setStyleSheet("QRadioButton::indicator {width: 15px; height: 15px; border-radius: 7px;} QRadioButton::indicator:unchecked { background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                    stop: 0 rgb(200,50,50), stop: 1 rgb(145,5,5));\n"
-"\n"
-"border: 2px solid gray;}")
-        self.proxRadio5.setText("")
-        self.proxRadio5.setCheckable(False)
-        self.proxRadio5.setObjectName("proxRadio5")
-        self.horizontalLayout_7.addWidget(self.proxRadio5)
-        spacerItem7 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
-        self.horizontalLayout_7.addItem(spacerItem7)
-        self.verticalLayout.addLayout(self.horizontalLayout_7)
-        self.s1MSLineEdit = QtWidgets.QLineEdit(self.sensorWidget)
-        self.s1MSLineEdit.setEnabled(True)
-        self.s1MSLineEdit.setStyleSheet("/**** QLineEdit (enabled) ****/\n"
+        self.paramWidget.setObjectName("paramWidget")
+        self.cycleParameters = QtWidgets.QVBoxLayout(self.paramWidget)
+        self.cycleParameters.setContentsMargins(11, 11, 11, 11)
+        self.cycleParameters.setSpacing(6)
+        self.cycleParameters.setObjectName("cycleParameters")
+        self.label_20 = QtWidgets.QLabel(self.paramWidget)
+        self.label_20.setObjectName("label_20")
+        self.cycleParameters.addWidget(self.label_20)
+        self.line_3 = QtWidgets.QFrame(self.paramWidget)
+        self.line_3.setFrameShape(QtWidgets.QFrame.HLine)
+        self.line_3.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line_3.setObjectName("line_3")
+        self.cycleParameters.addWidget(self.line_3)
+        self.gridLayout_5 = QtWidgets.QGridLayout()
+        self.gridLayout_5.setSpacing(6)
+        self.gridLayout_5.setObjectName("gridLayout_5")
+        self.runTimeEdit = QtWidgets.QLineEdit(self.paramWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.runTimeEdit.sizePolicy().hasHeightForWidth())
+        self.runTimeEdit.setSizePolicy(sizePolicy)
+        self.runTimeEdit.setStyleSheet("/**** QLineEdit (enabled) ****/\n"
 "QLineEdit\n"
 "{\n"
 "  background-color: rgb(80,80,80);\n"
@@ -940,31 +1093,303 @@ class Ui_MainWindow(object):
 "/**** QLineEdit (disabled) ****/\n"
 "QLineEdit:disabled\n"
 "{\n"
-"  background-color: rgb(200, 200, 200);\n"
+"  background-color: rgb(120,120,120);\n"
 "  border-color: rgb(60,60,60);\n"
-"  color: rgb(200, 200, 200);\n"
+"  color: rgb(40,40,40);\n"
 "}")
-        self.s1MSLineEdit.setObjectName("s1MSLineEdit")
-        self.verticalLayout.addWidget(self.s1MSLineEdit)
-        self.buttonBox = QtWidgets.QDialogButtonBox(self.sensorWidget)
-        self.buttonBox.setEnabled(False)
-        self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Close|QtWidgets.QDialogButtonBox.Reset)
-        self.buttonBox.setCenterButtons(True)
-        self.buttonBox.setObjectName("buttonBox")
-        self.verticalLayout.addWidget(self.buttonBox)
-        spacerItem8 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
-        self.verticalLayout.addItem(spacerItem8)
-        self.line_11 = QtWidgets.QFrame(self.sensorWidget)
-        self.line_11.setFrameShape(QtWidgets.QFrame.VLine)
-        self.line_11.setFrameShadow(QtWidgets.QFrame.Sunken)
-        self.line_11.setObjectName("line_11")
-        self.verticalLayout.addWidget(self.line_11)
-        self.gridLayout.addWidget(self.sensorWidget, 5, 5, 1, 1)
-        self.verticalLayout_4 = QtWidgets.QVBoxLayout()
-        self.verticalLayout_4.setSpacing(6)
-        self.verticalLayout_4.setObjectName("verticalLayout_4")
-        self.plotWidget = PlotWidget(self.W1)
-        self.plotWidget.setStyleSheet("QWidget#plotWidget\n"
+        self.runTimeEdit.setObjectName("runTimeEdit")
+        self.gridLayout_5.addWidget(self.runTimeEdit, 0, 1, 1, 1)
+        self.label_21 = QtWidgets.QLabel(self.paramWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_21.sizePolicy().hasHeightForWidth())
+        self.label_21.setSizePolicy(sizePolicy)
+        self.label_21.setObjectName("label_21")
+        self.gridLayout_5.addWidget(self.label_21, 1, 0, 1, 1)
+        self.label_2 = QtWidgets.QLabel(self.paramWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_2.sizePolicy().hasHeightForWidth())
+        self.label_2.setSizePolicy(sizePolicy)
+        self.label_2.setObjectName("label_2")
+        self.gridLayout_5.addWidget(self.label_2, 1, 2, 1, 1)
+        self.RPMoutEdit = QtWidgets.QLineEdit(self.paramWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.RPMoutEdit.sizePolicy().hasHeightForWidth())
+        self.RPMoutEdit.setSizePolicy(sizePolicy)
+        self.RPMoutEdit.setStyleSheet("/**** QLineEdit (enabled) ****/\n"
+"QLineEdit\n"
+"{\n"
+"  background-color: rgb(80,80,80);\n"
+"  border: 1px solid rgb(20,20,20);\n"
+"  color: rgb(220,220,220);\n"
+"  padding: 4px;\n"
+"  selection-background-color: rgb(70,110,130);\n"
+"  selection-color: white;\n"
+"}\n"
+"\n"
+"QLineEdit:focus\n"
+"{\n"
+"  border-color: rgb(90,200,255);\n"
+"}\n"
+"\n"
+"/**** QLineEdit (disabled) ****/\n"
+"QLineEdit:disabled\n"
+"{\n"
+"  background-color: rgb(120,120,120);\n"
+"  border-color: rgb(60,60,60);\n"
+"  color: rgb(40,40,40);\n"
+"}")
+        self.RPMoutEdit.setObjectName("RPMoutEdit")
+        self.gridLayout_5.addWidget(self.RPMoutEdit, 2, 1, 1, 1)
+        self.label_24 = QtWidgets.QLabel(self.paramWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_24.sizePolicy().hasHeightForWidth())
+        self.label_24.setSizePolicy(sizePolicy)
+        self.label_24.setObjectName("label_24")
+        self.gridLayout_5.addWidget(self.label_24, 0, 2, 1, 1)
+        self.label_23 = QtWidgets.QLabel(self.paramWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_23.sizePolicy().hasHeightForWidth())
+        self.label_23.setSizePolicy(sizePolicy)
+        self.label_23.setObjectName("label_23")
+        self.gridLayout_5.addWidget(self.label_23, 0, 0, 1, 1)
+        self.forceCutOffEdit = QtWidgets.QLineEdit(self.paramWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.forceCutOffEdit.sizePolicy().hasHeightForWidth())
+        self.forceCutOffEdit.setSizePolicy(sizePolicy)
+        self.forceCutOffEdit.setStyleSheet("/**** QLineEdit (enabled) ****/\n"
+"QLineEdit\n"
+"{\n"
+"  background-color: rgb(80,80,80);\n"
+"  border: 1px solid rgb(20,20,20);\n"
+"  color: rgb(220,220,220);\n"
+"  padding: 4px;\n"
+"  selection-background-color: rgb(70,110,130);\n"
+"  selection-color: white;\n"
+"}\n"
+"\n"
+"QLineEdit:focus\n"
+"{\n"
+"  border-color: rgb(90,200,255);\n"
+"}\n"
+"\n"
+"/**** QLineEdit (disabled) ****/\n"
+"QLineEdit:disabled\n"
+"{\n"
+"  background-color: rgb(120,120,120);\n"
+"  border-color: rgb(60,60,60);\n"
+"  color: rgb(40,40,40);\n"
+"}")
+        self.forceCutOffEdit.setObjectName("forceCutOffEdit")
+        self.gridLayout_5.addWidget(self.forceCutOffEdit, 0, 3, 1, 1)
+        self.stepsOutEdit = QtWidgets.QLineEdit(self.paramWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.stepsOutEdit.sizePolicy().hasHeightForWidth())
+        self.stepsOutEdit.setSizePolicy(sizePolicy)
+        self.stepsOutEdit.setStyleSheet("/**** QLineEdit (enabled) ****/\n"
+"QLineEdit\n"
+"{\n"
+"  background-color: rgb(80,80,80);\n"
+"  border: 1px solid rgb(20,20,20);\n"
+"  color: rgb(220,220,220);\n"
+"  padding: 4px;\n"
+"  selection-background-color: rgb(70,110,130);\n"
+"  selection-color: white;\n"
+"}\n"
+"\n"
+"QLineEdit:focus\n"
+"{\n"
+"  border-color: rgb(90,200,255);\n"
+"}\n"
+"\n"
+"/**** QLineEdit (disabled) ****/\n"
+"QLineEdit:disabled\n"
+"{\n"
+"  background-color: rgb(120,120,120);\n"
+"  border-color: rgb(60,60,60);\n"
+"  color: rgb(40,40,40);\n"
+"}")
+        self.stepsOutEdit.setObjectName("stepsOutEdit")
+        self.gridLayout_5.addWidget(self.stepsOutEdit, 1, 1, 1, 1)
+        self.label_22 = QtWidgets.QLabel(self.paramWidget)
+        self.label_22.setObjectName("label_22")
+        self.gridLayout_5.addWidget(self.label_22, 2, 0, 1, 1)
+        self.label_25 = QtWidgets.QLabel(self.paramWidget)
+        self.label_25.setObjectName("label_25")
+        self.gridLayout_5.addWidget(self.label_25, 2, 2, 1, 1)
+        self.RPMinEdit = QtWidgets.QLineEdit(self.paramWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.RPMinEdit.sizePolicy().hasHeightForWidth())
+        self.RPMinEdit.setSizePolicy(sizePolicy)
+        self.RPMinEdit.setStyleSheet("/**** QLineEdit (enabled) ****/\n"
+"QLineEdit\n"
+"{\n"
+"  background-color: rgb(80,80,80);\n"
+"  border: 1px solid rgb(20,20,20);\n"
+"  color: rgb(220,220,220);\n"
+"  padding: 4px;\n"
+"  selection-background-color: rgb(70,110,130);\n"
+"  selection-color: white;\n"
+"}\n"
+"\n"
+"QLineEdit:focus\n"
+"{\n"
+"  border-color: rgb(90,200,255);\n"
+"}\n"
+"\n"
+"/**** QLineEdit (disabled) ****/\n"
+"QLineEdit:disabled\n"
+"{\n"
+"  background-color: rgb(120,120,120);\n"
+"  border-color: rgb(60,60,60);\n"
+"  color: rgb(40,40,40);\n"
+"}")
+        self.RPMinEdit.setObjectName("RPMinEdit")
+        self.gridLayout_5.addWidget(self.RPMinEdit, 2, 3, 1, 1)
+        self.stepsInEdit = QtWidgets.QLineEdit(self.paramWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.stepsInEdit.sizePolicy().hasHeightForWidth())
+        self.stepsInEdit.setSizePolicy(sizePolicy)
+        self.stepsInEdit.setStyleSheet("/**** QLineEdit (enabled) ****/\n"
+"QLineEdit\n"
+"{\n"
+"  background-color: rgb(80,80,80);\n"
+"  border: 1px solid rgb(20,20,20);\n"
+"  color: rgb(220,220,220);\n"
+"  padding: 4px;\n"
+"  selection-background-color: rgb(70,110,130);\n"
+"  selection-color: white;\n"
+"}\n"
+"\n"
+"QLineEdit:focus\n"
+"{\n"
+"  border-color: rgb(90,200,255);\n"
+"}\n"
+"\n"
+"/**** QLineEdit (disabled) ****/\n"
+"QLineEdit:disabled\n"
+"{\n"
+"  background-color: rgb(120,120,120);\n"
+"  border-color: rgb(60,60,60);\n"
+"  color: rgb(40,40,40);\n"
+"}")
+        self.stepsInEdit.setObjectName("stepsInEdit")
+        self.gridLayout_5.addWidget(self.stepsInEdit, 1, 3, 1, 1)
+        spacerItem5 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.gridLayout_5.addItem(spacerItem5, 4, 1, 1, 1)
+        self.paramSaveEdit = QtWidgets.QPushButton(self.paramWidget)
+        self.paramSaveEdit.setStyleSheet("QPushButton\n"
+"{\n"
+"  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                    stop: 0 rgb(120,120,120), stop: 1 rgb(80,80,80));\n"
+"  border: 1px solid rgb(20,20,20);\n"
+"  color: rgb(230,230,230);\n"
+"  padding: 4px 8px;\n"
+"}\n"
+"\n"
+"QPushButton:hover\n"
+"{\n"
+" background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                    stop: 0 rgb(0, 242, 0), stop: 1 rgb(0, 170, 0));\n"
+"}\n"
+"\n"
+"QPushButton:pressed\n"
+"{\n"
+"  border-color: rgb(125,75,0);\n"
+"  padding: 1px -1px -1px 1px;\n"
+"}\n"
+"\n"
+"/**** QPushButton (checkable) ****/\n"
+"QPushButton:checked\n"
+"{\n"
+"  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                    stop: 0 rgb(200,50,50), stop: 1 rgb(145,5,5));\n"
+"  color: rgb(20,20,20);\n"
+"}\n"
+"\n"
+"QPushButton:checked:hover\n"
+"{\n"
+"  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                    stop: 0 rgb(200,50,50), stop: 1 rgb(145,5,5));\n"
+"}\n"
+"\n"
+"/**** QPushButton (disabled) ****/\n"
+"QPushButton:disabled\n"
+"{\n"
+"  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                    stop: 0 rgb(160,160,160), stop: 1 rgb(120,120,120));\n"
+"  border-color: rgb(60,60,60);\n"
+"  color: rgb(40,40,40);\n"
+"}")
+        self.paramSaveEdit.setObjectName("paramSaveEdit")
+        self.gridLayout_5.addWidget(self.paramSaveEdit, 3, 0, 1, 2)
+        self.paramClearEdit = QtWidgets.QPushButton(self.paramWidget)
+        self.paramClearEdit.setStyleSheet("QPushButton\n"
+"{\n"
+"  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                    stop: 0 rgb(120,120,120), stop: 1 rgb(80,80,80));\n"
+"  border: 1px solid rgb(20,20,20);\n"
+"  color: rgb(230,230,230);\n"
+"  padding: 4px 8px;\n"
+"}\n"
+"\n"
+"QPushButton:hover\n"
+"{\n"
+" background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                    stop: 0 rgb(0, 242, 0), stop: 1 rgb(0, 170, 0));\n"
+"}\n"
+"\n"
+"QPushButton:pressed\n"
+"{\n"
+"  border-color: rgb(125,75,0);\n"
+"  padding: 1px -1px -1px 1px;\n"
+"}\n"
+"\n"
+"/**** QPushButton (checkable) ****/\n"
+"QPushButton:checked\n"
+"{\n"
+"  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                    stop: 0 rgb(200,50,50), stop: 1 rgb(145,5,5));\n"
+"  color: rgb(20,20,20);\n"
+"}\n"
+"\n"
+"QPushButton:checked:hover\n"
+"{\n"
+"  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                    stop: 0 rgb(200,50,50), stop: 1 rgb(145,5,5));\n"
+"}\n"
+"\n"
+"/**** QPushButton (disabled) ****/\n"
+"QPushButton:disabled\n"
+"{\n"
+"  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                    stop: 0 rgb(160,160,160), stop: 1 rgb(120,120,120));\n"
+"  border-color: rgb(60,60,60);\n"
+"  color: rgb(40,40,40);\n"
+"}")
+        self.paramClearEdit.setObjectName("paramClearEdit")
+        self.gridLayout_5.addWidget(self.paramClearEdit, 3, 2, 1, 2)
+        self.cycleParameters.addLayout(self.gridLayout_5)
+        self.gridLayout_3.addWidget(self.paramWidget, 0, 0, 1, 1)
+        self.statusWidget = QtWidgets.QWidget(self.lifeTestTab)
+        self.statusWidget.setStyleSheet("QWidget#statusWidget\n"
 "{\n"
 "  background-color: rgb(0, 0, 0,80);\n"
 "  color: rgb(220,220,220);\n"
@@ -978,13 +1403,238 @@ class Ui_MainWindow(object):
 "{\n"
 "  color: rgb(40,40,40);\n"
 "}")
-        self.plotWidget.setObjectName("plotWidget")
-        self.verticalLayout_4.addWidget(self.plotWidget)
-        self.gridLayout.addLayout(self.verticalLayout_4, 7, 1, 1, 5)
-        self.verticalLayout_2 = QtWidgets.QVBoxLayout()
-        self.verticalLayout_2.setSpacing(6)
-        self.verticalLayout_2.setObjectName("verticalLayout_2")
-        self.gridLayout.addLayout(self.verticalLayout_2, 1, 1, 1, 5)
+        self.statusWidget.setObjectName("statusWidget")
+        self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.statusWidget)
+        self.verticalLayout_3.setContentsMargins(11, 11, 11, 11)
+        self.verticalLayout_3.setSpacing(6)
+        self.verticalLayout_3.setObjectName("verticalLayout_3")
+        self.label_26 = QtWidgets.QLabel(self.statusWidget)
+        self.label_26.setObjectName("label_26")
+        self.verticalLayout_3.addWidget(self.label_26)
+        self.line_7 = QtWidgets.QFrame(self.statusWidget)
+        self.line_7.setFrameShape(QtWidgets.QFrame.HLine)
+        self.line_7.setFrameShadow(QtWidgets.QFrame.Sunken)
+        self.line_7.setObjectName("line_7")
+        self.verticalLayout_3.addWidget(self.line_7)
+        self.progressBar = QtWidgets.QProgressBar(self.statusWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.progressBar.sizePolicy().hasHeightForWidth())
+        self.progressBar.setSizePolicy(sizePolicy)
+        self.progressBar.setStyleSheet("QProgressBar\n"
+"{\n"
+"  background-color: rgb(40,40,40);\n"
+"  background-color: rgb(140,80,10,20);\n"
+"  border: 1px solid rgb(20,20,20);\n"
+"  color: rgb(220,220,220);\n"
+"  text-align: center;\n"
+"}\n"
+"\n"
+"QProgressBar::chunk\n"
+"{\n"
+"  background-color: rgb(30,185,15);\n"
+"  margin: 1px;\n"
+"  width: 4px;\n"
+"}\n"
+"\n"
+"/**** QProgressBar (disabled) ****/\n"
+"QProgressBar:disabled\n"
+"{\n"
+"  background-color: rgb(120,120,120);\n"
+"  border: 1px solid rgb(60,60,60);\n"
+"  color: rgb(40,40,40);\n"
+"}")
+        self.progressBar.setProperty("value", 24)
+        self.progressBar.setObjectName("progressBar")
+        self.verticalLayout_3.addWidget(self.progressBar)
+        self.gridLayout_4 = QtWidgets.QGridLayout()
+        self.gridLayout_4.setSpacing(6)
+        self.gridLayout_4.setObjectName("gridLayout_4")
+        self.label_30 = QtWidgets.QLabel(self.statusWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_30.sizePolicy().hasHeightForWidth())
+        self.label_30.setSizePolicy(sizePolicy)
+        self.label_30.setObjectName("label_30")
+        self.gridLayout_4.addWidget(self.label_30, 5, 0, 1, 1)
+        self.label_31 = QtWidgets.QLabel(self.statusWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_31.sizePolicy().hasHeightForWidth())
+        self.label_31.setSizePolicy(sizePolicy)
+        self.label_31.setObjectName("label_31")
+        self.gridLayout_4.addWidget(self.label_31, 6, 0, 1, 1)
+        self.lcdNumber_2 = QtWidgets.QLCDNumber(self.statusWidget)
+        self.lcdNumber_2.setObjectName("lcdNumber_2")
+        self.gridLayout_4.addWidget(self.lcdNumber_2, 5, 3, 1, 1)
+        self.radioButton_2 = QtWidgets.QRadioButton(self.statusWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.radioButton_2.sizePolicy().hasHeightForWidth())
+        self.radioButton_2.setSizePolicy(sizePolicy)
+        self.radioButton_2.setStyleSheet("QRadioButton::indicator {width: 15px; height: 15px; border-radius: 7px;} QRadioButton::indicator:unchecked {\n"
+"background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                    stop: 0 rgb(0, 242, 0), stop: 1 rgb(0, 170, 0));\n"
+"border: 2px solid gray;}")
+        self.radioButton_2.setText("")
+        self.radioButton_2.setObjectName("radioButton_2")
+        self.gridLayout_4.addWidget(self.radioButton_2, 5, 1, 1, 1)
+        self.label_29 = QtWidgets.QLabel(self.statusWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_29.sizePolicy().hasHeightForWidth())
+        self.label_29.setSizePolicy(sizePolicy)
+        self.label_29.setObjectName("label_29")
+        self.gridLayout_4.addWidget(self.label_29, 4, 0, 1, 1)
+        self.label_28 = QtWidgets.QLabel(self.statusWidget)
+        self.label_28.setObjectName("label_28")
+        self.gridLayout_4.addWidget(self.label_28, 5, 2, 1, 1)
+        spacerItem6 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
+        self.gridLayout_4.addItem(spacerItem6, 10, 0, 1, 1)
+        self.radioButton_3 = QtWidgets.QRadioButton(self.statusWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.radioButton_3.sizePolicy().hasHeightForWidth())
+        self.radioButton_3.setSizePolicy(sizePolicy)
+        self.radioButton_3.setStyleSheet("QRadioButton::indicator {width: 15px; height: 15px; border-radius: 7px;} QRadioButton::indicator:unchecked {\n"
+"background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                    stop: 0 rgb(0, 242, 0), stop: 1 rgb(0, 170, 0));\n"
+"border: 2px solid gray;}")
+        self.radioButton_3.setText("")
+        self.radioButton_3.setObjectName("radioButton_3")
+        self.gridLayout_4.addWidget(self.radioButton_3, 6, 1, 1, 1)
+        self.lcdNumber = QtWidgets.QLCDNumber(self.statusWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Minimum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.lcdNumber.sizePolicy().hasHeightForWidth())
+        self.lcdNumber.setSizePolicy(sizePolicy)
+        self.lcdNumber.setObjectName("lcdNumber")
+        self.gridLayout_4.addWidget(self.lcdNumber, 4, 3, 1, 1)
+        self.pushButton_4 = QtWidgets.QPushButton(self.statusWidget)
+        self.pushButton_4.setStyleSheet("QPushButton\n"
+"{\n"
+"  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                    stop: 0 rgb(120,120,120), stop: 1 rgb(80,80,80));\n"
+"  border: 1px solid rgb(20,20,20);\n"
+"  color: rgb(230,230,230);\n"
+"  padding: 4px 8px;\n"
+"}\n"
+"\n"
+"QPushButton:hover\n"
+"{\n"
+" background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                    stop: 0 rgb(0, 242, 0), stop: 1 rgb(0, 170, 0));\n"
+"}\n"
+"\n"
+"QPushButton:pressed\n"
+"{\n"
+"  border-color: rgb(125,75,0);\n"
+"  padding: 1px -1px -1px 1px;\n"
+"}\n"
+"\n"
+"/**** QPushButton (checkable) ****/\n"
+"QPushButton:checked\n"
+"{\n"
+"  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                    stop: 0 rgb(200,50,50), stop: 1 rgb(145,5,5));\n"
+"  color: rgb(20,20,20);\n"
+"}\n"
+"\n"
+"QPushButton:checked:hover\n"
+"{\n"
+"  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                    stop: 0 rgb(200,50,50), stop: 1 rgb(145,5,5));\n"
+"}\n"
+"\n"
+"/**** QPushButton (disabled) ****/\n"
+"QPushButton:disabled\n"
+"{\n"
+"  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                    stop: 0 rgb(160,160,160), stop: 1 rgb(120,120,120));\n"
+"  border-color: rgb(60,60,60);\n"
+"  color: rgb(40,40,40);\n"
+"}")
+        self.pushButton_4.setObjectName("pushButton_4")
+        self.gridLayout_4.addWidget(self.pushButton_4, 6, 2, 1, 2)
+        self.radioButton = QtWidgets.QRadioButton(self.statusWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Fixed)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.radioButton.sizePolicy().hasHeightForWidth())
+        self.radioButton.setSizePolicy(sizePolicy)
+        self.radioButton.setStyleSheet("QRadioButton::indicator {width: 15px; height: 15px; border-radius: 7px;} QRadioButton::indicator:unchecked {\n"
+"background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                    stop: 0 rgb(0, 242, 0), stop: 1 rgb(0, 170, 0));\n"
+"border: 2px solid gray;}")
+        self.radioButton.setText("")
+        self.radioButton.setAutoExclusive(True)
+        self.radioButton.setObjectName("radioButton")
+        self.gridLayout_4.addWidget(self.radioButton, 4, 1, 1, 1)
+        self.label_27 = QtWidgets.QLabel(self.statusWidget)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label_27.sizePolicy().hasHeightForWidth())
+        self.label_27.setSizePolicy(sizePolicy)
+        self.label_27.setObjectName("label_27")
+        self.gridLayout_4.addWidget(self.label_27, 4, 2, 1, 1)
+        self.pushButton_3 = QtWidgets.QPushButton(self.statusWidget)
+        self.pushButton_3.setStyleSheet("QPushButton\n"
+"{\n"
+"  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                    stop: 0 rgb(120,120,120), stop: 1 rgb(80,80,80));\n"
+"  border: 1px solid rgb(20,20,20);\n"
+"  color: rgb(230,230,230);\n"
+"  padding: 4px 8px;\n"
+"}\n"
+"\n"
+"QPushButton:hover\n"
+"{\n"
+" background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                    stop: 0 rgb(0, 242, 0), stop: 1 rgb(0, 170, 0));\n"
+"}\n"
+"\n"
+"QPushButton:pressed\n"
+"{\n"
+"  border-color: rgb(125,75,0);\n"
+"  padding: 1px -1px -1px 1px;\n"
+"}\n"
+"\n"
+"/**** QPushButton (checkable) ****/\n"
+"QPushButton:checked\n"
+"{\n"
+"  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                    stop: 0 rgb(200,50,50), stop: 1 rgb(145,5,5));\n"
+"  color: rgb(20,20,20);\n"
+"}\n"
+"\n"
+"QPushButton:checked:hover\n"
+"{\n"
+"  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                    stop: 0 rgb(200,50,50), stop: 1 rgb(145,5,5));\n"
+"}\n"
+"\n"
+"/**** QPushButton (disabled) ****/\n"
+"QPushButton:disabled\n"
+"{\n"
+"  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+"                                    stop: 0 rgb(160,160,160), stop: 1 rgb(120,120,120));\n"
+"  border-color: rgb(60,60,60);\n"
+"  color: rgb(40,40,40);\n"
+"}")
+        self.pushButton_3.setObjectName("pushButton_3")
+        self.gridLayout_4.addWidget(self.pushButton_3, 7, 2, 1, 2)
+        self.verticalLayout_3.addLayout(self.gridLayout_4)
+        self.gridLayout_3.addWidget(self.statusWidget, 0, 2, 1, 1)
+        self.T1.addTab(self.lifeTestTab, "")
+        self.gridLayout.addWidget(self.T1, 1, 0, 1, 1)
         MainWindow.setCentralWidget(self.W1)
         self.mainToolBar = QtWidgets.QToolBar(MainWindow)
         self.mainToolBar.setObjectName("mainToolBar")
@@ -994,12 +1644,13 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusBar)
 
         self.retranslateUi(MainWindow)
+        self.T1.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.label_7.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:14pt; font-weight:600; font-style:italic; color:#bfbfbf;\">MOTOR CONTROL</span></p></body></html>"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "BASF-Custom"))
+        self.label_7.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:14pt; font-weight:600; font-style:italic; color:#bfbfbf;\">MOTOR</span></p></body></html>"))
         self.startStopBTN.setText(_translate("MainWindow", "START"))
         self.revDirRadioBTN.setText(_translate("MainWindow", "REV"))
         self.fwdDirRadioBTN.setText(_translate("MainWindow", "FWD"))
@@ -1009,24 +1660,40 @@ class Ui_MainWindow(object):
         self.stepRevBTN.setText(_translate("MainWindow", "<< STEP REV"))
         self.stepFwdBTN.setText(_translate("MainWindow", "STEP FWD >>"))
         self.label_11.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" color:#ffffff;\">STEP SIZE</span></p></body></html>"))
-        self.label_13.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:14pt; font-weight:600; font-style:italic; color:#bfbfbf;\">SIGNAL PARAMETERS</span></p></body></html>"))
+        self.label_13.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:14pt; font-weight:600; font-style:italic; color:#bfbfbf;\">SIGNAL</span></p></body></html>"))
         self.label_4.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" color:#bfbfbf;\">PWM Freq (Hz)</span></p></body></html>"))
         self.label_9.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" color:#bfbfbf;\">Motor RPM:</span></p></body></html>"))
+        self.label_8.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:14pt; font-weight:600; font-style:italic; color:#bfbfbf;\">SENSORS</span></p></body></html>"))
+        self.s1MSLabel.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600; color:#bfbfbf;\">PX1</span></p></body></html>"))
+        self.label_10.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600; color:#bfbfbf;\">PX2</span></p></body></html>"))
+        self.label_17.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600; color:#bfbfbf;\">PX3</span></p></body></html>"))
+        self.label_6.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600; color:#bfbfbf;\">P1 (PSI)</span></p></body></html>"))
+        self.label.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-style:italic; color:#bfbfbf;\">Fs (Hz):</span></p></body></html>"))
+        self.sensorBTN.setText(_translate("MainWindow", "SAMPLE"))
+        self.label_3.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600; color:#bfbfbf;\">L1 (lbf)</span></p></body></html>"))
         self.label_12.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600; color:#bfbfbf;\">FILE</span></p></body></html>"))
         self.newSessionBTN.setText(_translate("MainWindow", "NEW"))
         self.saveSessionBTN.setText(_translate("MainWindow", "SAVE SESSION"))
         self.label_14.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" color:#ffffff;\">Output File:</span></p></body></html>"))
-        self.label_2.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:18pt; font-weight:600; font-style:italic; color:#bfbfbf;\">BASF CUSTOM</span></p></body></html>"))
-        self.label_8.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:14pt; font-weight:600; color:#bfbfbf;\">SENSORS</span></p></body></html>"))
-        self.label_15.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600; font-style:italic; color:#bfbfbf;\">PRESSURE</span></p></body></html>"))
-        self.label_6.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-style:italic; color:#ffffff;\">P1 (PSI)</span></p></body></html>"))
-        self.label_3.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-style:italic; color:#ffffff;\">P2 (PSI)</span></p></body></html>"))
-        self.label_19.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600; font-style:italic; color:#bfbfbf;\">LOAD</span></p></body></html>"))
-        self.label_18.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-style:italic; color:#ffffff;\">L1 (lbf)</span></p></body></html>"))
-        self.label_16.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600; font-style:italic; color:#bfbfbf;\">PROXIMITY</span></p></body></html>"))
-        self.s1MSLabel.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600; color:#ffffff;\">PX1</span></p></body></html>"))
-        self.label_10.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600; color:#bfbfbf;\">PX2</span></p></body></html>"))
-        self.label_17.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600; color:#ffffff;\">PX3</span></p></body></html>"))
+        self.T1.setTabText(self.T1.indexOf(self.controlTab), _translate("MainWindow", "CONTROL"))
+        self.label_20.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600; font-style:italic; color:#bfbfbf;\">PARAMETERS</span></p></body></html>"))
+        self.label_21.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" color:#bfbfbf;\">Steps Out</span></p></body></html>"))
+        self.label_2.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" color:#bfbfbf;\">Steps In</span></p></body></html>"))
+        self.label_24.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" color:#bfbfbf;\">Cut-Off Force (lbf)</span></p></body></html>"))
+        self.label_23.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" color:#bfbfbf;\">Run Time (hrs)</span></p></body></html>"))
+        self.label_22.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" color:#bfbfbf;\">RPM Out</span></p></body></html>"))
+        self.label_25.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" color:#bfbfbf;\">RPM In</span></p></body></html>"))
+        self.paramSaveEdit.setText(_translate("MainWindow", "SAVE"))
+        self.paramClearEdit.setText(_translate("MainWindow", "CLEAR"))
+        self.label_26.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600; font-style:italic; color:#bfbfbf;\">STATUS</span></p></body></html>"))
+        self.label_30.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600; color:#bfbfbf;\">PX2</span></p></body></html>"))
+        self.label_31.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600; color:#bfbfbf;\">PX3</span></p></body></html>"))
+        self.label_29.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600; color:#bfbfbf;\">PX1</span></p></body></html>"))
+        self.label_28.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600; color:#bfbfbf;\">L1 (lbf)</span></p></body></html>"))
+        self.pushButton_4.setText(_translate("MainWindow", "START"))
+        self.label_27.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600; color:#bfbfbf;\">P1 (PSI)</span></p></body></html>"))
+        self.pushButton_3.setText(_translate("MainWindow", "SUSPEND"))
+        self.T1.setTabText(self.T1.indexOf(self.lifeTestTab), _translate("MainWindow", "LIFE TEST"))
 
 
 from pyqtgraph import PlotWidget
