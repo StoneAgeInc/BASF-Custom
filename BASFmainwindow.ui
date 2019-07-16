@@ -26,11 +26,11 @@ background-position: center;
    </property>
    <layout class="QGridLayout" name="gridLayout">
     <item row="1" column="0">
-     <widget class="QTabWidget" name="tabWidget">
+     <widget class="QTabWidget" name="T1">
       <property name="styleSheet">
-       <string notr="true">QTabWidget
+       <string notr="true">QTabWidget#T1
 {
-  background-color: transparent;
+  background-color: 0,0,0,0;
 }
 
 QTabWidget::pane
