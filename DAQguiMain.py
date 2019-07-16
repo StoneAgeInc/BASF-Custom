@@ -7,7 +7,7 @@ DESCRIPTION:
 STATE:
     GUI launches and runs, labJack shows no errors. Not tested with actual sensors.
 
-MODIFIED DATE: 7.13.19
+MODIFIED DATE: 7.16.19
 Author: Chris Antle
 
 Configuration Details:
@@ -32,8 +32,9 @@ import sys
 motorEnabled = False # Control for motor logic
 handle = ""
 microstep = 4000 # Microstep setting on Kollmorgen stepper drive
-defaultFreq = 10000
+defaultFreq = 10000 # Default PWM Freq
 defaultDuty = 0.05
+defaultsampleFreq = 1 # Defined in Hz
 
 # Define I/O Pins
 motorEnable = 5
@@ -43,7 +44,7 @@ motorPWM = 0 # Defined as DIO pin number
 pressureVoltage = "AIN0"
 proxStopLow = "AIN6"
 proxStopHigh = "AIN7"
-loadCellOutput = "AIN1"
+loadVoltage = "AIN1"
 
 
 class mywindow(QtWidgets.QMainWindow):
@@ -57,6 +58,7 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui.stepRevBTN.clicked.connect(lambda:self.goStep(motorPWM, 0, self.ui.spinBox.value(), 100, 0.1))
         self.ui.enableBTN.clicked.connect(lambda:self.enableMotorToggle())
         self.ui.startStopBTN.clicked.connect(lambda:self.motorRun())
+        self.ui.sensorSampleBTN.clicked.conenct(lambda:self.runSensorSession())
 
         #labjack setup
         self.labJackSetUp()
@@ -241,18 +243,19 @@ class mywindow(QtWidgets.QMainWindow):
         else:
             print("IO Input Pin Not Valid *(T7 LabJack DIO 0, 2-5 ONLY)")
 
-    def sampleData(self):
+    def sampleSensorData(self):
         # test = datetime.datetime.now().strftime("%H:%M:%S")
         # print(test)
         timeStamp = datetime.datetime.now().strftime("%H:%M:%S")
-        V1 = ljm.eReadName(handle, pressureVoltage)  # Sample labjack analog input 1
-        #V2 = ljm.eReadName(handle, "AIN1")  # Sample labjack analog input 2
+        V1 = ljm.eReadName(handle, pressureVoltage)  # Sample analog pressure input
+        L1 = ljm.eReadName(handle, loadVoltage)  # Sample analog load cell input
         P1 = 61.121 * V1 - 43.622
-        #P2 = 61.121 * V2 - 43.622
+        #L1 = 61.121 * V2 - 43.622
 
-        pressureSample = [timeStamp, P1, P2]  # add data to local list
+        pressureSample = [timeStamp, P1, L1]  # add data to local list
 
         self.ui.pressureLCD1.display(P1)  # display data on GUI
+        self.ui.load1LCD.display(L1)
         #self.ui.pressureLCD2.display(P2)  # display data on GUI
 
         # Print for debug
@@ -261,34 +264,58 @@ class mywindow(QtWidgets.QMainWindow):
 
         #return pressureSample
 
+    def runSensorSession(self):
+        sessionActive = self.ui.sampleSensorBTN.isChecked() # Check initial state
+        global sessionData
+        if sessionActive:
+            sessionData = []  # Generate empty list for local session data
+            self.ui.sampleSensorBTN.setText("STOP")
+
+            while sessionActive:
+                QApplication.processEvents()  # Check to see if session ended
+                sessionActive = self.ui.sampleSensorBTN.isChecked() # Check that session is running
+
+                #print("While Loop Parameter: " + str(sessionActive))
+                # Dummy data for debug
+                #data1 = random.randint(0,100)
+                #data2 = random.randint(0,100)
+                #sessionData.append([data1,data2]) # Add sampled data to session as 2D component
+
+                sessionData.append(self.sampleData()) # sample data and write to session list
+                self.plotSessionData(sessionData)
+
+                time.sleep(sampleRate)
+        else:
+            self.ui.sampleSensorBTN.setText("START")
+
     def plotSessionData(self, sessionData):
         self.ui.plotWidget.clear()
         self.ui.plotWidget.addLegend()
-        curve1 = self.ui.plotWidget.plot(pen='r', name="P1")
-        #curve2 = self.ui.plotWidget.plot(pen='g', name="P2")
-        P1 = []
-        #P2 = []
-        i = 0
+        curve1 = self.ui.plotWidget.plot(pen='r', name="PRESSURE") # Tool pressure curve
+        curve2 = self.ui.plotWidget.plot(pen='g', name="LOAD")
+        P1 = [] # Local list for pressure data
+        L1 = [] # Local list for load cell data
+        i = 0 # increment variable
 
-        for set in sessionData:  # grab invidudal data points and make a list of just pressure values
+        for set in sessionData:  # grab invidudal data points and make a list
             P1.append(sessionData[i][1])
-            #P2.append(sessionData[i][2])
+            L1.append(sessionData[i][2])
             i += 1
 
-        curve1.setData(P1)
-        #curve2.setData(P2)
+        curve1.setData(P1) # Add pressure to curve
+        curve2.setData(L1) # Add load cell voltage to curve
         # app.processEvents()
         timer = QtCore.QTimer()
-        P1A = np.array(P1)
-        #P2A = np.array(P2)
+        P1A = np.array(P1) # format in array for plotting
+        L1A = np.array(L1) # format in array for plotting
 
         def update():
-            global curve1, curve2, P1A
-            curve1.setData(P1A)
-            #curve2.setData(P2A)
+            global curve1, curve2, P1A, L1A
+            curve1.setData(P1A) # Plot pressure
+            curve2.setData(L1A) # Plot load
 
         timer.timeout.connect(update)
-        timer.start(100)
+        timer.start(100) # wait to refresh
 
 
 if __name__ == "__main__":
