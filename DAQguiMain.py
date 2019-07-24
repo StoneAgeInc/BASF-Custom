@@ -8,7 +8,7 @@ STATE:
     GUI launches and runs, labJack shows no errors. Not tested with actual sensors. Real time plotting working with
     two independent axis, two tabs that are for manual control and life cycle testing.
 
-MODIFIED DATE: 7.16.19
+MODIFIED DATE: 7.24.19
 Author: Chris Antle
 
 Configuration Details:
@@ -26,12 +26,14 @@ import pyqtgraph as pg
 
 import time
 import datetime
+from datetime import timedelta
 import numpy as np
 import sys
 
 
 # Define Globals
 motorEnabled = False # Control for motor logic
+lifeTestMotorDirection = 1 # Assume motor starts in forward direction
 handle = ""
 microstep = 4000 # Microstep setting on Kollmorgen stepper drive
 defaultFreq = 10000.00 # Default PWM Freq
@@ -59,6 +61,9 @@ class mywindow(QtWidgets.QMainWindow):
         super(mywindow, self).__init__()
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.ui.T1.setCurrentIndex(0)
+        self.lifeTestParamClear() #Null life test parameters
+        self.ui.lifeTestProgBar.setValue(0.0)
 
         #Plot set up
         self.ui.plotWidget.setBackground(background=None)
@@ -72,18 +77,28 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui.plotWidget.setLabel('right', 'Force', 'Lbf')
 
         # set up button control
+        # Control tab
         self.ui.stepFwdBTN.clicked.connect(lambda:self.goStep(motorPWM, 1, self.ui.spinBox.value(),100, 0.1))
         self.ui.stepRevBTN.clicked.connect(lambda:self.goStep(motorPWM, 0, self.ui.spinBox.value(), 100, 0.1))
         self.ui.enableBTN.clicked.connect(lambda:self.enableMotorToggle())
         self.ui.startStopBTN.clicked.connect(lambda:self.motorRun())
         self.ui.sensorBTN.clicked.connect(lambda:self.runSensorSession())
 
+        # Life cycle tab
+        self.ui.paramSaveBTN.clicked.connect(lambda:self.lifeTestParamSample())
+        self.ui.paramClearBTN.clicked.connect(lambda:self.lifeTestParamClear())
+        self.ui.lifeCycleStartBTN.clicked.connect(lambda:self.lifeTest2())
+        self.ui.lifeCycleSuspendBTN.clicked.connect(lambda:self.lifeTestSuspend())
+
+
         #labjack setup
         self.labJackSetUp()
 
         #Set the default LCD info
-        self.ui.PWMLCD.display(5.768)
-        self.ui.pressureLCD1.display(254.55)# display data on GUI
+        self.ui.PWMLCD.display(0)
+        self.ui.pressureLCD1.display(0.0)# display data on GUI
+
+
 
 
     def labJackSetUp(self):
@@ -93,6 +108,193 @@ class mywindow(QtWidgets.QMainWindow):
         print("Opened a LabJack with Device type: %i, Connection type: %i,\n"
               "Serial number: %i, IP address: %s, Port: %i,\nMax bytes per MB: %i" %
               (info[0], info[1], info[2], ljm.numberToIP(info[3]), info[4], info[5]))
+
+    def lifeTestParamSample(self):
+        global runTime, cutOffForce, stepsOut, stepsIn, RPMout, RPMin
+        # Get variables from line edit
+        runTime = int(self.ui.runTimeEdit.text())
+        cutOffForce = int(self.ui.forceCutOffEdit.text())
+        stepsOut = int(self.ui.stepsOutEdit.text())
+        stepsIn = int(self.ui.stepsInEdit.text())
+        RPMout = int(self.ui.RPMoutEdit.text())
+        RPMin = int(self.ui.RPMinEdit.text())
+
+    def lifeTestParamClear(self):
+        global runTime, cutOffForce, stepsOut, stepsIn, RPMout, RPMin
+        runTime = 0
+        cutOffForce = 0
+        stepsOut = 0
+        stepsIn = 0
+        RPMout = 0
+        RPMin = 0
+
+        self.ui.runTimeEdit.setText(str(runTime))
+        self.ui.forceCutOffEdit.setText(str(cutOffForce))
+        self.ui.stepsOutEdit.setText((str(stepsOut)))
+        self.ui.stepsInEdit.setText(str(stepsIn))
+        self.ui.RPMoutEdit.setText(str(RPMout))
+        self.ui.RPMinEdit.setText(str(RPMin))
+
+    '''
+    Life Cycle Test alternate function
+    Based off of hose reel hard calculations
+    Assume that "steps out" can be swapped for "feet out" and a total run time determined from that value 
+    '''
+    def lifeTest2(self):
+        print("Starting Life Cycle Started")
+        global runTime, cutOffForce, stepsOut, stepsIn, RPMout, RPMin, lifeTest, lifeTestMotorDirection, motorEnabled
+        self.lifeTestParamSample()  # sample the user-input and get values (assigned to global)
+        lifeTest = True
+        motorEnabled = True  # Hardcode motor enabled option
+
+        # Configure runTime
+        # startTime = datetime.datetime.now().strftime("%H:%M:")
+        startTime = datetime.datetime.now().strftime("%H:%M")
+        endTime = (datetime.datetime.now() + timedelta(minutes=runTime)).strftime("%H:%M")
+        runPeriod = timedelta(minutes=runTime)
+        stopTime = datetime.datetime.now() + runPeriod
+        minutes = 0
+        # Print to check
+        print("Start Time: " + startTime)
+        print("End Time: " + endTime)
+        print("")
+
+        while lifeTest:
+            progBarVal = 100 * ((runPeriod - (stopTime - datetime.datetime.now())) / runPeriod)
+            self.ui.lifeTestProgBar.setValue(progBarVal)
+
+            if datetime.datetime.now() <= stopTime:  # Check that the test is still live
+                print("Life Test Active")
+                progBarVal = 100 * ((runPeriod - (stopTime - datetime.datetime.now())) / runPeriod)
+                self.ui.lifeTestProgBar.setValue(progBarVal)
+
+                if motorEnabled:  # Check that the motor is hot
+                    if lifeTestMotorDirection == 1:  # Motor is going forward/out
+                        print("Motor Direction: Forward")
+                        print("Feet Out: ")
+                        calcedVal = 30
+                        testEpoch = timedelta(seconds=30)
+                        localStop = datetime.datetime.now() + testEpoch
+                        freq = 1000
+                        ljm.eWriteName(handle, "DIO" + str(motorDirectionPin), lifeTestMotorDirection)
+                        self.generateUserPWM(motorPWM, freq,
+                                             defaultDuty)  # Potentially change freq/duty based on desired RPM
+                        print("Running Motor Forward")
+                        print("Timer Started")
+                        time.sleep(calcedVal)
+                        print("Timer Ended")
+                        print("")
+
+                        lifeTestMotorDirection = 0  # Reset motor direction once loop executes
+                        print("Changing Motor Direction")
+                        print("---------------------------------------------------------------------")
+
+                    elif lifeTestMotorDirection == 0:  # Motor is going reverse/in
+                        print("Motor Direction: Reverse")
+                        print("Feet Out: ")
+                        calcedVal = 30
+                        testEpoch = timedelta(seconds=30)
+                        localStop = datetime.datetime.now() + testEpoch
+                        freq = 1000
+                        ljm.eWriteName(handle, "DIO" + str(motorDirectionPin), lifeTestMotorDirection)
+                        self.generateUserPWM(motorPWM, freq,
+                                             defaultDuty)  # Potentially change freq/duty based on desired RPM
+
+                        print("Running Motor Reverse")
+                        print("Timer Started")
+                        time.sleep(calcedVal)
+                        print("Timer Ended")
+                        print("")
+
+                        lifeTestMotorDirection = 0  # Reset motor direction once loop executes
+                        print("Changing Motor Direction")
+                        print("---------------------------------------------------------------------")
+                    else:
+                        print("Motor Direction Out of Range")
+
+            else:
+                lifeTest = False
+
+        self.ui.lifeTestProgBar.setValue(100)
+        print("")
+        print("End Life Test Run")
+        print("")
+
+    def lifeCycleRun(self):
+        print("Starting Life Cycle Started")
+        global runTime, cutOffForce, stepsOut, stepsIn, RPMout, RPMin, lifeTest, lifeTestMotorDirection, motorEnabled
+        self.lifeTestParamSample() # sample the user-input and get values (assigned to global)
+        lifeTest = True
+        motorEnabled = True #Hardcode motor enabled option
+
+        #Configure runTime
+        #startTime = datetime.datetime.now().strftime("%H:%M:")
+        startTime = datetime.datetime.now().strftime("%H:%M")
+        endTime = (datetime.datetime.now() + timedelta(minutes=runTime)).strftime("%H:%M")
+        runPeriod = timedelta(minutes=runTime)
+        stopTime = datetime.datetime.now() + runPeriod
+        minutes = 0
+        # Print to check
+        print("Start Time: " + startTime)
+        print("End Time: " +  endTime)
+        print("")
+
+        while lifeTest:
+            progBarVal = 100*((runPeriod-(stopTime - datetime.datetime.now()))/runPeriod)
+            self.ui.lifeTestProgBar.setValue(progBarVal)
+
+            if datetime.datetime.now() <= stopTime: #Check that the test is still live
+                print("Life Test Active")
+                if motorEnabled: # Check that the motor is hot
+                    if lifeTestMotorDirection == 1: # Motor is going forward/out
+                        print("Motor Direction: Forward")
+                        print("Going Steps: " + str(stepsOut))
+                        localStep = 0
+                        while localStep <= stepsOut:
+                            self.goStep(motorPWM, lifeTestMotorDirection,5,RPMout,0.1)# jump 5 step increments
+                            # Check load cell and limit switches
+                            time.sleep(0.1) # 100ms pause
+                            localStep += 1
+
+                        lifeTestMotorDirection = 0 #Reset motor direction once loop executes
+                        time.sleep(1)
+                        print("Changing Motor Direction")
+                        print("---------------------------------------------------------------------")
+
+                    elif lifeTestMotorDirection == 0: # Motor is going reverse/in
+                        print("Motor Direction: Reverse")
+                        print("Going Steps: " + str(stepsIn))
+                        localStep = 0
+                        while localStep <= stepsIn:
+                            self.goStep(motorPWM, lifeTestMotorDirection, 5, RPMin, 0.1)  # jump 5 step increments
+                            # Check load cell and limit switches
+                            time.sleep(0.1)  # 100ms pause
+                            localStep += 1
+
+                        lifeTestMotorDirection = 1  # Reset motor direction once loop executes
+                        time.sleep(1)
+                        print("Changing Motor Direction")
+                        print("---------------------------------------------------------------------")
+
+
+                    else:
+                        print("Motor Direction Out of Range")
+
+            else:
+                lifeTest = False
+
+        self.ui.lifeTestProgBar.setValue(100)
+        print("")
+        print("End Life Test Run")
+        print("")
+
+    def lifeTestSuspend(self):
+        global motorEnabled, lifeTest
+        motorEnabled = False
+        lifeTest = False
+
+    def clockSetup(self):
+        print("Setting up life-test clock")
 
     def motorRun(self):
        global motorDirection
@@ -154,6 +356,8 @@ class mywindow(QtWidgets.QMainWindow):
     Outputs on user-defined pin
     Assumes a low to high transition at 0, and computes high to low based on duty cycle
     Input duty cycle expressed as decimal (not percent)
+    Input parameters: pin = output pin for DAC direction, direction = 1/0 direction, steps = numeric steps
+    RPM = user driven RPM, duty = waveform duty cycle
     '''
     def goStep(self, pin, direction, steps, RPM, duty):
         if motorEnabled and steps > 0:
@@ -195,8 +399,8 @@ class mywindow(QtWidgets.QMainWindow):
                 print("PWM Duty Cycle: " + str(duty * 100))
                 print("")
 
-                self.ui.motorRPMLCD.display(str(RPM))
-                self.ui.PWMLCD.display(str(freq))
+                self.ui.motorRPMLCD.display(int(RPM))
+                self.ui.PWMLCD.display(int(freq))
 
             else:
                 print("IO Input Pin Not Valid *(T7 LabJack DIO 0, 2-5 ONLY)")

@@ -623,6 +623,7 @@ class Ui_MainWindow(object):
 "  background-color: rgb(120,120,120);\n"
 "  border: 1px solid rgb(60,60,60);\n"
 "}")
+        self.PWMLCD.setDigitCount(8)
         self.PWMLCD.setObjectName("PWMLCD")
         self.horizontalLayout_2.addWidget(self.PWMLCD)
         self.label_9 = QtWidgets.QLabel(self.controlWidget)
@@ -1294,8 +1295,8 @@ class Ui_MainWindow(object):
         self.gridLayout_5.addWidget(self.stepsInEdit, 1, 3, 1, 1)
         spacerItem5 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.gridLayout_5.addItem(spacerItem5, 4, 1, 1, 1)
-        self.paramSaveEdit = QtWidgets.QPushButton(self.paramWidget)
-        self.paramSaveEdit.setStyleSheet("QPushButton\n"
+        self.paramSaveBTN = QtWidgets.QPushButton(self.paramWidget)
+        self.paramSaveBTN.setStyleSheet("QPushButton\n"
 "{\n"
 "  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
 "                                    stop: 0 rgb(120,120,120), stop: 1 rgb(80,80,80));\n"
@@ -1338,10 +1339,10 @@ class Ui_MainWindow(object):
 "  border-color: rgb(60,60,60);\n"
 "  color: rgb(40,40,40);\n"
 "}")
-        self.paramSaveEdit.setObjectName("paramSaveEdit")
-        self.gridLayout_5.addWidget(self.paramSaveEdit, 3, 0, 1, 2)
-        self.paramClearEdit = QtWidgets.QPushButton(self.paramWidget)
-        self.paramClearEdit.setStyleSheet("QPushButton\n"
+        self.paramSaveBTN.setObjectName("paramSaveBTN")
+        self.gridLayout_5.addWidget(self.paramSaveBTN, 3, 0, 1, 2)
+        self.paramClearBTN = QtWidgets.QPushButton(self.paramWidget)
+        self.paramClearBTN.setStyleSheet("QPushButton\n"
 "{\n"
 "  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
 "                                    stop: 0 rgb(120,120,120), stop: 1 rgb(80,80,80));\n"
@@ -1384,8 +1385,8 @@ class Ui_MainWindow(object):
 "  border-color: rgb(60,60,60);\n"
 "  color: rgb(40,40,40);\n"
 "}")
-        self.paramClearEdit.setObjectName("paramClearEdit")
-        self.gridLayout_5.addWidget(self.paramClearEdit, 3, 2, 1, 2)
+        self.paramClearBTN.setObjectName("paramClearBTN")
+        self.gridLayout_5.addWidget(self.paramClearBTN, 3, 2, 1, 2)
         self.cycleParameters.addLayout(self.gridLayout_5)
         self.gridLayout_3.addWidget(self.paramWidget, 0, 0, 1, 1)
         self.statusWidget = QtWidgets.QWidget(self.lifeTestTab)
@@ -1416,13 +1417,13 @@ class Ui_MainWindow(object):
         self.line_7.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.line_7.setObjectName("line_7")
         self.verticalLayout_3.addWidget(self.line_7)
-        self.progressBar = QtWidgets.QProgressBar(self.statusWidget)
+        self.lifeTestProgBar = QtWidgets.QProgressBar(self.statusWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.progressBar.sizePolicy().hasHeightForWidth())
-        self.progressBar.setSizePolicy(sizePolicy)
-        self.progressBar.setStyleSheet("QProgressBar\n"
+        sizePolicy.setHeightForWidth(self.lifeTestProgBar.sizePolicy().hasHeightForWidth())
+        self.lifeTestProgBar.setSizePolicy(sizePolicy)
+        self.lifeTestProgBar.setStyleSheet("QProgressBar\n"
 "{\n"
 "  background-color: rgb(40,40,40);\n"
 "  background-color: rgb(140,80,10,20);\n"
@@ -1445,9 +1446,9 @@ class Ui_MainWindow(object):
 "  border: 1px solid rgb(60,60,60);\n"
 "  color: rgb(40,40,40);\n"
 "}")
-        self.progressBar.setProperty("value", 24)
-        self.progressBar.setObjectName("progressBar")
-        self.verticalLayout_3.addWidget(self.progressBar)
+        self.lifeTestProgBar.setProperty("value", 24)
+        self.lifeTestProgBar.setObjectName("lifeTestProgBar")
+        self.verticalLayout_3.addWidget(self.lifeTestProgBar)
         self.gridLayout_4 = QtWidgets.QGridLayout()
         self.gridLayout_4.setSpacing(6)
         self.gridLayout_4.setObjectName("gridLayout_4")
@@ -1517,8 +1518,8 @@ class Ui_MainWindow(object):
         self.lcdNumber.setSizePolicy(sizePolicy)
         self.lcdNumber.setObjectName("lcdNumber")
         self.gridLayout_4.addWidget(self.lcdNumber, 4, 3, 1, 1)
-        self.pushButton_4 = QtWidgets.QPushButton(self.statusWidget)
-        self.pushButton_4.setStyleSheet("QPushButton\n"
+        self.lifeCycleStartBTN = QtWidgets.QPushButton(self.statusWidget)
+        self.lifeCycleStartBTN.setStyleSheet("QPushButton\n"
 "{\n"
 "  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
 "                                    stop: 0 rgb(120,120,120), stop: 1 rgb(80,80,80));\n"
@@ -1561,8 +1562,8 @@ class Ui_MainWindow(object):
 "  border-color: rgb(60,60,60);\n"
 "  color: rgb(40,40,40);\n"
 "}")
-        self.pushButton_4.setObjectName("pushButton_4")
-        self.gridLayout_4.addWidget(self.pushButton_4, 6, 2, 1, 2)
+        self.lifeCycleStartBTN.setObjectName("lifeCycleStartBTN")
+        self.gridLayout_4.addWidget(self.lifeCycleStartBTN, 6, 2, 1, 2)
         self.radioButton = QtWidgets.QRadioButton(self.statusWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
@@ -1585,8 +1586,8 @@ class Ui_MainWindow(object):
         self.label_27.setSizePolicy(sizePolicy)
         self.label_27.setObjectName("label_27")
         self.gridLayout_4.addWidget(self.label_27, 4, 2, 1, 1)
-        self.pushButton_3 = QtWidgets.QPushButton(self.statusWidget)
-        self.pushButton_3.setStyleSheet("QPushButton\n"
+        self.lifeCycleSuspendBTN = QtWidgets.QPushButton(self.statusWidget)
+        self.lifeCycleSuspendBTN.setStyleSheet("QPushButton\n"
 "{\n"
 "  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
 "                                    stop: 0 rgb(120,120,120), stop: 1 rgb(80,80,80));\n"
@@ -1629,8 +1630,8 @@ class Ui_MainWindow(object):
 "  border-color: rgb(60,60,60);\n"
 "  color: rgb(40,40,40);\n"
 "}")
-        self.pushButton_3.setObjectName("pushButton_3")
-        self.gridLayout_4.addWidget(self.pushButton_3, 7, 2, 1, 2)
+        self.lifeCycleSuspendBTN.setObjectName("lifeCycleSuspendBTN")
+        self.gridLayout_4.addWidget(self.lifeCycleSuspendBTN, 7, 2, 1, 2)
         self.verticalLayout_3.addLayout(self.gridLayout_4)
         self.gridLayout_3.addWidget(self.statusWidget, 0, 2, 1, 1)
         self.T1.addTab(self.lifeTestTab, "")
@@ -1646,6 +1647,36 @@ class Ui_MainWindow(object):
         self.retranslateUi(MainWindow)
         self.T1.setCurrentIndex(0)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
+        MainWindow.setTabOrder(self.startStopBTN, self.revDirRadioBTN)
+        MainWindow.setTabOrder(self.revDirRadioBTN, self.fwdDirRadioBTN)
+        MainWindow.setTabOrder(self.fwdDirRadioBTN, self.execStepsEdit)
+        MainWindow.setTabOrder(self.execStepsEdit, self.stepRevBTN)
+        MainWindow.setTabOrder(self.stepRevBTN, self.stepFwdBTN)
+        MainWindow.setTabOrder(self.stepFwdBTN, self.spinBox)
+        MainWindow.setTabOrder(self.spinBox, self.proxRadio2)
+        MainWindow.setTabOrder(self.proxRadio2, self.proxRadio5)
+        MainWindow.setTabOrder(self.proxRadio5, self.proxRadio1)
+        MainWindow.setTabOrder(self.proxRadio1, self.lineEdit)
+        MainWindow.setTabOrder(self.lineEdit, self.sensorBTN)
+        MainWindow.setTabOrder(self.sensorBTN, self.newSessionBTN)
+        MainWindow.setTabOrder(self.newSessionBTN, self.saveSessionBTN)
+        MainWindow.setTabOrder(self.saveSessionBTN, self.fileNameEdit)
+        MainWindow.setTabOrder(self.fileNameEdit, self.plotWidget)
+        MainWindow.setTabOrder(self.plotWidget, self.enableBTN)
+        MainWindow.setTabOrder(self.enableBTN, self.paramSaveBTN)
+        MainWindow.setTabOrder(self.paramSaveBTN, self.paramClearBTN)
+        MainWindow.setTabOrder(self.paramClearBTN, self.runTimeEdit)
+        MainWindow.setTabOrder(self.runTimeEdit, self.forceCutOffEdit)
+        MainWindow.setTabOrder(self.forceCutOffEdit, self.stepsOutEdit)
+        MainWindow.setTabOrder(self.stepsOutEdit, self.stepsInEdit)
+        MainWindow.setTabOrder(self.stepsInEdit, self.RPMoutEdit)
+        MainWindow.setTabOrder(self.RPMoutEdit, self.RPMinEdit)
+        MainWindow.setTabOrder(self.RPMinEdit, self.radioButton_3)
+        MainWindow.setTabOrder(self.radioButton_3, self.lifeCycleStartBTN)
+        MainWindow.setTabOrder(self.lifeCycleStartBTN, self.radioButton)
+        MainWindow.setTabOrder(self.radioButton, self.lifeCycleSuspendBTN)
+        MainWindow.setTabOrder(self.lifeCycleSuspendBTN, self.radioButton_2)
+        MainWindow.setTabOrder(self.radioButton_2, self.T1)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
@@ -1680,19 +1711,19 @@ class Ui_MainWindow(object):
         self.label_21.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" color:#bfbfbf;\">Steps Out</span></p></body></html>"))
         self.label_2.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" color:#bfbfbf;\">Steps In</span></p></body></html>"))
         self.label_24.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" color:#bfbfbf;\">Cut-Off Force (lbf)</span></p></body></html>"))
-        self.label_23.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" color:#bfbfbf;\">Run Time (hrs)</span></p></body></html>"))
+        self.label_23.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" color:#bfbfbf;\">Run Time (min)</span></p></body></html>"))
         self.label_22.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" color:#bfbfbf;\">RPM Out</span></p></body></html>"))
         self.label_25.setText(_translate("MainWindow", "<html><head/><body><p><span style=\" color:#bfbfbf;\">RPM In</span></p></body></html>"))
-        self.paramSaveEdit.setText(_translate("MainWindow", "SAVE"))
-        self.paramClearEdit.setText(_translate("MainWindow", "CLEAR"))
+        self.paramSaveBTN.setText(_translate("MainWindow", "SAVE"))
+        self.paramClearBTN.setText(_translate("MainWindow", "CLEAR"))
         self.label_26.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600; font-style:italic; color:#bfbfbf;\">STATUS</span></p></body></html>"))
         self.label_30.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600; color:#bfbfbf;\">PX2</span></p></body></html>"))
         self.label_31.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600; color:#bfbfbf;\">PX3</span></p></body></html>"))
         self.label_29.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600; color:#bfbfbf;\">PX1</span></p></body></html>"))
         self.label_28.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600; color:#bfbfbf;\">L1 (lbf)</span></p></body></html>"))
-        self.pushButton_4.setText(_translate("MainWindow", "START"))
+        self.lifeCycleStartBTN.setText(_translate("MainWindow", "START"))
         self.label_27.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600; color:#bfbfbf;\">P1 (PSI)</span></p></body></html>"))
-        self.pushButton_3.setText(_translate("MainWindow", "SUSPEND"))
+        self.lifeCycleSuspendBTN.setText(_translate("MainWindow", "SUSPEND"))
         self.T1.setTabText(self.T1.indexOf(self.lifeTestTab), _translate("MainWindow", "LIFE TEST"))
 
 
