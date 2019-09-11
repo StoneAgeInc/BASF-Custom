@@ -36,7 +36,7 @@ motorEnabled = False # Control for motor logic
 lifeTestMotorDirection = 1 # Assume motor starts in forward direction
 handle = ""
 microstep = 4000 # Microstep setting on Kollmorgen stepper drive
-defaultFreq = 10000.00 # Default PWM Freq
+defaultFreq = 10000# Default PWM Freq
 defaultDuty = 0.05
 defaultsampleFreq = 1 # Defined in Hz
 
@@ -47,8 +47,8 @@ motorEnablePin = 1 # Defined as DAC pin number
 motorPWM = 0 # Defined as DIO pin number
 pressureVoltage = "AIN0"
 loadVoltage = "AIN1"
-px1Low = "AIN6" # Tool stop
-px1High = "AIN7" # Tool stop
+px1Low = "AIN6" # Tool stop, pin 1 EuroSwitch Prox Sensor
+px1High = "AIN7" # Tool stop, pin 3, EuroSwitch Prox Sensor
 px2Low = "AIN8" # RPM1
 px2High = "AIN9" # RPM1
 px3Low = "AIN10" # RPM2
@@ -318,7 +318,7 @@ class mywindow(QtWidgets.QMainWindow):
            print("Turning Motor Off")
            print("")
            self.ui.startStopBTN.setText("START")
-           ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 5) #5V high to disablemotor
+           ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 5) #5V high to disablemotor ---- POTENTIAL ERROR, SHOULD PULL LOW? ----
 
        else: # Motor disabled
            prompt = QMessageBox.warning(self, 'Motor Disabled',
@@ -336,13 +336,13 @@ class mywindow(QtWidgets.QMainWindow):
             print("Motor Enabled")
             print("")
             motorEnabled = True
-            ljm.eWriteName(handle, "DIO" + str(motorEnablePin), 0) # 0V high to enable
+            ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 0) # 0V high to enable
             self.ui.enableBTN.setText("DISABLE") # Reset label
         else:
             print("Motor Disabled")
             print("")
             motorEnabled = False
-            ljm.eWriteName(handle, "DIO" + str(motorEnablePin), 5)  # 5V high to disable motor
+            ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 5)  # 5V high to disable motor
             self.ui.enableBTN.setText("ENABLE")  # Reset label
             self.ui.startStopBTN.setChecked(False)
             self.ui.startStopBTN.setText("START")
@@ -361,7 +361,7 @@ class mywindow(QtWidgets.QMainWindow):
     '''
     def goStep(self, pin, direction, steps, RPM, duty):
         if motorEnabled and steps > 0:
-            ljm.eWriteName(handle, "DAC" + str(pin), direction)
+            ljm.eWriteName(handle, "DIO" + str(pin), direction)
             # Check output pin valid
             if pin == 0 or pin in range(2, 6):
                 # Set up math
