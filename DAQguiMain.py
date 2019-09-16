@@ -8,7 +8,10 @@ STATE:
     GUI launches and runs, labJack shows no errors. Not tested with actual sensors. Real time plotting working with
     two independent axis, two tabs that are for manual control and life cycle testing.
 
-MODIFIED DATE: 7.24.19
+    Motor control debugged and working, and will stop on AIN0 voltage flag. LCD will update, but real-time plot bogs
+    down program and does not seem to be working.
+
+MODIFIED DATE: 9.12.19
 Author: Chris Antle
 
 Configuration Details:
@@ -34,9 +37,10 @@ import sys
 # Define Globals
 motorEnabled = False # Control for motor logic
 lifeTestMotorDirection = 1 # Assume motor starts in forward direction
+lifeTestActive = False
 handle = ""
 microstep = 4000 # Microstep setting on Kollmorgen stepper drive
-defaultFreq = 10000# Default PWM Freq
+defaultFreq = 20000# Default PWM Freq
 defaultDuty = 0.05
 defaultsampleFreq = 1 # Defined in Hz
 
@@ -87,7 +91,7 @@ class mywindow(QtWidgets.QMainWindow):
         # Life cycle tab
         self.ui.paramSaveBTN.clicked.connect(lambda:self.lifeTestParamSample())
         self.ui.paramClearBTN.clicked.connect(lambda:self.lifeTestParamClear())
-        self.ui.lifeCycleStartBTN.clicked.connect(lambda:self.lifeTest2())
+        self.ui.lifeCycleStartBTN.clicked.connect(lambda:self.simpleLifeTest())
         self.ui.lifeCycleSuspendBTN.clicked.connect(lambda:self.lifeTestSuspend())
 
 
@@ -98,7 +102,8 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui.PWMLCD.display(0)
         self.ui.pressureLCD1.display(0.0)# display data on GUI
 
-
+        ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 5) # 0V high to disable
+        ljm.eWriteName(handle, "DIO" + str(motorPWM) + "_EF_ENABLE", 0)  # Disable the EF system
 
 
     def labJackSetUp(self):
@@ -289,12 +294,50 @@ class mywindow(QtWidgets.QMainWindow):
         print("")
 
     def lifeTestSuspend(self):
-        global motorEnabled, lifeTest
+        global motorEnabled, lifeTestActive
         motorEnabled = False
-        lifeTest = False
+        lifeTestActive = False
+        ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 5)  # 5V high to enable
 
     def clockSetup(self):
         print("Setting up life-test clock")
+
+    def simpleLifeTest(self):
+        global lifeTestActive, motorDirectionPin
+        lifeTestActive = True
+        while lifeTestActive:
+            flag = ljm.eReadName(handle, "AIN0")
+
+            if flag > 3: # Sensor flag is high, so stop and change directions
+                #Shut everything down
+                # print("Stopping Motor")
+                # print("")
+                # ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 5)  # 0V high to disable
+                # ljm.eWriteName(handle, "DIO" + str(motorPWM) + "_EF_ENABLE", 0)  # Disable the EF system
+
+                # Toggle motor direction
+                print("Motor Directon: " + str(motorDirectionPin))
+                if motorDirectionPin == 1: #Direction is forward, put it in reverse
+                    motorDirectionPin = 0
+                else: #direction is reverse, put er' in forward
+                    motorDirectionPin = 1
+                print("New Motor Direction: " + str(motorDirectionPin))
+                print("")
+                time.sleep(3)
+
+                # Wait for the event to end
+                # while flag > 3:
+                #     print("Waiting for sensor low output")
+
+                print("Restarting Motor Motion")
+
+            else: # Sensor flag is low, so run as programmed
+                self.motorRun()
+                print("Motor Running")
+
+
+
+        print("TBD")
 
     def motorRun(self):
        global motorDirection
@@ -318,7 +361,8 @@ class mywindow(QtWidgets.QMainWindow):
            print("Turning Motor Off")
            print("")
            self.ui.startStopBTN.setText("START")
-           ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 5) #5V high to disablemotor ---- POTENTIAL ERROR, SHOULD PULL LOW? ----
+           #ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 5) #5V high to disablemotor ---- POTENTIAL ERROR, SHOULD PULL LOW? ----
+           ljm.eWriteName(handle, "DIO" + str(motorPWM) + "_EF_ENABLE", 0)  # Disable the EF system
 
        else: # Motor disabled
            prompt = QMessageBox.warning(self, 'Motor Disabled',
@@ -343,6 +387,7 @@ class mywindow(QtWidgets.QMainWindow):
             print("")
             motorEnabled = False
             ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 5)  # 5V high to disable motor
+            ljm.eWriteName(handle, "DIO" + str(motorPWM) + "_EF_ENABLE", 0)  # Disable the EF system
             self.ui.enableBTN.setText("ENABLE")  # Reset label
             self.ui.startStopBTN.setChecked(False)
             self.ui.startStopBTN.setText("START")
@@ -460,8 +505,7 @@ class mywindow(QtWidgets.QMainWindow):
             ljm.eWriteName(handle, "DIO" + str(pin) + "_EF_INDEX", 0)  # Configure EF system for PWM
             ljm.eWriteName(handle, "DIO" + str(pin) + "_EF_OPTIONS", 0)  # Configure what clock source to use: Clock0
             ljm.eWriteName(handle, "DIO" + str(pin) + "_EF_CONFIG_A", dutyConfig)  # Configure duty cycle to be: 50%
-            ljm.eWriteName(handle, "DIO" + str(pin) + "_EF_ENABLE",
-                           1)  # Enable the EF system, PWM wave is now being outputted
+            ljm.eWriteName(handle, "DIO" + str(pin) + "_EF_ENABLE", 1)  # Enable the EF system, PWM wave is now being outputted
 
         else:
             print("IO Input Pin Not Valid *(T7 LabJack DIO 0, 2-5 ONLY)")
@@ -469,15 +513,38 @@ class mywindow(QtWidgets.QMainWindow):
     def sampleSensorData(self):
         # test = datetime.datetime.now().strftime("%H:%M:%S")
         # print(test)
+        global motorEnable, lifeTestMotorDirection
         timeStamp = datetime.datetime.now().strftime("%H:%M:%S")
         V1 = ljm.eReadName(handle, pressureVoltage)  # Sample analog pressure input
         L1 = ljm.eReadName(handle, loadVoltage)  # Sample analog load cell input
         P1 = 61.121*V1-43.622
         #L1 = 61.121 * V2 - 43.622
 
+        #testing purposes only
+        flag = ljm.eReadName(handle, "AIN0")
+        if flag > 3:
+            #print("High Voltage Detected")
+            motorEnable = False
+            ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 5)  # 5V high to disable motor
+
+            print("Motor Directon: " + str(lifeTestMotorDirection))
+            if lifeTestMotorDirection == 1:  # Direction is forward, put it in reverse
+                lifeTestMotorDirection = 0
+            else:  # direction is reverse, put er' in forward
+                lifeTestMotorDirection = 1
+
+            print("New Motor Direction: " + str(lifeTestMotorDirection))
+            print("")
+            time.sleep(10)
+        else:
+            motorEnable = True
+            ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 0)  # Ov low to enable motor
+            ljm.eWriteName(handle, "DIO" + str(motorDirectionPin), lifeTestMotorDirection)
+        # End Testing
+
         pressureSample = [timeStamp, P1, L1]  # add data to local list
 
-        print(P1)
+        # print(P1)
         self.ui.pressureLCD1.display(P1)# display data on GUI
         self.ui.load1LCD.display(L1)
         #self.ui.pressureLCD2.display(P2)  # display data on GUI
@@ -499,8 +566,7 @@ class mywindow(QtWidgets.QMainWindow):
                 QApplication.processEvents()  # Check to see if session ended
                 sessionActive = self.ui.sensorBTN.isChecked() # Check that session is running
                 sessionData.append(self.sampleSensorData()) # sample data and write to session list
-                self.plotSessionData(sessionData)
-
+                #self.plotSessionData(sessionData)
                 time.sleep(0)
         else:
             self.ui.sensorBTN.setText("START")
@@ -553,7 +619,18 @@ class mywindow(QtWidgets.QMainWindow):
 
         timer = QtCore.QTimer()
         timer.timeout.connect(update)
-        timer.start(100) # wait to refresh
+        timer.start(10000) # wait to refresh
+
+    def simpleSensorRead(self):
+        name = "AIN0"
+        voltage = ljm.eReadName(handle, name)
+
+        while True:
+            voltage = ljm.eReadName(handle, name)
+            print("Voltage Reeading: " + str(voltage))
+            time.sleep(0.1)
+
+
 
 
 if __name__ == "__main__":
