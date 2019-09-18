@@ -74,7 +74,7 @@ QTabWidget::pane:disabled
        <enum>QTabWidget::North</enum>
       </property>
       <property name="currentIndex">
-       <number>0</number>
+       <number>1</number>
       </property>
       <widget class="QWidget" name="controlTab">
        <property name="styleSheet">
@@ -467,6 +467,9 @@ QLineEdit:disabled
             <layout class="QHBoxLayout" name="horizontalLayout">
              <item>
               <widget class="QPushButton" name="stepRevBTN">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
                <property name="styleSheet">
                 <string notr="true">QPushButton
 {
@@ -519,6 +522,9 @@ QPushButton:disabled
              </item>
              <item>
               <widget class="QPushButton" name="stepFwdBTN">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
                <property name="styleSheet">
                 <string notr="true">QPushButton
 {
@@ -587,6 +593,9 @@ color: rgb(220, 220, 220);
              </item>
              <item>
               <widget class="QSpinBox" name="spinBox">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
                <property name="styleSheet">
                 <string notr="true">QSpinBox,
 QDoubleSpinBox,
@@ -757,6 +766,9 @@ QLCDNumber:disabled
   border: 1px solid rgb(60,60,60);
 }</string>
                </property>
+               <property name="digitCount">
+                <number>5</number>
+               </property>
               </widget>
              </item>
              <item>
@@ -870,7 +882,7 @@ border: 2px solid gray;}</string>
               </widget>
              </item>
              <item row="3" column="1">
-              <widget class="QRadioButton" name="proxRadio5">
+              <widget class="QRadioButton" name="proxRadio3">
                <property name="styleSheet">
                 <string notr="true">QRadioButton::indicator {width: 15px; height: 15px; border-radius: 7px;} QRadioButton::indicator:unchecked { background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
                                     stop: 0 rgb(200,50,50), stop: 1 rgb(145,5,5));
@@ -1364,6 +1376,9 @@ QWidget:disabled
             <layout class="QGridLayout" name="gridLayout_5">
              <item row="0" column="1">
               <widget class="QLineEdit" name="runTimeEdit">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -1480,7 +1495,7 @@ QLineEdit:disabled
                 </sizepolicy>
                </property>
                <property name="text">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#bfbfbf;&quot;&gt;Run Time (hrs)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#bfbfbf;&quot;&gt;Run Time (min)&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
               </widget>
              </item>
@@ -1521,6 +1536,9 @@ QLineEdit:disabled
              </item>
              <item row="1" column="1">
               <widget class="QLineEdit" name="stepsOutEdit">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -1605,6 +1623,9 @@ QLineEdit:disabled
              </item>
              <item row="1" column="3">
               <widget class="QLineEdit" name="stepsInEdit">
+               <property name="enabled">
+                <bool>false</bool>
+               </property>
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -1652,7 +1673,7 @@ QLineEdit:disabled
               </spacer>
              </item>
              <item row="3" column="0" colspan="2">
-              <widget class="QPushButton" name="paramSaveEdit">
+              <widget class="QPushButton" name="paramSaveBTN">
                <property name="styleSheet">
                 <string notr="true">QPushButton
 {
@@ -1704,7 +1725,7 @@ QPushButton:disabled
               </widget>
              </item>
              <item row="3" column="2" colspan="2">
-              <widget class="QPushButton" name="paramClearEdit">
+              <widget class="QPushButton" name="paramClearBTN">
                <property name="styleSheet">
                 <string notr="true">QPushButton
 {
@@ -1794,7 +1815,7 @@ QWidget:disabled
             </widget>
            </item>
            <item>
-            <widget class="QProgressBar" name="progressBar">
+            <widget class="QProgressBar" name="lifeTestProgBar">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Minimum" vsizetype="Fixed">
                <horstretch>0</horstretch>
@@ -1860,10 +1881,10 @@ QProgressBar:disabled
               </widget>
              </item>
              <item row="5" column="3">
-              <widget class="QLCDNumber" name="lcdNumber_2"/>
+              <widget class="QLCDNumber" name="loadLifeLCD"/>
              </item>
              <item row="5" column="1">
-              <widget class="QRadioButton" name="radioButton_2">
+              <widget class="QRadioButton" name="proxLifeRadio2">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -1915,7 +1936,7 @@ border: 2px solid gray;}</string>
               </spacer>
              </item>
              <item row="6" column="1">
-              <widget class="QRadioButton" name="radioButton_3">
+              <widget class="QRadioButton" name="proxLifeRadio3">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -1925,7 +1946,7 @@ border: 2px solid gray;}</string>
                <property name="styleSheet">
                 <string notr="true">QRadioButton::indicator {width: 15px; height: 15px; border-radius: 7px;} QRadioButton::indicator:unchecked {
 background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                    stop: 0 rgb(0, 242, 0), stop: 1 rgb(0, 170, 0));
+                                    stop: 0 rgb(242, 242, 0), stop: 1 rgb(170, 142, 0));
 border: 2px solid gray;}</string>
                </property>
                <property name="text">
@@ -1934,7 +1955,7 @@ border: 2px solid gray;}</string>
               </widget>
              </item>
              <item row="4" column="3">
-              <widget class="QLCDNumber" name="lcdNumber">
+              <widget class="QLCDNumber" name="pressureLifeLCD">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Maximum" vsizetype="Minimum">
                  <horstretch>0</horstretch>
@@ -1944,7 +1965,7 @@ border: 2px solid gray;}</string>
               </widget>
              </item>
              <item row="6" column="2" colspan="2">
-              <widget class="QPushButton" name="pushButton_4">
+              <widget class="QPushButton" name="lifeCycleStartBTN">
                <property name="styleSheet">
                 <string notr="true">QPushButton
 {
@@ -1996,7 +2017,7 @@ QPushButton:disabled
               </widget>
              </item>
              <item row="4" column="1">
-              <widget class="QRadioButton" name="radioButton">
+              <widget class="QRadioButton" name="proxLifeRadio1">
                <property name="sizePolicy">
                 <sizepolicy hsizetype="Maximum" vsizetype="Fixed">
                  <horstretch>0</horstretch>
@@ -2031,7 +2052,7 @@ border: 2px solid gray;}</string>
               </widget>
              </item>
              <item row="7" column="2" colspan="2">
-              <widget class="QPushButton" name="pushButton_3">
+              <widget class="QPushButton" name="lifeCycleSuspendBTN">
                <property name="styleSheet">
                 <string notr="true">QPushButton
 {
@@ -2111,6 +2132,39 @@ QPushButton:disabled
    <header>pyqtgraph</header>
   </customwidget>
  </customwidgets>
+ <tabstops>
+  <tabstop>startStopBTN</tabstop>
+  <tabstop>revDirRadioBTN</tabstop>
+  <tabstop>fwdDirRadioBTN</tabstop>
+  <tabstop>execStepsEdit</tabstop>
+  <tabstop>stepRevBTN</tabstop>
+  <tabstop>stepFwdBTN</tabstop>
+  <tabstop>spinBox</tabstop>
+  <tabstop>proxRadio2</tabstop>
+  <tabstop>proxRadio3</tabstop>
+  <tabstop>proxRadio1</tabstop>
+  <tabstop>lineEdit</tabstop>
+  <tabstop>sensorBTN</tabstop>
+  <tabstop>newSessionBTN</tabstop>
+  <tabstop>saveSessionBTN</tabstop>
+  <tabstop>fileNameEdit</tabstop>
+  <tabstop>plotWidget</tabstop>
+  <tabstop>enableBTN</tabstop>
+  <tabstop>paramSaveBTN</tabstop>
+  <tabstop>paramClearBTN</tabstop>
+  <tabstop>runTimeEdit</tabstop>
+  <tabstop>forceCutOffEdit</tabstop>
+  <tabstop>stepsOutEdit</tabstop>
+  <tabstop>stepsInEdit</tabstop>
+  <tabstop>RPMoutEdit</tabstop>
+  <tabstop>RPMinEdit</tabstop>
+  <tabstop>proxLifeRadio3</tabstop>
+  <tabstop>lifeCycleStartBTN</tabstop>
+  <tabstop>proxLifeRadio1</tabstop>
+  <tabstop>lifeCycleSuspendBTN</tabstop>
+  <tabstop>proxLifeRadio2</tabstop>
+  <tabstop>T1</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

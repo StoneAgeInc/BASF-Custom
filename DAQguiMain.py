@@ -3,35 +3,37 @@ DESCRIPTION:
     Main file to control BASF sensor prototype bring up. Starts all GUI functions and controls labjack.
     LabJack instance is set as a global parameter used in functions.
     Refer to to wiring diagram/hook up guide for connection details (:/FILENAME_HERE)
-
 STATE:
     GUI launches and runs, labJack shows no errors. Not tested with actual sensors. Real time plotting working with
     two independent axis, two tabs that are for manual control and life cycle testing.
-
     Motor control debugged and working, and will stop on AIN0 voltage flag. LCD will update, but real-time plot bogs
     down program and does not seem to be working.
-
 MODIFIED DATE: 9.12.19
 Author: Chris Antle
-
 Configuration Details:
 Motor Direction I/O: DIO1
 Motor
 '''
 
 from PyQt5 import QtWidgets, QtGui, QtCore
+from PyQt5.QtCore import QThread
 from PyQt5.QtWidgets import QApplication, QWidget, QLabel, QPushButton
 from PyQt5.QtGui import QIcon, QPixmap
 from PyQt5.QtWidgets import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
+from PyQt5.QtCore import *
 from labjack import ljm
 from mainwindow import Ui_MainWindow
 import pyqtgraph as pg
-
+import threading
+from threading import Lock
 import time
 import datetime
 from datetime import timedelta
 import numpy as np
 import sys
+import traceback
 
 
 # Define Globals
@@ -45,7 +47,7 @@ defaultDuty = 0.05
 defaultsampleFreq = 1 # Defined in Hz
 
 # Define I/O Pins
-motorEnable = 5
+motorEnable = 5 #5V high to disable motors
 motorDirectionPin = 1 # Defined as DIO pin number
 motorEnablePin = 1 # Defined as DAC pin number
 motorPWM = 0 # Defined as DIO pin number
@@ -58,7 +60,58 @@ px2High = "AIN9" # RPM1
 px3Low = "AIN10" # RPM2
 px3High = "AIN11" # RPM2
 
+#Define prox style sheet for toggle
+redProxStyle = "QRadioButton::indicator {width: 15px; height: 15px; border-radius: 7px;}"\
+               "QRadioButton::indicator:unchecked { background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1, "\
+               "stop: 0 rgb(200,50,50), stop: 1 rgb(145,5,5)); border: 2px solid gray;}"
 
+greenProxStyle = "QRadioButton::indicator {width: 15px; height: 15px; border-radius: 7px;}" \
+                 "QRadioButton::indicator:unchecked {background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1," \
+                 "stop: 0 rgb(0, 242, 0), " \
+                 "stop: 1 rgb(0, 170, 0)); border: 2px solid gray;}"
+
+yellowProxStyle = "QRadioButton::indicator {width: 15px; height: 15px; border-radius: 7px;}" \
+                 "QRadioButton::indicator:unchecked {background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1," \
+                 "stop: 0 rgb(242, 242, 0), " \
+                 "stop: 1 rgb(170, 142, 0)); border: 2px solid gray;}"
+
+#set up locks
+enableLock = Lock()
+
+class Worker(QRunnable):
+    '''
+    Worker thread
+
+    Inherits from QRunnable to handler worker thread setup, signals and wrap-up.
+
+    :param callback: The function callback to run on this worker thread. Supplied args and
+                     kwargs will be passed through to the runner.
+    :type callback: function
+    :param args: Arguments to pass to the callback function
+    :param kwargs: Keywords to pass to the callback function
+
+    '''
+
+    def __init__(self, fn, *args, **kwargs):
+        super(Worker, self).__init__()
+        # Store constructor arguments (re-used for processing)
+        self.fn = fn
+        self.args = args
+        self.kwargs = kwargs
+
+    @pyqtSlot()
+    def run(self):
+        '''
+        Initialise the runner function with passed args, kwargs.
+        '''
+
+        # Retrieve args/kwargs here; and fire processing using them
+        try:
+            result = self.fn(*self.args, **self.kwargs)
+        except:
+            traceback.print_exc()
+            exctype, value = sys.exc_info()[:2]
+            self.signals.error.emit((exctype, value, traceback.format_exc()))
 
 class mywindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -87,12 +140,18 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui.enableBTN.clicked.connect(lambda:self.enableMotorToggle())
         self.ui.startStopBTN.clicked.connect(lambda:self.motorRun())
         self.ui.sensorBTN.clicked.connect(lambda:self.runSensorSession())
+        self.ui.proxRadio1.setStyleSheet(greenProxStyle)
+        self.ui.proxRadio2.setStyleSheet(greenProxStyle)
+        self.ui.proxRadio3.setStyleSheet(greenProxStyle)
 
         # Life cycle tab
         self.ui.paramSaveBTN.clicked.connect(lambda:self.lifeTestParamSample())
         self.ui.paramClearBTN.clicked.connect(lambda:self.lifeTestParamClear())
         self.ui.lifeCycleStartBTN.clicked.connect(lambda:self.simpleLifeTest())
         self.ui.lifeCycleSuspendBTN.clicked.connect(lambda:self.lifeTestSuspend())
+        self.ui.proxLifeRadio1.setStyleSheet(greenProxStyle)
+        self.ui.proxLifeRadio2.setStyleSheet(greenProxStyle)
+        self.ui.proxLifeRadio3.setStyleSheet(greenProxStyle)
 
 
         #labjack setup
@@ -102,8 +161,16 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui.PWMLCD.display(0)
         self.ui.pressureLCD1.display(0.0)# display data on GUI
 
+        #Ensure motor is off
         ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 5) # 0V high to disable
         ljm.eWriteName(handle, "DIO" + str(motorPWM) + "_EF_ENABLE", 0)  # Disable the EF system
+
+        #Set up threading
+        self.threadpool = QThreadPool()
+        print("Multithreading with maximum %d threads" % self.threadpool.maxThreadCount())
+
+        #set up locks
+        enableLock = Lock()
 
 
     def labJackSetUp(self):
@@ -295,49 +362,78 @@ class mywindow(QtWidgets.QMainWindow):
 
     def lifeTestSuspend(self):
         global motorEnabled, lifeTestActive
-        motorEnabled = False
-        lifeTestActive = False
-        ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 5)  # 5V high to enable
+        if self.ui.lifeCycleSuspendBTN.isChecked(): #Test is suspended, restart:
+            print("Restarting life cycle test")
+            motorEnabled = True
+            lifeTestActive = True
+        else: # Test is live, shut it down
+            print("Suspending life cycle test")
+            motorEnabled = False
+            lifeTestActive = False
+            ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 5)  # 0V high to disable
+            ljm.eWriteName(handle, "DIO" + str(motorPWM) + "_EF_ENABLE", 0)  # Disable the EF system
 
     def clockSetup(self):
         print("Setting up life-test clock")
 
+    '''
+    Simple function to toggle the direction and speed during life cycle test.
+    Does NOT control motor, but toggle parameters
+    '''
+    def lifeCycleToggle(self):
+        RPMout = int(self.ui.RPMoutEdit.text())
+        RPMin = int(self.ui.RPMinEdit.text())
+        global lifeTestMotorDirection
+
+        if lifeTestMotorDirection == 1: # Motor is driving out, toggle it to in
+            lifeTestMotorDirection = 0
+            freq = (RPMin*microstep)/60
+        else:
+            lifeTestMotorDirection = 1
+            freq = (RPMout*microstep)/60
+
+
+        print("Motor Parameters: ")
+        print("Direction: " + str(lifeTestMotorDirection))
+        print("RPM: " + str((1/microstep)*freq*60))
+        print("")
+
+        self.generateUserPWM(motorPWM, freq, defaultDuty)  # Potentially change freq/duty based on desired RPM
+        ljm.eWriteName(handle, "DIO" + str(motorDirectionPin), lifeTestMotorDirection)
+
     def simpleLifeTest(self):
-        global lifeTestActive, motorDirectionPin
-        lifeTestActive = True
-        while lifeTestActive:
-            flag = ljm.eReadName(handle, "AIN0")
+        # Initial variables
+        global lifeTestActive, lifeTestMotorDirection, motorEnabled
+        lifeTestActive= True
+        resetFlag = False #flag to check if action has been taken, but sensor still reading high
+        self.lifeTestParamSample() #get user inputs
 
-            if flag > 3: # Sensor flag is high, so stop and change directions
-                #Shut everything down
-                # print("Stopping Motor")
-                # print("")
-                # ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 5)  # 0V high to disable
-                # ljm.eWriteName(handle, "DIO" + str(motorPWM) + "_EF_ENABLE", 0)  # Disable the EF system
+        #Start initial test
+        lifeTestMotorDirection = 1
+        freq = (RPMout * microstep) / 60
+        self.generateUserPWM(motorPWM, freq, defaultDuty)  # Potentially change freq/duty based on desired RPM
+        ljm.eWriteName(handle, "DIO" + str(motorDirectionPin), lifeTestMotorDirection)
+        ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 0)  # Enable motor
+        motorEnabled = True
 
-                # Toggle motor direction
-                print("Motor Directon: " + str(motorDirectionPin))
-                if motorDirectionPin == 1: #Direction is forward, put it in reverse
-                    motorDirectionPin = 0
-                else: #direction is reverse, put er' in forward
-                    motorDirectionPin = 1
-                print("New Motor Direction: " + str(motorDirectionPin))
-                print("")
-                time.sleep(3)
+        print("Initial motor running, starting threads")
+        print(" ")
 
-                # Wait for the event to end
-                # while flag > 3:
-                #     print("Waiting for sensor low output")
+        # Pass the function to execute
+        sensorWorker = Worker(self.lifeSensorSample)  # Any other args, kwargs are passed to the run function
+        motorWorker = Worker(self.generateUserPWM,motorPWM, freq, defaultDuty)
+        self.threadpool.start(sensorWorker)
+        self.threadpool.start(motorWorker)
 
-                print("Restarting Motor Motion")
-
-            else: # Sensor flag is low, so run as programmed
-                self.motorRun()
-                print("Motor Running")
+        #create threads
+        #motorRun = threading.Thread(name='motorRun', target=self.generateUserPWM(motorPWM, freq, defaultDuty), daemon=True)
+        #sensorSample = threading.Thread(name='sensorSample', target=self.simpleSensorRead())
 
 
+        #start thradds
+        #sensorSample.start()
+        #motorRun.start()
 
-        print("TBD")
 
     def motorRun(self):
        global motorDirection
@@ -375,6 +471,8 @@ class mywindow(QtWidgets.QMainWindow):
                sys.exit(app.exec_())
 
     def enableMotorToggle(self):
+        #self.ui.proxRadio1.setStyleSheet(redProxStyle)
+
         global motorEnabled
         if self.ui.enableBTN.isChecked(): # Motor is turned on
             print("Motor Enabled")
@@ -513,7 +611,7 @@ class mywindow(QtWidgets.QMainWindow):
     def sampleSensorData(self):
         # test = datetime.datetime.now().strftime("%H:%M:%S")
         # print(test)
-        global motorEnable, lifeTestMotorDirection
+        global motorEnabled, lifeTestMotorDirection
         timeStamp = datetime.datetime.now().strftime("%H:%M:%S")
         V1 = ljm.eReadName(handle, pressureVoltage)  # Sample analog pressure input
         L1 = ljm.eReadName(handle, loadVoltage)  # Sample analog load cell input
@@ -524,7 +622,7 @@ class mywindow(QtWidgets.QMainWindow):
         flag = ljm.eReadName(handle, "AIN0")
         if flag > 3:
             #print("High Voltage Detected")
-            motorEnable = False
+            motorEnabled = False
             ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 5)  # 5V high to disable motor
 
             print("Motor Directon: " + str(lifeTestMotorDirection))
@@ -537,7 +635,7 @@ class mywindow(QtWidgets.QMainWindow):
             print("")
             time.sleep(10)
         else:
-            motorEnable = True
+            motorEnabled = True
             ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 0)  # Ov low to enable motor
             ljm.eWriteName(handle, "DIO" + str(motorDirectionPin), lifeTestMotorDirection)
         # End Testing
@@ -566,11 +664,16 @@ class mywindow(QtWidgets.QMainWindow):
                 QApplication.processEvents()  # Check to see if session ended
                 sessionActive = self.ui.sensorBTN.isChecked() # Check that session is running
                 sessionData.append(self.sampleSensorData()) # sample data and write to session list
-                #self.plotSessionData(sessionData)
-                time.sleep(0)
+                self.plotSessionData2(sessionData)
+
         else:
             self.ui.sensorBTN.setText("START")
 
+    '''
+    Initial plot sensor session data to display real-time plot
+    Carry-over from previous project, but locks up GUI
+    See new version (2) below
+    '''
     def plotSessionData(self, sessionData):
         global p1, p2
         #print("Plotting Data")
@@ -621,14 +724,138 @@ class mywindow(QtWidgets.QMainWindow):
         timer.timeout.connect(update)
         timer.start(10000) # wait to refresh
 
+    '''
+    Version 2 - Calls daemon thread object to just plot while rest of program stays active. 
+    Thread dies when program exits. 
+    '''
+    def plotSessionData2(self, sessionData):
+        def plot():
+            global p1, p2
+            # print("Plotting Data")
+            self.ui.plotWidget.clear()
+            self.ui.plotWidget.addLegend()
+            curve1 = self.ui.plotWidget.plot(pen='r', name="PRESSURE")  # Tool pressure curve
+            curve2 = self.ui.plotWidget.plot(pen='g', name="LOAD")
+
+            p2 = pg.ViewBox()
+            self.ui.plotWidget.scene().addItem(p2)
+            self.ui.plotWidget.getAxis('right').linkToView(p2)
+            p2.setXLink(self.ui.plotWidget)
+            p2.setYRange(-15, 15)
+            p2.addItem(curve2)
+
+            P1 = []  # Local list for pressure data
+            L1 = []  # Local list for load cell data
+            i = 0  # increment variable
+
+            for set in sessionData:  # grab invidudal data points and make a list
+                P1.append(sessionData[i][1])
+                L1.append(sessionData[i][2])
+                i += 1
+
+            # print("P1: " + str(P1))
+            # print("L1: " + str(L1))
+
+            curve1.setData(P1)  # Add pressure to curve
+            curve2.setData(L1)  # Add load cell voltage to curve
+            # app.processEvents()
+            P1A = np.array(P1)  # format in array for plotting
+            L1A = np.array(L1)  # format in array for plotting
+
+            def updateViews():
+                global p1, p2
+                p2.setGeometry(self.ui.plotWidget.getViewBox().sceneBoundingRect())
+                p2.linkedViewChanged(self.ui.plotWidget.getViewBox(), p2.XAxis)
+
+            def update():
+                global curve1, curve2, P1A, L1A
+                curve1.setData(P1A)  # Plot pressure
+                curve2.setData(L1A)  # Plot load
+
+            updateViews()
+            # self.ui.plotWidget.getViewBox().sigResized.connect(updateViews)
+
+            timer = QtCore.QTimer()
+            timer.timeout.connect(update)
+            timer.start(10000)  # wait to refresh
+
+        plotThread = threading.Thread(name='plotThread', target=plot(), daemon=True)
+        plotThread.start()
+
     def simpleSensorRead(self):
         name = "AIN0"
         voltage = ljm.eReadName(handle, name)
-
+        print("Voltage Reading: " + str(voltage))
+        time.sleep(.2)
         while True:
             voltage = ljm.eReadName(handle, name)
-            print("Voltage Reeading: " + str(voltage))
+            print("Voltage Reading: " + str(voltage))
             time.sleep(0.1)
+        return "Done"
+
+    def lifeSensorSample(self):
+        global motorEnable, lifeTestMotorDirection, motorEnabled, lifeTestActive
+        lifeTestActive = True
+        actionFlag = False
+        actionTaken = False
+
+        sessionData = []  # Generate empty list for local session data
+
+        while lifeTestActive:
+            timeStamp = datetime.datetime.now().strftime("%H:%M:%S")
+            V1 = ljm.eReadName(handle, pressureVoltage)  # Sample analog pressure input
+            L1 = ljm.eReadName(handle, loadVoltage)  # Sample analog load cell input
+            P1 = 61.121 * V1 - 43.622
+            prox1Low = ljm.eReadName(handle, "AIN6") #read proximity sensor low
+            prox1High = ljm.eReadName(handle, "AIN7") #read proximity sensor low
+            flag = ljm.eReadName(handle, "AIN0")
+
+            #sessionData.append(self.sampleSensorData())  # sample data and write to session list
+            #self.plotSessionData2(sessionData)
+
+            # Check first proximity sensor
+            if prox1High > 3 and not actionTaken:
+                print("Prox1 flagged, motor stopped)")
+                self.ui.proxLifeRadio1.setStyleSheet(redProxStyle)
+                motorEnabled = False #shut down motor
+                motorEnable = 5 #shut down motor
+                ljm.eWriteName(handle, "DAC" + str(motorEnablePin), motorEnable)  # 5V high to disable motor
+                ljm.eWriteName(handle, "DIO" + str(motorPWM) + "_EF_ENABLE", 0)  # Disable the EF system
+
+                #start timer to give a stop delay
+                print("10 second dwell....")
+                time.sleep(10)
+                print("toggling motor direction")
+                self.lifeCycleToggle() #Toggle the motor direction and RPM
+                print("New Motor Direction: " + str(lifeTestMotorDirection))
+                print("")
+
+                actionTaken = True #action has been taken based off of sensor flag
+                motorEnabled = True #set indicator to true
+                motorEnable = 0 #set global variable to allow motor to be durned on
+                ljm.eWriteName(handle, "DAC" + str(motorEnablePin), motorEnable)  # Ov low to enable motor
+                self.ui.proxLifeRadio1.setStyleSheet(yellowProxStyle)
+
+            elif prox1High > 3 and actionTaken: #condition where sensor is still flagging but action has been taken
+                timeVal = 0
+                timeout = 30
+                print("Timeout starting for " + str(timeout) + " seconds")
+                time.sleep(timeout)
+
+                prox1High = ljm.eReadName(handle, "AIN7")
+                if prox1High > 3: #see if sensor resets, if not, shut it down
+                    print("No sensor reset, shutting down permanently)")
+                    motorEnable = 5  # shut down motor
+                    ljm.eWriteName(handle, "DAC" + str(motorEnablePin), motorEnable)  # 5V high to disable motor
+                    ljm.eWriteName(handle, "DIO" + str(motorPWM) + "_EF_ENABLE", 0)  # Disable the EF system
+                else: #sensor reset, all clear
+                    actionTaken = False
+                    self.ui.proxLifeRadio1.setStyleSheet(greenProxStyle)
+
+            print("Life Test Running")
+            self.ui.pressureLifeLCD.display(P1)# display data on GUI
+            self.ui.loadLifeLCD.display(L1)
+            time.sleep(0.5)
 
 
 

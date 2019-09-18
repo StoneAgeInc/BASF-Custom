@@ -379,6 +379,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout.setSpacing(6)
         self.horizontalLayout.setObjectName("horizontalLayout")
         self.stepRevBTN = QtWidgets.QPushButton(self.controlWidget)
+        self.stepRevBTN.setEnabled(False)
         self.stepRevBTN.setStyleSheet("QPushButton\n"
 "{\n"
 "  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
@@ -425,6 +426,7 @@ class Ui_MainWindow(object):
         self.stepRevBTN.setObjectName("stepRevBTN")
         self.horizontalLayout.addWidget(self.stepRevBTN)
         self.stepFwdBTN = QtWidgets.QPushButton(self.controlWidget)
+        self.stepFwdBTN.setEnabled(False)
         self.stepFwdBTN.setStyleSheet("QPushButton\n"
 "{\n"
 "  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
@@ -479,6 +481,7 @@ class Ui_MainWindow(object):
         self.label_11.setObjectName("label_11")
         self.horizontalLayout.addWidget(self.label_11)
         self.spinBox = QtWidgets.QSpinBox(self.controlWidget)
+        self.spinBox.setEnabled(False)
         self.spinBox.setStyleSheet("QSpinBox,\n"
 "QDoubleSpinBox,\n"
 "QTimeEdit,\n"
@@ -623,7 +626,7 @@ class Ui_MainWindow(object):
 "  background-color: rgb(120,120,120);\n"
 "  border: 1px solid rgb(60,60,60);\n"
 "}")
-        self.PWMLCD.setDigitCount(8)
+        self.PWMLCD.setDigitCount(5)
         self.PWMLCD.setObjectName("PWMLCD")
         self.horizontalLayout_2.addWidget(self.PWMLCD)
         self.label_9 = QtWidgets.QLabel(self.controlWidget)
@@ -697,15 +700,15 @@ class Ui_MainWindow(object):
         self.s1MSLabel = QtWidgets.QLabel(self.sensorWidget)
         self.s1MSLabel.setObjectName("s1MSLabel")
         self.gridLayout_6.addWidget(self.s1MSLabel, 1, 0, 1, 1)
-        self.proxRadio5 = QtWidgets.QRadioButton(self.sensorWidget)
-        self.proxRadio5.setStyleSheet("QRadioButton::indicator {width: 15px; height: 15px; border-radius: 7px;} QRadioButton::indicator:unchecked { background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
+        self.proxRadio3 = QtWidgets.QRadioButton(self.sensorWidget)
+        self.proxRadio3.setStyleSheet("QRadioButton::indicator {width: 15px; height: 15px; border-radius: 7px;} QRadioButton::indicator:unchecked { background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
 "                                    stop: 0 rgb(200,50,50), stop: 1 rgb(145,5,5));\n"
 "\n"
 "border: 2px solid gray;}")
-        self.proxRadio5.setText("")
-        self.proxRadio5.setCheckable(False)
-        self.proxRadio5.setObjectName("proxRadio5")
-        self.gridLayout_6.addWidget(self.proxRadio5, 3, 1, 1, 1)
+        self.proxRadio3.setText("")
+        self.proxRadio3.setCheckable(False)
+        self.proxRadio3.setObjectName("proxRadio3")
+        self.gridLayout_6.addWidget(self.proxRadio3, 3, 1, 1, 1)
         self.label_10 = QtWidgets.QLabel(self.sensorWidget)
         self.label_10.setObjectName("label_10")
         self.gridLayout_6.addWidget(self.label_10, 2, 0, 1, 1)
@@ -1070,6 +1073,7 @@ class Ui_MainWindow(object):
         self.gridLayout_5.setSpacing(6)
         self.gridLayout_5.setObjectName("gridLayout_5")
         self.runTimeEdit = QtWidgets.QLineEdit(self.paramWidget)
+        self.runTimeEdit.setEnabled(False)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -1195,6 +1199,7 @@ class Ui_MainWindow(object):
         self.forceCutOffEdit.setObjectName("forceCutOffEdit")
         self.gridLayout_5.addWidget(self.forceCutOffEdit, 0, 3, 1, 1)
         self.stepsOutEdit = QtWidgets.QLineEdit(self.paramWidget)
+        self.stepsOutEdit.setEnabled(False)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -1263,6 +1268,7 @@ class Ui_MainWindow(object):
         self.RPMinEdit.setObjectName("RPMinEdit")
         self.gridLayout_5.addWidget(self.RPMinEdit, 2, 3, 1, 1)
         self.stepsInEdit = QtWidgets.QLineEdit(self.paramWidget)
+        self.stepsInEdit.setEnabled(False)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -1468,22 +1474,22 @@ class Ui_MainWindow(object):
         self.label_31.setSizePolicy(sizePolicy)
         self.label_31.setObjectName("label_31")
         self.gridLayout_4.addWidget(self.label_31, 6, 0, 1, 1)
-        self.lcdNumber_2 = QtWidgets.QLCDNumber(self.statusWidget)
-        self.lcdNumber_2.setObjectName("lcdNumber_2")
-        self.gridLayout_4.addWidget(self.lcdNumber_2, 5, 3, 1, 1)
-        self.radioButton_2 = QtWidgets.QRadioButton(self.statusWidget)
+        self.loadLifeLCD = QtWidgets.QLCDNumber(self.statusWidget)
+        self.loadLifeLCD.setObjectName("loadLifeLCD")
+        self.gridLayout_4.addWidget(self.loadLifeLCD, 5, 3, 1, 1)
+        self.proxLifeRadio2 = QtWidgets.QRadioButton(self.statusWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.radioButton_2.sizePolicy().hasHeightForWidth())
-        self.radioButton_2.setSizePolicy(sizePolicy)
-        self.radioButton_2.setStyleSheet("QRadioButton::indicator {width: 15px; height: 15px; border-radius: 7px;} QRadioButton::indicator:unchecked {\n"
+        sizePolicy.setHeightForWidth(self.proxLifeRadio2.sizePolicy().hasHeightForWidth())
+        self.proxLifeRadio2.setSizePolicy(sizePolicy)
+        self.proxLifeRadio2.setStyleSheet("QRadioButton::indicator {width: 15px; height: 15px; border-radius: 7px;} QRadioButton::indicator:unchecked {\n"
 "background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
 "                                    stop: 0 rgb(0, 242, 0), stop: 1 rgb(0, 170, 0));\n"
 "border: 2px solid gray;}")
-        self.radioButton_2.setText("")
-        self.radioButton_2.setObjectName("radioButton_2")
-        self.gridLayout_4.addWidget(self.radioButton_2, 5, 1, 1, 1)
+        self.proxLifeRadio2.setText("")
+        self.proxLifeRadio2.setObjectName("proxLifeRadio2")
+        self.gridLayout_4.addWidget(self.proxLifeRadio2, 5, 1, 1, 1)
         self.label_29 = QtWidgets.QLabel(self.statusWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
@@ -1497,27 +1503,27 @@ class Ui_MainWindow(object):
         self.gridLayout_4.addWidget(self.label_28, 5, 2, 1, 1)
         spacerItem6 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.gridLayout_4.addItem(spacerItem6, 10, 0, 1, 1)
-        self.radioButton_3 = QtWidgets.QRadioButton(self.statusWidget)
+        self.proxLifeRadio3 = QtWidgets.QRadioButton(self.statusWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.radioButton_3.sizePolicy().hasHeightForWidth())
-        self.radioButton_3.setSizePolicy(sizePolicy)
-        self.radioButton_3.setStyleSheet("QRadioButton::indicator {width: 15px; height: 15px; border-radius: 7px;} QRadioButton::indicator:unchecked {\n"
+        sizePolicy.setHeightForWidth(self.proxLifeRadio3.sizePolicy().hasHeightForWidth())
+        self.proxLifeRadio3.setSizePolicy(sizePolicy)
+        self.proxLifeRadio3.setStyleSheet("QRadioButton::indicator {width: 15px; height: 15px; border-radius: 7px;} QRadioButton::indicator:unchecked {\n"
 "background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
 "                                    stop: 0 rgb(0, 242, 0), stop: 1 rgb(0, 170, 0));\n"
 "border: 2px solid gray;}")
-        self.radioButton_3.setText("")
-        self.radioButton_3.setObjectName("radioButton_3")
-        self.gridLayout_4.addWidget(self.radioButton_3, 6, 1, 1, 1)
-        self.lcdNumber = QtWidgets.QLCDNumber(self.statusWidget)
+        self.proxLifeRadio3.setText("")
+        self.proxLifeRadio3.setObjectName("proxLifeRadio3")
+        self.gridLayout_4.addWidget(self.proxLifeRadio3, 6, 1, 1, 1)
+        self.pressureLifeLCD = QtWidgets.QLCDNumber(self.statusWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.lcdNumber.sizePolicy().hasHeightForWidth())
-        self.lcdNumber.setSizePolicy(sizePolicy)
-        self.lcdNumber.setObjectName("lcdNumber")
-        self.gridLayout_4.addWidget(self.lcdNumber, 4, 3, 1, 1)
+        sizePolicy.setHeightForWidth(self.pressureLifeLCD.sizePolicy().hasHeightForWidth())
+        self.pressureLifeLCD.setSizePolicy(sizePolicy)
+        self.pressureLifeLCD.setObjectName("pressureLifeLCD")
+        self.gridLayout_4.addWidget(self.pressureLifeLCD, 4, 3, 1, 1)
         self.lifeCycleStartBTN = QtWidgets.QPushButton(self.statusWidget)
         self.lifeCycleStartBTN.setStyleSheet("QPushButton\n"
 "{\n"
@@ -1564,20 +1570,20 @@ class Ui_MainWindow(object):
 "}")
         self.lifeCycleStartBTN.setObjectName("lifeCycleStartBTN")
         self.gridLayout_4.addWidget(self.lifeCycleStartBTN, 6, 2, 1, 2)
-        self.radioButton = QtWidgets.QRadioButton(self.statusWidget)
+        self.proxLifeRadio1 = QtWidgets.QRadioButton(self.statusWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.radioButton.sizePolicy().hasHeightForWidth())
-        self.radioButton.setSizePolicy(sizePolicy)
-        self.radioButton.setStyleSheet("QRadioButton::indicator {width: 15px; height: 15px; border-radius: 7px;} QRadioButton::indicator:unchecked {\n"
+        sizePolicy.setHeightForWidth(self.proxLifeRadio1.sizePolicy().hasHeightForWidth())
+        self.proxLifeRadio1.setSizePolicy(sizePolicy)
+        self.proxLifeRadio1.setStyleSheet("QRadioButton::indicator {width: 15px; height: 15px; border-radius: 7px;} QRadioButton::indicator:unchecked {\n"
 "background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
 "                                    stop: 0 rgb(0, 242, 0), stop: 1 rgb(0, 170, 0));\n"
 "border: 2px solid gray;}")
-        self.radioButton.setText("")
-        self.radioButton.setAutoExclusive(True)
-        self.radioButton.setObjectName("radioButton")
-        self.gridLayout_4.addWidget(self.radioButton, 4, 1, 1, 1)
+        self.proxLifeRadio1.setText("")
+        self.proxLifeRadio1.setAutoExclusive(True)
+        self.proxLifeRadio1.setObjectName("proxLifeRadio1")
+        self.gridLayout_4.addWidget(self.proxLifeRadio1, 4, 1, 1, 1)
         self.label_27 = QtWidgets.QLabel(self.statusWidget)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
@@ -1645,7 +1651,7 @@ class Ui_MainWindow(object):
         MainWindow.setStatusBar(self.statusBar)
 
         self.retranslateUi(MainWindow)
-        self.T1.setCurrentIndex(0)
+        self.T1.setCurrentIndex(1)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.startStopBTN, self.revDirRadioBTN)
         MainWindow.setTabOrder(self.revDirRadioBTN, self.fwdDirRadioBTN)
@@ -1654,8 +1660,8 @@ class Ui_MainWindow(object):
         MainWindow.setTabOrder(self.stepRevBTN, self.stepFwdBTN)
         MainWindow.setTabOrder(self.stepFwdBTN, self.spinBox)
         MainWindow.setTabOrder(self.spinBox, self.proxRadio2)
-        MainWindow.setTabOrder(self.proxRadio2, self.proxRadio5)
-        MainWindow.setTabOrder(self.proxRadio5, self.proxRadio1)
+        MainWindow.setTabOrder(self.proxRadio2, self.proxRadio3)
+        MainWindow.setTabOrder(self.proxRadio3, self.proxRadio1)
         MainWindow.setTabOrder(self.proxRadio1, self.lineEdit)
         MainWindow.setTabOrder(self.lineEdit, self.sensorBTN)
         MainWindow.setTabOrder(self.sensorBTN, self.newSessionBTN)
@@ -1671,12 +1677,12 @@ class Ui_MainWindow(object):
         MainWindow.setTabOrder(self.stepsOutEdit, self.stepsInEdit)
         MainWindow.setTabOrder(self.stepsInEdit, self.RPMoutEdit)
         MainWindow.setTabOrder(self.RPMoutEdit, self.RPMinEdit)
-        MainWindow.setTabOrder(self.RPMinEdit, self.radioButton_3)
-        MainWindow.setTabOrder(self.radioButton_3, self.lifeCycleStartBTN)
-        MainWindow.setTabOrder(self.lifeCycleStartBTN, self.radioButton)
-        MainWindow.setTabOrder(self.radioButton, self.lifeCycleSuspendBTN)
-        MainWindow.setTabOrder(self.lifeCycleSuspendBTN, self.radioButton_2)
-        MainWindow.setTabOrder(self.radioButton_2, self.T1)
+        MainWindow.setTabOrder(self.RPMinEdit, self.proxLifeRadio3)
+        MainWindow.setTabOrder(self.proxLifeRadio3, self.lifeCycleStartBTN)
+        MainWindow.setTabOrder(self.lifeCycleStartBTN, self.proxLifeRadio1)
+        MainWindow.setTabOrder(self.proxLifeRadio1, self.lifeCycleSuspendBTN)
+        MainWindow.setTabOrder(self.lifeCycleSuspendBTN, self.proxLifeRadio2)
+        MainWindow.setTabOrder(self.proxLifeRadio2, self.T1)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
