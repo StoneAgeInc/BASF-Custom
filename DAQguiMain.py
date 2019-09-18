@@ -54,7 +54,7 @@ motorPWM = 0 # Defined as DIO pin number
 pressureVoltage = "AIN0"
 loadVoltage = "AIN1"
 px1Low = "AIN6" # Tool stop, pin 1 EuroSwitch Prox Sensor
-px1High = "AIN7" # Tool stop, pin 3, EuroSwitch Prox Sensor
+px1High = "AIN13" # Tool stop, pin 3, EuroSwitch Prox Sensor
 px2Low = "AIN8" # RPM1
 px2High = "AIN9" # RPM1
 px3Low = "AIN10" # RPM2
@@ -807,11 +807,14 @@ class mywindow(QtWidgets.QMainWindow):
             L1 = ljm.eReadName(handle, loadVoltage)  # Sample analog load cell input
             P1 = 61.121 * V1 - 43.622
             prox1Low = ljm.eReadName(handle, "AIN6") #read proximity sensor low
-            prox1High = ljm.eReadName(handle, "AIN7") #read proximity sensor low
+            prox1High = ljm.eReadName(handle, "AIN13") #read proximity sensor low
             flag = ljm.eReadName(handle, "AIN0")
 
             #sessionData.append(self.sampleSensorData())  # sample data and write to session list
             #self.plotSessionData2(sessionData)
+
+            print("Action Flag: " + str(actionFlag))
+            print("Prox Val: " + str(prox1High))
 
             # Check first proximity sensor
             if prox1High > 3 and not actionTaken:
@@ -848,9 +851,12 @@ class mywindow(QtWidgets.QMainWindow):
                     motorEnable = 5  # shut down motor
                     ljm.eWriteName(handle, "DAC" + str(motorEnablePin), motorEnable)  # 5V high to disable motor
                     ljm.eWriteName(handle, "DIO" + str(motorPWM) + "_EF_ENABLE", 0)  # Disable the EF system
+                    lifeTestActive = False
                 else: #sensor reset, all clear
                     actionTaken = False
                     self.ui.proxLifeRadio1.setStyleSheet(greenProxStyle)
+            elif prox1High < 3:
+                self.ui.proxLifeRadio1.setStyleSheet(greenProxStyle)
 
             print("Life Test Running")
             self.ui.pressureLifeLCD.display(P1)# display data on GUI
