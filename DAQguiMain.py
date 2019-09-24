@@ -46,6 +46,11 @@ defaultFreq = 20000# Default PWM Freq
 defaultDuty = 0.05
 defaultsampleFreq = 1 # Defined in Hz
 
+#Life Test Globals
+startTime = 0
+endTime = 0
+runPeriod = 0
+
 # Define I/O Pins
 motorEnable = 5 #5V high to disable motors
 motorDirectionPin = 1 # Defined as DIO pin number
@@ -53,8 +58,8 @@ motorEnablePin = 1 # Defined as DAC pin number
 motorPWM = 0 # Defined as DIO pin number
 pressureVoltage = "AIN0"
 loadVoltage = "AIN1"
-px1Low = "AIN6" # Tool stop, pin 1 EuroSwitch Prox Sensor
-px1High = "AIN13" # Tool stop, pin 3, EuroSwitch Prox Sensor
+px1Low = "AIN2" # Tool stop, pin 1 EuroSwitch Prox Sensor
+px1High = "AIN3" # Tool stop, pin 3, EuroSwitch Prox Sensor
 px2Low = "AIN8" # RPM1
 px2High = "AIN9" # RPM1
 px3Low = "AIN10" # RPM2
@@ -78,18 +83,22 @@ yellowProxStyle = "QRadioButton::indicator {width: 15px; height: 15px; border-ra
 #set up locks
 enableLock = Lock()
 
+class Task(QtCore.QObject):
+    updated = QtCore.pyqtSignal(int, int)
+    def __init__(self):
+        """ If useEmit True, emits a signal. If False, uses a callback. """
+        super(Task, self).__init__()
+        self.useEmit = True
+
 class Worker(QRunnable):
     '''
     Worker thread
-
     Inherits from QRunnable to handler worker thread setup, signals and wrap-up.
-
     :param callback: The function callback to run on this worker thread. Supplied args and
                      kwargs will be passed through to the runner.
     :type callback: function
     :param args: Arguments to pass to the callback function
     :param kwargs: Keywords to pass to the callback function
-
     '''
 
     def __init__(self, fn, *args, **kwargs):
@@ -152,7 +161,8 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui.proxLifeRadio1.setStyleSheet(greenProxStyle)
         self.ui.proxLifeRadio2.setStyleSheet(greenProxStyle)
         self.ui.proxLifeRadio3.setStyleSheet(greenProxStyle)
-
+        self.ui.RPMinEdit.setText("25")
+        self.ui.RPMoutEdit.setText("100")
 
         #labjack setup
         self.labJackSetUp()
@@ -171,6 +181,7 @@ class mywindow(QtWidgets.QMainWindow):
 
         #set up locks
         enableLock = Lock()
+        self.redrawLock = Lock()
 
 
     def labJackSetUp(self):
@@ -211,6 +222,7 @@ class mywindow(QtWidgets.QMainWindow):
     Life Cycle Test alternate function
     Based off of hose reel hard calculations
     Assume that "steps out" can be swapped for "feet out" and a total run time determined from that value 
+    NOT USED
     '''
     def lifeTest2(self):
         print("Starting Life Cycle Started")
@@ -292,6 +304,7 @@ class mywindow(QtWidgets.QMainWindow):
         print("End Life Test Run")
         print("")
 
+
     def lifeCycleRun(self):
         print("Starting Life Cycle Started")
         global runTime, cutOffForce, stepsOut, stepsIn, RPMout, RPMin, lifeTest, lifeTestMotorDirection, motorEnabled
@@ -362,16 +375,53 @@ class mywindow(QtWidgets.QMainWindow):
 
     def lifeTestSuspend(self):
         global motorEnabled, lifeTestActive
-        if self.ui.lifeCycleSuspendBTN.isChecked(): #Test is suspended, restart:
+
+        if not lifeTestActive: #Test is not active, restart:
             print("Restarting life cycle test")
             motorEnabled = True
             lifeTestActive = True
+            self.ui.lifeCycleSuspendBTN.setChecked(False)
+            self.ui.lifeCycleSuspendBTN.setText("SUSPEND")
+            self.ui.lifeCycleStartBTN.setDisabled(True)
+            self.ui.lifeCycleStartBTN.setChecked(True)
+            self.ui.lifeCycleStartBTN.setText("RUNNING")
+            self.simpleLifeTest() #Restart the test
+
+        elif lifeTestActive: # Test is live, shut it down
+            print("Suspending life cycle test")
+            motorEnabled = False
+            lifeTestActive = False
+            ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 5)  # 0V high to disable
+            ljm.eWriteName(handle, "DIO" + str(motorPWM) + "_EF_ENABLE", 0)  # Disable the EF system
+
+            self.ui.lifeCycleSuspendBTN.setChecked(True)
+            self.ui.lifeCycleSuspendBTN.setText("SUSPENDED")
+            self.ui.lifeCycleStartBTN.setDisabled(False)
+            self.ui.lifeCycleStartBTN.setChecked(False)
+            self.ui.lifeCycleStartBTN.setText("START")
+
+    def lifeTestSuspend2(self):
+        global motorEnabled, lifeTestActive
+
+        if self.ui.lifeCycleStartBTN.isChecked(): #Test is suspended, restart:
+            print("Restarting life cycle test")
+            motorEnabled = True
+            lifeTestActive = True
+            #self.ui.lifeCycleSuspendBTN.setChecked(False)
+            #self.ui.lifeCycleSuspendBTN.setText("SUSPEND")
+            self.ui.lifeCycleStartBTN.setChecked(True)
+            self.ui.lifeCycleStartBTN.setText("RUNNING")
+
         else: # Test is live, shut it down
             print("Suspending life cycle test")
             motorEnabled = False
             lifeTestActive = False
             ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 5)  # 0V high to disable
             ljm.eWriteName(handle, "DIO" + str(motorPWM) + "_EF_ENABLE", 0)  # Disable the EF system
+            # self.ui.lifeCycleSuspendBTN.setChecked(True)
+            # self.ui.lifeCycleSuspendBTN.setText("SUSPENDED")
+            self.ui.lifeCycleStartBTN.setChecked(False)
+            self.ui.lifeCycleStartBTN.setText("START")
 
     def clockSetup(self):
         print("Setting up life-test clock")
@@ -404,36 +454,44 @@ class mywindow(QtWidgets.QMainWindow):
     def simpleLifeTest(self):
         # Initial variables
         global lifeTestActive, lifeTestMotorDirection, motorEnabled
-        lifeTestActive= True
-        resetFlag = False #flag to check if action has been taken, but sensor still reading high
-        self.lifeTestParamSample() #get user inputs
+        if self.ui.lifeCycleStartBTN.isChecked(): # A test is running, make non-active
+            lifeTestActive= True
+            resetFlag = False #flag to check if action has been taken, but sensor still reading high
+            self.lifeTestParamSample() #get user inputs
+            self.ui.lifeCycleStartBTN.setText("RUNNING")
+            self.ui.lifeCycleStartBTN.setDisabled(True)
 
-        #Start initial test
-        lifeTestMotorDirection = 1
-        freq = (RPMout * microstep) / 60
-        self.generateUserPWM(motorPWM, freq, defaultDuty)  # Potentially change freq/duty based on desired RPM
-        ljm.eWriteName(handle, "DIO" + str(motorDirectionPin), lifeTestMotorDirection)
-        ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 0)  # Enable motor
-        motorEnabled = True
+            #sample start/stop time and get parameters
+            #startTime = datetime.datetime.now().strftime("%H:%M")
+            startTime = 0
+            #endTime = (datetime.datetime.now() + timedelta(minutes=runTime)).strftime("%H:%M")
+            #runPeriod = timedelta(minutes=runTime)
+            runPeriod = int(self.ui.runTimeEdit.text())*60
+            endTime = startTime + runPeriod
+            minutes = 0
 
-        print("Initial motor running, starting threads")
-        print(" ")
+            #Start initial test
+            lifeTestMotorDirection = 1
+            freq = (RPMout * microstep) / 60
+            self.generateUserPWM(motorPWM, freq, defaultDuty)  # Potentially change freq/duty based on desired RPM
+            ljm.eWriteName(handle, "DIO" + str(motorDirectionPin), lifeTestMotorDirection)
+            ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 0)  # Enable motor
+            motorEnabled = True
 
-        # Pass the function to execute
-        sensorWorker = Worker(self.lifeSensorSample)  # Any other args, kwargs are passed to the run function
-        motorWorker = Worker(self.generateUserPWM,motorPWM, freq, defaultDuty)
-        self.threadpool.start(sensorWorker)
-        self.threadpool.start(motorWorker)
+            print("Initial motor running, starting threads")
+            print(" ")
 
-        #create threads
-        #motorRun = threading.Thread(name='motorRun', target=self.generateUserPWM(motorPWM, freq, defaultDuty), daemon=True)
-        #sensorSample = threading.Thread(name='sensorSample', target=self.simpleSensorRead())
+            # Pass the function to execute
+            sensorWorker = Worker(self.lifeSensorSample)  # Any other args, kwargs are passed to the run function
+            motorWorker = Worker(self.generateUserPWM, motorPWM, freq, defaultDuty)
+            #progBarWorker = Worker(self.progTask, startTime, endTime, runPeriod)
+            self.threadpool.start(sensorWorker)
+            self.threadpool.start(motorWorker)
+            #self.threadpool.start(progBarWorker)
 
-
-        #start thradds
-        #sensorSample.start()
-        #motorRun.start()
-
+        else:
+            print("Test Running")
+            self.ui.lifeCycleStartBTN.setDisabled(True)
 
     def motorRun(self):
        global motorDirection
@@ -800,15 +858,16 @@ class mywindow(QtWidgets.QMainWindow):
         actionTaken = False
 
         sessionData = []  # Generate empty list for local session data
+        cutOffForce = int(self.ui.forceCutOffEdit.text())
 
         while lifeTestActive:
             timeStamp = datetime.datetime.now().strftime("%H:%M:%S")
             V1 = ljm.eReadName(handle, pressureVoltage)  # Sample analog pressure input
-            L1 = ljm.eReadName(handle, loadVoltage)  # Sample analog load cell input
-            P1 = 61.121 * V1 - 43.622
-            prox1Low = ljm.eReadName(handle, "AIN6") #read proximity sensor low
-            prox1High = ljm.eReadName(handle, "AIN13") #read proximity sensor low
-            flag = ljm.eReadName(handle, "AIN0")
+            LV1 = ljm.eReadName(handle, loadVoltage)  # Sample analog load cell input
+            P1 = 61.121*V1-43.622
+            load = LV1*1 #UPDATE NEEDED TO LOAD CELL
+            prox1Low = ljm.eReadName(handle, px1Low) #read proximity sensor low
+            prox1High = ljm.eReadName(handle, px1High) #read proximity sensor low
 
             #sessionData.append(self.sampleSensorData())  # sample data and write to session list
             #self.plotSessionData2(sessionData)
@@ -826,8 +885,8 @@ class mywindow(QtWidgets.QMainWindow):
                 ljm.eWriteName(handle, "DIO" + str(motorPWM) + "_EF_ENABLE", 0)  # Disable the EF system
 
                 #start timer to give a stop delay
-                print("10 second dwell....")
-                time.sleep(10)
+                print("5 second dwell....")
+                time.sleep(5)
                 print("toggling motor direction")
                 self.lifeCycleToggle() #Toggle the motor direction and RPM
                 print("New Motor Direction: " + str(lifeTestMotorDirection))
@@ -841,27 +900,76 @@ class mywindow(QtWidgets.QMainWindow):
 
             elif prox1High > 3 and actionTaken: #condition where sensor is still flagging but action has been taken
                 timeVal = 0
-                timeout = 30
+                timeout = 10
                 print("Timeout starting for " + str(timeout) + " seconds")
                 time.sleep(timeout)
+                prox1High = ljm.eReadName(handle, px1High)
 
-                prox1High = ljm.eReadName(handle, "AIN7")
                 if prox1High > 3: #see if sensor resets, if not, shut it down
                     print("No sensor reset, shutting down permanently)")
                     motorEnable = 5  # shut down motor
                     ljm.eWriteName(handle, "DAC" + str(motorEnablePin), motorEnable)  # 5V high to disable motor
                     ljm.eWriteName(handle, "DIO" + str(motorPWM) + "_EF_ENABLE", 0)  # Disable the EF system
                     lifeTestActive = False
+
                 else: #sensor reset, all clear
                     actionTaken = False
                     self.ui.proxLifeRadio1.setStyleSheet(greenProxStyle)
+
             elif prox1High < 3:
                 self.ui.proxLifeRadio1.setStyleSheet(greenProxStyle)
+                actionTaken = False
+
+            #check load cell
+            if load >= cutOffForce:
+                print("Max Load Exceeded")
+                self.lifeTestSuspend()
+                print("Suspending life cycle test")
+                motorEnabled = False
+                lifeTestActive = False
+                motorEnable = 5
+                ljm.eWriteName(handle, "DAC" + str(motorEnablePin), motorEnable)  # 0V high to disable
+                ljm.eWriteName(handle, "DIO" + str(motorPWM) + "_EF_ENABLE", 0)  # Disable the EF system
 
             print("Life Test Running")
             self.ui.pressureLifeLCD.display(P1)# display data on GUI
-            self.ui.loadLifeLCD.display(L1)
-            time.sleep(0.5)
+            self.ui.loadLifeLCD.display(load)
+            time.sleep(0.1)
+
+    def checkLoadMax(self):
+        global motorEnabled, lifeTestActive, motorEnable
+        cutOffForce = int(self.ui.forceCutOffEdit.text())
+        Vload = ljm.eReadName(handle, loadVoltage)  # Sample analog load cell input
+        L1 = 61.121 * Vload - 43.622 # compute load cell from linear interpolated curve
+
+        if L1 >= cutOffForce:
+            print("Max Load Exceeded")
+            self.lifeTestSuspend()
+            print("Suspending life cycle test")
+            motorEnabled = False
+            lifeTestActive = False
+            motorEnable = 5
+            ljm.eWriteName(handle, "DAC" + str(motorEnablePin), motorEnable)  # 0V high to disable
+            ljm.eWriteName(handle, "DIO" + str(motorPWM) + "_EF_ENABLE", 0)  # Disable the EF system
+
+    def progTask(self):
+        task = Task()
+        print(task.updated.connect(self.progBarUpdate))
+
+    def progBarUpdate(self, startTime, endTime, runPeriod):
+        with self.redrawLock:
+            elapsedTime = 0
+            while lifeTestActive:
+                if elapsedTime <= runPeriod: # While the test is active, update
+                    progBarVal = 100 * ((runPeriod - (endTime - elapsedTime)) / runPeriod)
+                    self.ui.lifeTestProgBar.setValue(progBarVal)
+                    elapsedTime += 2 #update in 1 sec intervals
+                    time.sleep(2)
+                else:
+                    print("Life Test Suspended - No prog bar update")
+
+
+
 
 
 

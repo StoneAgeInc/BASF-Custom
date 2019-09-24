@@ -1073,7 +1073,7 @@ class Ui_MainWindow(object):
         self.gridLayout_5.setSpacing(6)
         self.gridLayout_5.setObjectName("gridLayout_5")
         self.runTimeEdit = QtWidgets.QLineEdit(self.paramWidget)
-        self.runTimeEdit.setEnabled(False)
+        self.runTimeEdit.setEnabled(True)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -1511,7 +1511,7 @@ class Ui_MainWindow(object):
         self.proxLifeRadio3.setSizePolicy(sizePolicy)
         self.proxLifeRadio3.setStyleSheet("QRadioButton::indicator {width: 15px; height: 15px; border-radius: 7px;} QRadioButton::indicator:unchecked {\n"
 "background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                    stop: 0 rgb(0, 242, 0), stop: 1 rgb(0, 170, 0));\n"
+"                                    stop: 0 rgb(242, 242, 0), stop: 1 rgb(170, 142, 0));\n"
 "border: 2px solid gray;}")
         self.proxLifeRadio3.setText("")
         self.proxLifeRadio3.setObjectName("proxLifeRadio3")
@@ -1568,6 +1568,7 @@ class Ui_MainWindow(object):
 "  border-color: rgb(60,60,60);\n"
 "  color: rgb(40,40,40);\n"
 "}")
+        self.lifeCycleStartBTN.setCheckable(True)
         self.lifeCycleStartBTN.setObjectName("lifeCycleStartBTN")
         self.gridLayout_4.addWidget(self.lifeCycleStartBTN, 6, 2, 1, 2)
         self.proxLifeRadio1 = QtWidgets.QRadioButton(self.statusWidget)
@@ -1636,6 +1637,7 @@ class Ui_MainWindow(object):
 "  border-color: rgb(60,60,60);\n"
 "  color: rgb(40,40,40);\n"
 "}")
+        self.lifeCycleSuspendBTN.setCheckable(True)
         self.lifeCycleSuspendBTN.setObjectName("lifeCycleSuspendBTN")
         self.gridLayout_4.addWidget(self.lifeCycleSuspendBTN, 7, 2, 1, 2)
         self.verticalLayout_3.addLayout(self.gridLayout_4)
