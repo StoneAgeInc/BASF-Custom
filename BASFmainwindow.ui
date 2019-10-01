@@ -74,7 +74,7 @@ QTabWidget::pane:disabled
        <enum>QTabWidget::North</enum>
       </property>
       <property name="currentIndex">
-       <number>1</number>
+       <number>0</number>
       </property>
       <widget class="QWidget" name="controlTab">
        <property name="styleSheet">
@@ -410,12 +410,12 @@ QPushButton:disabled
              <item>
               <widget class="QLabel" name="label_5">
                <property name="text">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; color:#bfbfbf;&quot;&gt;Execution Steps:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; color:#bfbfbf;&quot;&gt;Target RPM:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QLineEdit" name="execStepsEdit">
+              <widget class="QLineEdit" name="RPMlineEdit">
                <property name="styleSheet">
                 <string notr="true">QLineEdit
 {
@@ -444,7 +444,7 @@ QLineEdit:disabled
                 <set>Qt::AlignCenter</set>
                </property>
                <property name="placeholderText">
-                <string>(Total Steps)</string>
+                <string>(Target RPM)</string>
                </property>
               </widget>
              </item>
@@ -2142,7 +2142,7 @@ QPushButton:disabled
   <tabstop>startStopBTN</tabstop>
   <tabstop>revDirRadioBTN</tabstop>
   <tabstop>fwdDirRadioBTN</tabstop>
-  <tabstop>execStepsEdit</tabstop>
+  <tabstop>RPMlineEdit</tabstop>
   <tabstop>stepRevBTN</tabstop>
   <tabstop>stepFwdBTN</tabstop>
   <tabstop>spinBox</tabstop>
