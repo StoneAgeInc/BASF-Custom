@@ -410,12 +410,12 @@ QPushButton:disabled
              <item>
               <widget class="QLabel" name="label_5">
                <property name="text">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; color:#bfbfbf;&quot;&gt;Target RPM:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; color:#bfbfbf;&quot;&gt;Target Out RPM:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
               </widget>
              </item>
              <item>
-              <widget class="QLineEdit" name="RPMlineEdit">
+              <widget class="QLineEdit" name="RPMinLineEdit">
                <property name="styleSheet">
                 <string notr="true">QLineEdit
 {
@@ -442,6 +442,44 @@ QLineEdit:disabled
                </property>
                <property name="alignment">
                 <set>Qt::AlignCenter</set>
+               </property>
+               <property name="placeholderText">
+                <string>(Target RPM)</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLabel" name="label_15">
+               <property name="text">
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; color:#bfbfbf;&quot;&gt;Target In RPM:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+               </property>
+              </widget>
+             </item>
+             <item>
+              <widget class="QLineEdit" name="RPMoutLineEdit">
+               <property name="styleSheet">
+                <string notr="true">QLineEdit
+{
+  background-color: rgb(80,80,80);
+  border: 1px solid rgb(20,20,20);
+  color: rgb(220,220,220);
+  padding: 4px;
+  selection-background-color: rgb(70,110,130);
+  selection-color: white;
+}
+
+QLineEdit:focus
+{
+  border-color: rgb(90,200,255);
+}
+
+/**** QLineEdit (disabled) ****/
+QLineEdit:disabled
+{
+  background-color: rgb(120,120,120);
+  border-color: rgb(60,60,60);
+  color: rgb(40,40,40);
+}</string>
                </property>
                <property name="placeholderText">
                 <string>(Target RPM)</string>
@@ -774,7 +812,7 @@ QLCDNumber:disabled
              <item>
               <widget class="QLabel" name="label_9">
                <property name="text">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; color:#bfbfbf;&quot;&gt;Motor RPM:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; color:#bfbfbf;&quot;&gt;Microstep (steps/rev):&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
               </widget>
              </item>
@@ -2142,7 +2180,7 @@ QPushButton:disabled
   <tabstop>startStopBTN</tabstop>
   <tabstop>revDirRadioBTN</tabstop>
   <tabstop>fwdDirRadioBTN</tabstop>
-  <tabstop>RPMlineEdit</tabstop>
+  <tabstop>RPMinLineEdit</tabstop>
   <tabstop>stepRevBTN</tabstop>
   <tabstop>stepFwdBTN</tabstop>
   <tabstop>spinBox</tabstop>

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'BASFmainwindow.ui'
 #
-# Created by: PyQt5 UI code generator 5.12.1
+# Created by: PyQt5 UI code generator 5.12.2
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -346,8 +346,8 @@ class Ui_MainWindow(object):
         self.label_5 = QtWidgets.QLabel(self.controlWidget)
         self.label_5.setObjectName("label_5")
         self.horizontalLayout_6.addWidget(self.label_5)
-        self.RPMlineEdit = QtWidgets.QLineEdit(self.controlWidget)
-        self.RPMlineEdit.setStyleSheet("QLineEdit\n"
+        self.RPMinLineEdit = QtWidgets.QLineEdit(self.controlWidget)
+        self.RPMinLineEdit.setStyleSheet("QLineEdit\n"
 "{\n"
 "  background-color: rgb(80,80,80);\n"
 "  border: 1px solid rgb(20,20,20);\n"
@@ -369,9 +369,37 @@ class Ui_MainWindow(object):
 "  border-color: rgb(60,60,60);\n"
 "  color: rgb(40,40,40);\n"
 "}")
-        self.RPMlineEdit.setAlignment(QtCore.Qt.AlignCenter)
-        self.RPMlineEdit.setObjectName("RPMlineEdit")
-        self.horizontalLayout_6.addWidget(self.RPMlineEdit)
+        self.RPMinLineEdit.setAlignment(QtCore.Qt.AlignCenter)
+        self.RPMinLineEdit.setObjectName("RPMinLineEdit")
+        self.horizontalLayout_6.addWidget(self.RPMinLineEdit)
+        self.label_15 = QtWidgets.QLabel(self.controlWidget)
+        self.label_15.setObjectName("label_15")
+        self.horizontalLayout_6.addWidget(self.label_15)
+        self.RPMoutLineEdit = QtWidgets.QLineEdit(self.controlWidget)
+        self.RPMoutLineEdit.setStyleSheet("QLineEdit\n"
+"{\n"
+"  background-color: rgb(80,80,80);\n"
+"  border: 1px solid rgb(20,20,20);\n"
+"  color: rgb(220,220,220);\n"
+"  padding: 4px;\n"
+"  selection-background-color: rgb(70,110,130);\n"
+"  selection-color: white;\n"
+"}\n"
+"\n"
+"QLineEdit:focus\n"
+"{\n"
+"  border-color: rgb(90,200,255);\n"
+"}\n"
+"\n"
+"/**** QLineEdit (disabled) ****/\n"
+"QLineEdit:disabled\n"
+"{\n"
+"  background-color: rgb(120,120,120);\n"
+"  border-color: rgb(60,60,60);\n"
+"  color: rgb(40,40,40);\n"
+"}")
+        self.RPMoutLineEdit.setObjectName("RPMoutLineEdit")
+        self.horizontalLayout_6.addWidget(self.RPMoutLineEdit)
         spacerItem1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontalLayout_6.addItem(spacerItem1)
         self.controlLayout.addLayout(self.horizontalLayout_6)
@@ -1657,8 +1685,8 @@ class Ui_MainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         MainWindow.setTabOrder(self.startStopBTN, self.revDirRadioBTN)
         MainWindow.setTabOrder(self.revDirRadioBTN, self.fwdDirRadioBTN)
-        MainWindow.setTabOrder(self.fwdDirRadioBTN, self.RPMlineEdit)
-        MainWindow.setTabOrder(self.RPMlineEdit, self.stepRevBTN)
+        MainWindow.setTabOrder(self.fwdDirRadioBTN, self.RPMinLineEdit)
+        MainWindow.setTabOrder(self.RPMinLineEdit, self.stepRevBTN)
         MainWindow.setTabOrder(self.stepRevBTN, self.stepFwdBTN)
         MainWindow.setTabOrder(self.stepFwdBTN, self.spinBox)
         MainWindow.setTabOrder(self.spinBox, self.proxRadio2)
@@ -1694,14 +1722,16 @@ class Ui_MainWindow(object):
         self.revDirRadioBTN.setText(_translate("MainWindow", "REV"))
         self.fwdDirRadioBTN.setText(_translate("MainWindow", "FWD"))
         self.enableBTN.setText(_translate("MainWindow", "ENABLE"))
-        self.label_5.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" color:#bfbfbf;\">Target RPM:</span></p></body></html>"))
-        self.RPMlineEdit.setPlaceholderText(_translate("MainWindow", "(Target RPM)"))
+        self.label_5.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" color:#bfbfbf;\">Target Out RPM:</span></p></body></html>"))
+        self.RPMinLineEdit.setPlaceholderText(_translate("MainWindow", "(Target RPM)"))
+        self.label_15.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" color:#bfbfbf;\">Target In RPM:</span></p></body></html>"))
+        self.RPMoutLineEdit.setPlaceholderText(_translate("MainWindow", "(Target RPM)"))
         self.stepRevBTN.setText(_translate("MainWindow", "<< STEP REV"))
         self.stepFwdBTN.setText(_translate("MainWindow", "STEP FWD >>"))
         self.label_11.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" color:#ffffff;\">STEP SIZE</span></p></body></html>"))
         self.label_13.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:14pt; font-weight:600; font-style:italic; color:#bfbfbf;\">SIGNAL</span></p></body></html>"))
         self.label_4.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" color:#bfbfbf;\">PWM Freq (Hz)</span></p></body></html>"))
-        self.label_9.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" color:#bfbfbf;\">Motor RPM:</span></p></body></html>"))
+        self.label_9.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" color:#bfbfbf;\">Microstep (steps/rev):</span></p></body></html>"))
         self.label_8.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:14pt; font-weight:600; font-style:italic; color:#bfbfbf;\">SENSORS</span></p></body></html>"))
         self.s1MSLabel.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600; color:#bfbfbf;\">PX1</span></p></body></html>"))
         self.label_10.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600; color:#bfbfbf;\">PX2</span></p></body></html>"))
