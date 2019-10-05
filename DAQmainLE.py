@@ -178,8 +178,9 @@ class mywindow(QtWidgets.QMainWindow):
 
         #Ensure motor is off and configure paramters
         ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 5) #5V high to disable
-        ljm.eWriteName(handle, "DAC" + str(VCOPin), 4)  #4V for 16kHz max signal
+        ljm.eWriteName(handle, "DAC" + str(VCOPin), 0)  #4V for 16kHz max signal
         ljm.eWriteName(handle, "DIO" + str(baseMax), 1)  #Pull high to disable logic from controller
+        ljm.eWriteName(handle, "DIO" + str(stopRun), 1)  #Pull low to enter single input mode
 
         #Set up threading
         self.threadpool = QThreadPool()
@@ -198,148 +199,25 @@ class mywindow(QtWidgets.QMainWindow):
               "Serial number: %i, IP address: %s, Port: %i,\nMax bytes per MB: %i" %
               (info[0], info[1], info[2], ljm.numberToIP(info[3]), info[4], info[5]))
 
-    def lifeTestParamSample(self):
-        global runTime, cutOffForce, stepsOut, stepsIn, RPMout, RPMin
-        # Get variables from line edit
-        runTime = int(self.ui.runTimeEdit.text())
-        cutOffForce = int(self.ui.forceCutOffEdit.text())
-        stepsOut = int(self.ui.stepsOutEdit.text())
-        stepsIn = int(self.ui.stepsInEdit.text())
-        RPMout = int(self.ui.RPMoutEdit.text())
-        RPMin = int(self.ui.RPMinEdit.text())
+    def enableMotorToggle(self):
+        #self.ui.proxRadio1.setStyleSheet(redProxStyle)
 
-    def lifeTestParamClear(self):
-        global runTime, cutOffForce, stepsOut, stepsIn, RPMout, RPMin
-        runTime = 0
-        cutOffForce = 0
-        stepsOut = 0
-        stepsIn = 0
-        RPMout = 0
-        RPMin = 0
-
-        self.ui.runTimeEdit.setText(str(runTime))
-        self.ui.forceCutOffEdit.setText(str(cutOffForce))
-        self.ui.stepsOutEdit.setText((str(stepsOut)))
-        self.ui.stepsInEdit.setText(str(stepsIn))
-        self.ui.RPMoutEdit.setText(str(RPMout))
-        self.ui.RPMinEdit.setText(str(RPMin))
-
-    def lifeTestSuspend(self):
-        global motorEnabled, lifeTestActive
-
-        if not lifeTestActive: #Test is not active, restart:
-            print("Restarting life cycle test")
+        global motorEnabled
+        if self.ui.enableBTN.isChecked(): # Motor is turned on
+            print("Motor Enabled")
+            print("")
             motorEnabled = True
-            lifeTestActive = True
-            self.ui.lifeCycleSuspendBTN.setChecked(False)
-            self.ui.lifeCycleSuspendBTN.setText("SUSPEND")
-            self.ui.lifeCycleStartBTN.setDisabled(True)
-            self.ui.lifeCycleStartBTN.setChecked(True)
-            self.ui.lifeCycleStartBTN.setText("RUNNING")
-            self.simpleLifeTest() #Restart the test
-
-        elif lifeTestActive: # Test is live, shut it down
-            print("Suspending life cycle test")
-            motorEnabled = False
-            lifeTestActive = False
-            ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 5)  # 0V high to disable
-            ljm.eWriteName(handle, "DIO" + str(baseMax) + "_EF_ENABLE", 0)  # Disable the EF system
-
-            self.ui.lifeCycleSuspendBTN.setChecked(True)
-            self.ui.lifeCycleSuspendBTN.setText("SUSPENDED")
-            self.ui.lifeCycleStartBTN.setDisabled(False)
-            self.ui.lifeCycleStartBTN.setChecked(False)
-            self.ui.lifeCycleStartBTN.setText("START")
-
-    def lifeTestSuspend2(self):
-        global motorEnabled, lifeTestActive
-
-        if self.ui.lifeCycleStartBTN.isChecked(): #Test is suspended, restart:
-            print("Restarting life cycle test")
-            motorEnabled = True
-            lifeTestActive = True
-            #self.ui.lifeCycleSuspendBTN.setChecked(False)
-            #self.ui.lifeCycleSuspendBTN.setText("SUSPEND")
-            self.ui.lifeCycleStartBTN.setChecked(True)
-            self.ui.lifeCycleStartBTN.setText("RUNNING")
-
-        else: # Test is live, shut it down
-            print("Suspending life cycle test")
-            motorEnabled = False
-            lifeTestActive = False
-            ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 5)  # 0V high to disable
-            ljm.eWriteName(handle, "DIO" + str(baseMax) + "_EF_ENABLE", 0)  # Disable the EF system
-            # self.ui.lifeCycleSuspendBTN.setChecked(True)
-            # self.ui.lifeCycleSuspendBTN.setText("SUSPENDED")
-            self.ui.lifeCycleStartBTN.setChecked(False)
-            self.ui.lifeCycleStartBTN.setText("START")
-
-    '''
-    Simple function to toggle the direction and speed during life cycle test.
-    Does NOT control motor, but toggle parameters
-    '''
-    def lifeCycleToggle(self):
-        RPMout = int(self.ui.RPMoutEdit.text())
-        RPMin = int(self.ui.RPMinEdit.text())
-        global lifeTestMotorDirection
-
-        if lifeTestMotorDirection == 1: # Motor is driving out, toggle it to in
-            lifeTestMotorDirection = 0
-            freq = (RPMin*microstep)/60
+            ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 0) # 0V low to enable
+            self.ui.enableBTN.setText("DISABLE") # Reset label
         else:
-            lifeTestMotorDirection = 1
-            freq = (RPMout*microstep)/60
-
-
-        print("Motor Parameters: ")
-        print("Direction: " + str(lifeTestMotorDirection))
-        print("RPM: " + str((1/microstep)*freq*60))
-        print("")
-
-        self.generateUserPWM(baseMax, freq, defaultDuty)  # Potentially change freq/duty based on desired RPM
-        ljm.eWriteName(handle, "DIO" + str(motorDirectionPin), lifeTestMotorDirection)
-
-    def simpleLifeTest(self):
-        # Initial variables
-        global lifeTestActive, lifeTestMotorDirection, motorEnabled
-        if self.ui.lifeCycleStartBTN.isChecked(): # A test is running, make non-active
-            lifeTestActive= True
-            resetFlag = False #flag to check if action has been taken, but sensor still reading high
-            self.lifeTestParamSample() #get user inputs
-            self.ui.lifeCycleStartBTN.setText("RUNNING")
-            self.ui.lifeCycleStartBTN.setDisabled(True)
-
-            #sample start/stop time and get parameters
-            #startTime = datetime.datetime.now().strftime("%H:%M")
-            startTime = 0
-            #endTime = (datetime.datetime.now() + timedelta(minutes=runTime)).strftime("%H:%M")
-            #runPeriod = timedelta(minutes=runTime)
-            runPeriod = int(self.ui.runTimeEdit.text())*60
-            endTime = startTime + runPeriod
-            minutes = 0
-
-            #Start initial test
-            lifeTestMotorDirection = 1
-            freq = (RPMout * microstep) / 60
-            self.generateUserPWM(baseMax, freq, defaultDuty)  # Potentially change freq/duty based on desired RPM
-            ljm.eWriteName(handle, "DIO" + str(motorDirectionPin), lifeTestMotorDirection)
-            ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 0)  # Enable motor
-            motorEnabled = True
-
-            print("Initial motor running, starting threads")
-            print(" ")
-
-            # Pass the function to execute
-            sensorWorker = Worker(self.lifeSensorSample)  # Any other args, kwargs are passed to the run function
-            motorWorker = Worker(self.generateUserPWM, baseMax, freq, defaultDuty)
-            #progBarWorker = Worker(self.progTask, startTime, endTime, runPeriod)
-            self.threadpool.start(sensorWorker)
-            self.threadpool.start(motorWorker)
-            #self.threadpool.start(progBarWorker)
-
-        else:
-            print("Test Running")
-            self.ui.lifeCycleStartBTN.setDisabled(True)
+            print("Motor Disabled")
+            print("")
+            motorEnabled = False
+            ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 5)  # 5V high to disable motor
+            self.ui.enableBTN.setText("ENABLE")  # Reset label
+            self.ui.startStopBTN.setChecked(False)
+            self.ui.startStopBTN.setText("START")
+            self.ui.PWMLCD.display(str(0))
 
     def motorRun(self):
        global motorDirection
@@ -350,14 +228,13 @@ class mywindow(QtWidgets.QMainWindow):
                 #begin PWM signal and write outputs high
                 #self.generateUserPWM(motorPWM,defaultFreq, defaultDuty) # Potentially change freq/duty based on desired RPM
                 RPM = int(self.ui.RPMoutLineEdit.text())
-                voltageTarget = ((RPM*microstep)/60)/(4000) #compute target voltage
+                voltageTarget = ((RPM*microstep)/60)/(3960) #compute target voltage
 
                 ljm.eWriteName(handle, "DIO" + str(motorDirectionPin), 1)
                 ljm.eWriteName(handle, "DAC" + str(VCOPin), voltageTarget) #Set to 4v for 16kHz output
-                ljm.eWriteName(handle, "DIO" + str(baseMax), 0) #Start ramp to max speed
+                ljm.eWriteName(handle, "DIO" + str(baseMax), 0) #Pull low to start ramp to max speed
 
-                self.ui.PWMLCD.display(voltageTarget*4000)
-                self.ui.motorRPMLCD.display(RPM)
+                self.ui.PWMLCD.display(voltageTarget*3960)
                 print("Direction: Forward")
                 print("VCO Output: " + str(voltageTarget))
                 print("")
@@ -365,13 +242,12 @@ class mywindow(QtWidgets.QMainWindow):
             elif self.ui.revDirRadioBTN.isChecked(): # reverse direction
                 #self.generateUserPWM(motorPWM, defaultFreq, defaultDuty) # Potentially change freq/duty based on desired RPM
                 RPM = int(self.ui.RPMinLineEdit.text())
-                voltageTarget = ((RPM * microstep) / 60)/(4000)  # compute target voltage
+                voltageTarget = ((RPM * microstep) / 60)/(3960)  # compute target voltage
                 ljm.eWriteName(handle, "DIO" + str(motorDirectionPin), 0)
                 ljm.eWriteName(handle, "DAC" + str(VCOPin), voltageTarget)  # Set to 4v for 16kHz output
-                ljm.eWriteName(handle, "DIO" + str(baseMax), 0)  # Start ramp to max speed
+                ljm.eWriteName(handle, "DIO" + str(baseMax), 0)  #Pull low to start ramp to max speed
 
-                self.ui.PWMLCD.display(voltageTarget * 4000)
-                self.ui.motorRPMLCD.display(RPM)
+                self.ui.PWMLCD.display(voltageTarget * 3960)
                 print("Direction: Reverse")
                 print("VCO Output: " + str(voltageTarget))
                 print("")
@@ -392,143 +268,6 @@ class mywindow(QtWidgets.QMainWindow):
                self.ui.startStopBTN.setChecked(False)
            else:
                sys.exit(app.exec_())
-
-    def enableMotorToggle(self):
-        #self.ui.proxRadio1.setStyleSheet(redProxStyle)
-
-        global motorEnabled
-        if self.ui.enableBTN.isChecked(): # Motor is turned on
-            print("Motor Enabled")
-            print("")
-            motorEnabled = True
-            ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 0) # 0V low to enable
-            self.ui.enableBTN.setText("DISABLE") # Reset label
-        else:
-            print("Motor Disabled")
-            print("")
-            motorEnabled = False
-            ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 5)  # 5V high to disable motor
-            ljm.eWriteName(handle, "DIO" + str(baseMax), 1)  #Pull high to disable
-            self.ui.enableBTN.setText("ENABLE")  # Reset label
-            self.ui.startStopBTN.setChecked(False)
-            self.ui.startStopBTN.setText("START")
-            self.ui.PWMLCD.display(str(0))
-
-    '''
-    Generates a specific number of pulse outputs for motor movement. 
-    Assumes direction and enable are pre-configured
-    Frequency calculation based on desired RPM and configured microstep
-    Outputs on user-defined pin
-    Assumes a low to high transition at 0, and computes high to low based on duty cycle
-    Input duty cycle expressed as decimal (not percent)
-    Input parameters: pin = output pin for DAC direction, direction = 1/0 direction, steps = numeric steps
-    RPM = user driven RPM, duty = waveform duty cycle
-    '''
-    def goStep(self, pin, direction, steps, RPM, duty):
-        if motorEnabled and steps > 0:
-            ljm.eWriteName(handle, "DIO" + str(pin), direction)
-            # Check output pin valid
-            if pin == 0 or pin in range(2, 6):
-                # Set up math
-                clock = 80E6
-                clockDivisor = 1
-                lowToHigh = 0
-
-                freq = RPM / ((1 / microstep) * 60)
-                rollValue = (clock / clockDivisor) / freq
-                dutyConfig = rollValue * duty
-                clockFreq = clock / clockDivisor
-                highToLow = duty * clockFreq + lowToHigh
-                lowToHigh = 0
-
-                # Enable clock
-                ljm.eWriteName(handle, "DIO_EF_CLOCK0_DIVISOR", clockDivisor)
-                ljm.eWriteName(handle, "DIO_EF_CLOCK0_ROLL_VALUE", rollValue)
-                ljm.eWriteName(handle, "DIO_EF_CLOCK0_ENABLE", 1)
-
-                # Configure pulse
-                ljm.eWriteName(handle, "DIO" + str(pin) + "_EF_ENABLE", 0)
-                ljm.eWriteName(handle, "DIO" + str(pin), 0)
-                ljm.eWriteName(handle, "DIO" + str(pin) + "_EF_INDEX", 2)
-                ljm.eWriteName(handle, "DIO" + str(pin) + "_EF_CONFIG_A", highToLow)
-                ljm.eWriteName(handle, "DIO" + str(pin) + "_EF_CONFIG_B", lowToHigh)
-                ljm.eWriteName(handle, "DIO" + str(pin) + "_EF_CONFIG_A", highToLow)
-                ljm.eWriteName(handle, "DIO" + str(pin) + "_EF_CONFIG_C", steps)
-                ljm.eWriteName(handle, "DIO" + str(pin) + "_EF_ENABLE", 1)
-
-                # Print statement for debug
-                print("Output Pin: " + str(pin))
-                print("Total Steps Out: " + str(steps))
-                print("Motor RPM: " + str(RPM))
-                print("PWM Frequency: " + str(freq))
-                print("PWM Duty Cycle: " + str(duty * 100))
-                print("")
-
-                self.ui.motorRPMLCD.display(int(RPM))
-                self.ui.PWMLCD.display(int(freq))
-
-            else:
-                print("IO Input Pin Not Valid *(T7 LabJack DIO 0, 2-5 ONLY)")
-        elif motorEnabled:
-            prompt = QMessageBox.warning(self, 'Step Size Error',
-                                         'Zero step size - no movement possible',
-                                         QMessageBox.Ok | QMessageBox.Cancel)
-            if prompt == QMessageBox.Ok:
-                print("Ok")
-
-        else:
-            print("MOTOR DISABLED")
-            prompt = QMessageBox.warning(self, 'Motor Disabled',
-                                         'Motor disabled - enable to run',
-                                         QMessageBox.Ok | QMessageBox.Cancel)
-            if prompt == QMessageBox.Ok:
-                print("Ok")
-
-    '''
-    Creates a user-defined PWM signal with variables of output pin, frequency, and duty cycle
-    RPM calculation depends on microstep size
-    Assumes 80MHz clock and clock divisor of 1
-    T7 Pro valid PWM outputs are 0, 2-5 only
-    '''
-    def generateUserPWM(self, pin, freq, duty):
-        # Check output pin valid
-        if pin == 0 or pin in range(2, 6):
-            # Set up math
-            clock = 80E6
-            clockDivisor = 1
-            rollValue = (clock / clockDivisor) / freq
-            dutyConfig = rollValue * duty
-            RPM = (1 / microstep) * freq * 60
-
-            # Print statements for debug
-            print("Output Pin (DIO): " + str(pin))
-            print("PWM Frequency (Hz): " + str(freq))
-            print("Roll Value: " + str(rollValue))
-            print("Duty Cycle (%): " + str(duty * 100))
-            print("Motor RPM: " + str(RPM))
-            print(" ")
-
-            self.ui.motorRPMLCD.display(str(RPM))
-            self.ui.PWMLCD.display(str(freq))
-
-            # Configure Clock Registers:
-            ljm.eWriteName(handle, "DIO_EF_CLOCK0_ENABLE", 0)  # Disable clock source
-            # Set Clock0's divisor and roll value to configure frequency: 80MHz/1/80000 = 1kHz
-            ljm.eWriteName(handle, "DIO_EF_CLOCK0_DIVISOR", clockDivisor)  # Configure Clock0's divisor
-            # ljm.eWriteName(handle, "DIO_EF_CLOCK0_ROLL_VALUE", 80000)# Configure Clock0's roll value
-            ljm.eWriteName(handle, "DIO_EF_CLOCK0_ROLL_VALUE", rollValue)  # Configure Clock0's roll value
-            ljm.eWriteName(handle, "DIO_EF_CLOCK0_ENABLE", 1)  # Enable the clock source
-
-            # Configure EF Channel Registers for signal:
-            ljm.eWriteName(handle, "DIO" + str(pin) + "_EF_ENABLE",
-                           0)  # Disable the EF system for initial configuration
-            ljm.eWriteName(handle, "DIO" + str(pin) + "_EF_INDEX", 0)  # Configure EF system for PWM
-            ljm.eWriteName(handle, "DIO" + str(pin) + "_EF_OPTIONS", 0)  # Configure what clock source to use: Clock0
-            ljm.eWriteName(handle, "DIO" + str(pin) + "_EF_CONFIG_A", dutyConfig)  # Configure duty cycle to be: 50%
-            ljm.eWriteName(handle, "DIO" + str(pin) + "_EF_ENABLE", 1)  # Enable the EF system, PWM wave is now being outputted
-
-        else:
-            print("IO Input Pin Not Valid *(T7 LabJack DIO 0, 2-5 ONLY)")
 
     def sampleSensorData(self):
         # test = datetime.datetime.now().strftime("%H:%M:%S")
@@ -566,66 +305,6 @@ class mywindow(QtWidgets.QMainWindow):
         dataThread = threading.Thread(name='dataThread', target=session(), daemon=True)
         dataThread.start()
 
-
-    '''
-    Initial plot sensor session data to display real-time plot
-    Carry-over from previous project, but locks up GUI
-    See new version (2) below
-    '''
-    def plotSessionData(self, sessionData):
-        global p1, p2
-        #print("Plotting Data")
-        self.ui.plotWidget.clear()
-        self.ui.plotWidget.addLegend()
-        curve1 = self.ui.plotWidget.plot(pen='r', name="PRESSURE")  # Tool pressure curve
-        curve2 = self.ui.plotWidget.plot(pen='g', name="LOAD")
-
-        p2 = pg.ViewBox()
-        self.ui.plotWidget.scene().addItem(p2)
-        self.ui.plotWidget.getAxis('right').linkToView(p2)
-        p2.setXLink(self.ui.plotWidget)
-        p2.setYRange(-15,15)
-        p2.addItem(curve2)
-
-        P1 = [] # Local list for pressure data
-        L1 = [] # Local list for load cell data
-        i = 0 # increment variable
-
-        for set in sessionData:  # grab invidudal data points and make a list
-            P1.append(sessionData[i][1])
-            L1.append(sessionData[i][2])
-            i += 1
-
-        #print("P1: " + str(P1))
-        #print("L1: " + str(L1))
-
-        curve1.setData(P1) # Add pressure to curve
-        curve2.setData(L1) # Add load cell voltage to curve
-        # app.processEvents()
-        P1A = np.array(P1) # format in array for plotting
-        L1A = np.array(L1) # format in array for plotting
-
-        def updateViews():
-            global p1, p2
-            p2.setGeometry(self.ui.plotWidget.getViewBox().sceneBoundingRect())
-            p2.linkedViewChanged(self.ui.plotWidget.getViewBox(), p2.XAxis)
-
-        def update():
-            global curve1, curve2, P1A, L1A
-            curve1.setData(P1A) # Plot pressure
-            curve2.setData(L1A) # Plot load
-
-        updateViews()
-        #self.ui.plotWidget.getViewBox().sigResized.connect(updateViews)
-
-        timer = QtCore.QTimer()
-        timer.timeout.connect(update)
-        timer.start(10000) # wait to refresh
-
-    '''
-    Version 2 - Calls daemon thread object to just plot while rest of program stays active. 
-    Thread dies when program exits. 
-    '''
     def plotSessionData2(self, sessionData):
         def plot():
             global p1, p2
@@ -680,6 +359,184 @@ class mywindow(QtWidgets.QMainWindow):
         plotThread = threading.Thread(name='plotThread', target=plot(), daemon=True)
         plotThread.start()
 
+    def lifeTestParamSample(self):
+        global runTime, cutOffForce, stepsOut, stepsIn, RPMout, RPMin
+        # Get variables from line edit
+        runTime = int(self.ui.runTimeEdit.text())
+        cutOffForce = int(self.ui.forceCutOffEdit.text())
+        stepsOut = int(self.ui.stepsOutEdit.text())
+        stepsIn = int(self.ui.stepsInEdit.text())
+        RPMout = int(self.ui.RPMoutEdit.text())
+        RPMin = int(self.ui.RPMinEdit.text())
+
+    def lifeTestParamClear(self):
+        global runTime, cutOffForce, stepsOut, stepsIn, RPMout, RPMin
+        runTime = 0
+        cutOffForce = 0
+        stepsOut = 0
+        stepsIn = 0
+        RPMout = 0
+        RPMin = 0
+
+        self.ui.runTimeEdit.setText(str(runTime))
+        self.ui.forceCutOffEdit.setText(str(cutOffForce))
+        self.ui.stepsOutEdit.setText((str(stepsOut)))
+        self.ui.stepsInEdit.setText(str(stepsIn))
+        self.ui.RPMoutEdit.setText(str(RPMout))
+        self.ui.RPMinEdit.setText(str(RPMin))
+
+    def lifeTestSuspend(self):
+        global motorEnabled, lifeTestActive
+
+        if not lifeTestActive: #Test is not active, restart:
+            print("Restarting life cycle test")
+            motorEnabled = True
+            lifeTestActive = True
+            self.ui.lifeCycleSuspendBTN.setChecked(False)
+            self.ui.lifeCycleSuspendBTN.setText("SUSPEND")
+            self.ui.lifeCycleStartBTN.setDisabled(True)
+            self.ui.lifeCycleStartBTN.setChecked(True)
+            self.ui.lifeCycleStartBTN.setText("RUNNING")
+            self.simpleLifeTest() #Restart the test
+
+        elif lifeTestActive: # Test is live, shut it down
+            print("Suspending life cycle test")
+            motorEnabled = False
+            lifeTestActive = False
+            ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 5)  # 0V high to disable
+            self.ui.lifeCycleSuspendBTN.setChecked(True)
+            self.ui.lifeCycleSuspendBTN.setText("SUSPENDED")
+            self.ui.lifeCycleStartBTN.setDisabled(False)
+            self.ui.lifeCycleStartBTN.setChecked(False)
+            self.ui.lifeCycleStartBTN.setText("START")
+
+    def lifeTestSuspend2(self):
+        global motorEnabled, lifeTestActive
+
+        if self.ui.lifeCycleStartBTN.isChecked(): #Test is suspended, restart:
+            print("Restarting life cycle test")
+            motorEnabled = True
+            lifeTestActive = True
+            #self.ui.lifeCycleSuspendBTN.setChecked(False)
+            #self.ui.lifeCycleSuspendBTN.setText("SUSPEND")
+            self.ui.lifeCycleStartBTN.setChecked(True)
+            self.ui.lifeCycleStartBTN.setText("RUNNING")
+
+        else: # Test is live, shut it down
+            print("Suspending life cycle test")
+            motorEnabled = False
+            lifeTestActive = False
+            ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 5)  # 0V high to disable
+            ljm.eWriteName(handle, "DIO" + str(baseMax) + "_EF_ENABLE", 0)  # Disable the EF system
+            # self.ui.lifeCycleSuspendBTN.setChecked(True)
+            # self.ui.lifeCycleSuspendBTN.setText("SUSPENDED")
+            self.ui.lifeCycleStartBTN.setChecked(False)
+            self.ui.lifeCycleStartBTN.setText("START")
+
+    '''
+    Simple function to toggle the direction and speed during life cycle test.
+    Does NOT control motor, but toggle parameters
+    '''
+    def lifeCycleToggle(self):
+        global lifeTestMotorDirection
+
+        if lifeTestMotorDirection == 1: # Motor is driving out, toggle it to in
+            lifeTestMotorDirection = 0
+            RPM = int(self.ui.RPMinEdit.text())
+            voltageTarget = ((RPM * microstep) / 60) / (3960)  # compute target voltage
+            ljm.eWriteName(handle, "DIO" + str(motorDirectionPin), lifeTestMotorDirection)
+            ljm.eWriteName(handle, "DAC" + str(VCOPin), voltageTarget)  # Set to 4v for 16kHz output
+            ljm.eWriteName(handle, "DIO" + str(baseMax), 0)  # Pull low to start ramp to max speed
+
+            self.ui.PWMLCD.display(voltageTarget * 3960)
+            print("Direction: Reverse")
+            print("VCO Output: " + str(voltageTarget))
+            print("")
+
+        else: #Motor is driving in, toggle it to out
+            lifeTestMotorDirection = 1
+            RPM = int(self.ui.RPMoutEdit.text())
+            voltageTarget = ((RPM * microstep) / 60) / (3960)  # compute target voltage
+            ljm.eWriteName(handle, "DIO" + str(motorDirectionPin), lifeTestMotorDirection)
+            ljm.eWriteName(handle, "DAC" + str(VCOPin), voltageTarget)  # Set to 4v for 16kHz output
+            ljm.eWriteName(handle, "DIO" + str(baseMax), 0)  # Pull low to start ramp to max speed
+
+            self.ui.PWMLCD.display(voltageTarget * 3960)
+            print("Direction: Forward")
+            print("VCO Output: " + str(voltageTarget))
+            print("")
+
+        print("Motor Parameters: ")
+        print("Direction: " + str(lifeTestMotorDirection))
+        print("")
+
+    def simpleLifeTest(self):
+        # Initial variables
+        global lifeTestActive, lifeTestMotorDirection, motorEnabled
+        if self.ui.lifeCycleStartBTN.isChecked(): # A test is running, make non-active
+            lifeTestActive= True
+            resetFlag = False #flag to check if action has been taken, but sensor still reading high
+            self.lifeTestParamSample() #get user inputs
+            self.ui.lifeCycleStartBTN.setText("RUNNING")
+            self.ui.lifeCycleStartBTN.setDisabled(True)
+
+            startTime = 0
+            runPeriod = int(self.ui.runTimeEdit.text())*60
+            endTime = startTime + runPeriod
+            minutes = 0
+
+            #Start initial test, motor running forward
+            lifeTestMotorDirection = 1
+            ljm.eWriteName(handle, "DIO" + str(motorDirectionPin), lifeTestMotorDirection)
+            ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 0)  # Enable motor
+            motorEnabled = True
+            RPM = int(self.ui.RPMoutEdit.text())
+            voltageTarget = ((RPM * microstep) / 60) / (3960)  # compute target voltage
+            ljm.eWriteName(handle, "DAC" + str(VCOPin), voltageTarget)  # Set to 4v for 16kHz output
+            ljm.eWriteName(handle, "DIO" + str(baseMax), 0)  # Pull low to start ramp to max speed
+
+
+            print("Initial motor running, starting threads")
+            print(" ")
+
+            # Pass the function to execute
+            sensorWorker = Worker(self.lifeSensorSample)  # Any other args, kwargs are passed to the run function
+            #motorWorker = Worker(self.lifeTestMotorRun)
+            #progBarWorker = Worker(self.progTask, startTime, endTime, runPeriod)
+            self.threadpool.start(sensorWorker)
+            #self.threadpool.start(motorWorker)
+            #self.threadpool.start(progBarWorker)
+
+        else:
+            print("Test Running")
+            self.ui.lifeCycleStartBTN.setDisabled(True)
+
+    def lifeTestMotorRun(self, direction, speed):
+        global motorDirection
+        if direction == 1:  # Motor stopped, so turn it on
+            RPM = int(self.ui.RPMoutEdit.text())
+            voltageTarget = ((RPM * microstep) / 60) / (3960)  # compute target voltage
+            ljm.eWriteName(handle, "DIO" + str(motorDirectionPin), 1)
+            ljm.eWriteName(handle, "DAC" + str(VCOPin), voltageTarget)  # Set to 4v for 16kHz output
+            ljm.eWriteName(handle, "DIO" + str(baseMax), 0)  # Pull low to start ramp to max speed
+
+            self.ui.PWMLCD.display(voltageTarget * 3960)
+            print("Direction: Forward")
+            print("VCO Output: " + str(voltageTarget))
+            print("")
+
+        else:  # reverse direction
+            RPM = int(self.ui.RPMinEdit.text())
+            voltageTarget = ((RPM * microstep) / 60) / (3960)  # compute target voltage
+            ljm.eWriteName(handle, "DIO" + str(motorDirectionPin), 0)
+            ljm.eWriteName(handle, "DAC" + str(VCOPin), voltageTarget)  # Set to 4v for 16kHz output
+            ljm.eWriteName(handle, "DIO" + str(baseMax), 0)  # Pull low to start ramp to max speed
+
+            self.ui.PWMLCD.display(voltageTarget * 3960)
+            print("Direction: Reverse")
+            print("VCO Output: " + str(voltageTarget))
+            print("")
+
     def simpleSensorRead(self):
         name = "AIN0"
         voltage = ljm.eReadName(handle, name)
@@ -697,7 +554,6 @@ class mywindow(QtWidgets.QMainWindow):
         actionFlag = False
         actionTaken = False
 
-        sessionData = []  # Generate empty list for local session data
         cutOffForce = int(self.ui.forceCutOffEdit.text())
 
         while lifeTestActive:
@@ -717,12 +573,11 @@ class mywindow(QtWidgets.QMainWindow):
 
             # Check first proximity sensor
             if prox1High > 3 and not actionTaken:
+                ljm.eWriteName(handle, "DIO" + str(baseMax), 1)  # Pull high to start decel ramp
                 print("Prox1 flagged, motor stopped)")
                 self.ui.proxLifeRadio1.setStyleSheet(redProxStyle)
                 motorEnabled = False #shut down motor
-                motorEnable = 5 #shut down motor
-                ljm.eWriteName(handle, "DAC" + str(motorEnablePin), motorEnable)  # 5V high to disable motor
-                ljm.eWriteName(handle, "DIO" + str(baseMax) + "_EF_ENABLE", 0)  # Disable the EF system
+                ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 5)  # 5V high to disable motor
 
                 #start timer to give a stop delay
                 print("5 second dwell....")
@@ -734,8 +589,7 @@ class mywindow(QtWidgets.QMainWindow):
 
                 actionTaken = True #action has been taken based off of sensor flag
                 motorEnabled = True #set indicator to true
-                motorEnable = 0 #set global variable to allow motor to be durned on
-                ljm.eWriteName(handle, "DAC" + str(motorEnablePin), motorEnable)  # Ov low to enable motor
+                ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 0)  # Ov low to enable motor
                 self.ui.proxLifeRadio1.setStyleSheet(yellowProxStyle)
 
             elif prox1High > 3 and actionTaken: #condition where sensor is still flagging but action has been taken
@@ -747,9 +601,7 @@ class mywindow(QtWidgets.QMainWindow):
 
                 if prox1High > 3: #see if sensor resets, if not, shut it down
                     print("No sensor reset, shutting down permanently)")
-                    motorEnable = 5  # shut down motor
-                    ljm.eWriteName(handle, "DAC" + str(motorEnablePin), motorEnable)  # 5V high to disable motor
-                    ljm.eWriteName(handle, "DIO" + str(baseMax) + "_EF_ENABLE", 0)  # Disable the EF system
+                    ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 5)  # 5V high to disable motor
                     lifeTestActive = False
 
                 else: #sensor reset, all clear
@@ -769,7 +621,6 @@ class mywindow(QtWidgets.QMainWindow):
                 lifeTestActive = False
                 motorEnable = 5
                 ljm.eWriteName(handle, "DAC" + str(motorEnablePin), motorEnable)  # 0V high to disable
-                ljm.eWriteName(handle, "DIO" + str(baseMax) + "_EF_ENABLE", 0)  # Disable the EF system
 
             print("Life Test Running")
             self.ui.pressureLifeLCD.display(P1)# display data on GUI
@@ -790,7 +641,6 @@ class mywindow(QtWidgets.QMainWindow):
             lifeTestActive = False
             motorEnable = 5
             ljm.eWriteName(handle, "DAC" + str(motorEnablePin), motorEnable)  # 0V high to disable
-            ljm.eWriteName(handle, "DIO" + str(baseMax) + "_EF_ENABLE", 0)  # Disable the EF system
 
     def checkProx(self, pxHigh):
         proxHigh = ljm.eReadName(handle, pxHigh)  # read proximity sensor low
