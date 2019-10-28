@@ -56,8 +56,8 @@ motorEnable = 5 #5V high to disable motors
 motorDirectionPin = 1 # Defined as DIO pin number
 motorEnablePin = 1 # Defined as DAC pin number
 VCOPin = 0 # Defined as DAC pin for PWM generator
-baseMax = 0 # Defined as DIO pin number with signal generator - pulled high to disable
-stopRun = 2 #defined as DIO pin
+baseMax = 2 # Defined as DIO pin number with signal generator - pulled high to disable
+stopRun = 0 #defined as DIO pin
 pressureVoltage = "AIN0"
 loadVoltage = "AIN1"
 px1Low = "AIN2" # Tool stop, pin 1 EuroSwitch Prox Sensor
@@ -499,10 +499,25 @@ class mywindow(QtWidgets.QMainWindow):
             print("Initial motor running, starting threads")
             print(" ")
 
+            timeset = 0
+            timeout = 60
+
+            while False:
+                if timeset < timeout:
+                    time.sleep(1)
+                    timeset += 1
+                    print("Time: " + str(timeset))
+                else:
+                    self.lifeCycleToggle()
+                    timeset = 0
+                    print("Resetting time function")
+                    time.sleep(2)
+
             # Pass the function to execute
             sensorWorker = Worker(self.lifeSensorSample)  # Any other args, kwargs are passed to the run function
             #motorWorker = Worker(self.lifeTestMotorRun)
             #progBarWorker = Worker(self.progTask, startTime, endTime, runPeriod)
+
             self.threadpool.start(sensorWorker)
             #self.threadpool.start(motorWorker)
             #self.threadpool.start(progBarWorker)
@@ -556,6 +571,9 @@ class mywindow(QtWidgets.QMainWindow):
 
         cutOffForce = int(self.ui.forceCutOffEdit.text())
 
+        timeSet = 0
+        timeout = 40 # CHANGE THIS FOR LONGER RUN TIME
+
         while lifeTestActive:
             timeStamp = datetime.datetime.now().strftime("%H:%M:%S")
             V1 = ljm.eReadName(handle, pressureVoltage)  # Sample analog pressure input
@@ -572,7 +590,7 @@ class mywindow(QtWidgets.QMainWindow):
             print("Prox Val: " + str(prox1High))
 
             # Check first proximity sensor
-            if prox1High > 3 and not actionTaken:
+            if timeSet > timeout and not actionTaken:
                 ljm.eWriteName(handle, "DIO" + str(baseMax), 1)  # Pull high to start decel ramp
                 print("Prox1 flagged, motor stopped)")
                 self.ui.proxLifeRadio1.setStyleSheet(redProxStyle)
@@ -587,40 +605,48 @@ class mywindow(QtWidgets.QMainWindow):
                 print("New Motor Direction: " + str(lifeTestMotorDirection))
                 print("")
 
+                print("Time Val: " + str(timeSet))
+
                 actionTaken = True #action has been taken based off of sensor flag
                 motorEnabled = True #set indicator to true
                 ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 0)  # Ov low to enable motor
                 self.ui.proxLifeRadio1.setStyleSheet(yellowProxStyle)
+                timeSet = 0
 
-            elif prox1High > 3 and actionTaken: #condition where sensor is still flagging but action has been taken
+            elif timeSet > timeout and actionTaken: #condition where sensor is still flagging but action has been taken
                 timeVal = 0
-                timeout = 10
-                print("Timeout starting for " + str(timeout) + " seconds")
-                time.sleep(timeout)
+                timeCheck = 10
+                print("Timeout starting for " + str(timeCheck) + " seconds")
+                time.sleep(timeCheck)
                 prox1High = ljm.eReadName(handle, px1High)
+                actionTaken = False
+                self.ui.proxLifeRadio1.setStyleSheet(greenProxStyle)
 
-                if prox1High > 3: #see if sensor resets, if not, shut it down
-                    print("No sensor reset, shutting down permanently)")
-                    ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 5)  # 5V high to disable motor
-                    lifeTestActive = False
+                # if prox1High > 3: #see if sensor resets, if not, shut it down
+                #     print("No sensor reset, shutting down permanently)")
+                #     ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 5)  # 5V high to disable motor
+                #     lifeTestActive = False
+                #
+                # else: #sensor reset, all clear
+                #     actionTaken = False
+                #     self.ui.proxLifeRadio1.setStyleSheet(greenProxStyle)
 
-                else: #sensor reset, all clear
-                    actionTaken = False
-                    self.ui.proxLifeRadio1.setStyleSheet(greenProxStyle)
 
-            elif prox1High < 3:
+            elif timeSet <= timeout:
                 self.ui.proxLifeRadio1.setStyleSheet(greenProxStyle)
                 actionTaken = False
+                time.sleep(1)
+                timeSet += 1
 
-            #check load cell
-            if load >= cutOffForce:
-                print("Max Load Exceeded")
-                self.lifeTestSuspend()
-                print("Suspending life cycle test")
-                motorEnabled = False
-                lifeTestActive = False
-                motorEnable = 5
-                ljm.eWriteName(handle, "DAC" + str(motorEnablePin), motorEnable)  # 0V high to disable
+        # #check load cell
+            # if load >= cutOffForce:
+            #     print("Max Load Exceeded")
+            #     self.lifeTestSuspend()
+            #     print("Suspending life cycle test")
+            #     motorEnabled = False
+            #     lifeTestActive = False
+            #     motorEnable = 5
+            #     ljm.eWriteName(handle, "DAC" + str(motorEnablePin), motorEnable)  # 0V high to disable
 
             print("Life Test Running")
             self.ui.pressureLifeLCD.display(P1)# display data on GUI
@@ -685,6 +711,20 @@ class mywindow(QtWidgets.QMainWindow):
         elif proxHigh < 3:
             self.ui.proxLifeRadio1.setStyleSheet(greenProxStyle)
             actionTaken = False
+
+    def flipflop(self):
+        time = 0
+        direction = 1
+
+
+        while lifeTestActive:
+            time = 0
+            timeout = 60
+            if time < timeout:
+                time.sleep(1)
+                time +=1
+            else:
+                self.lifeCycleToggle()
 
     def progTask(self):
         task = Task()
