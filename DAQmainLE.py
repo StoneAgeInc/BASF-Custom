@@ -1,19 +1,21 @@
 '''
 DESCRIPTION:
-    Main file to control BASF sensor prototype bring up. Starts all GUI functions and controls labjack.
-    LabJack instance is set as a global parameter used in functions.
-    Refer to to wiring diagram/hook up guide for connection details (:/FILENAME_HERE)
+    Main file to control BASF hose reel for FAT Test. Current state is working with sensors reading out,
+    motor controlled manual. Life cycle tab still under development.
+
 STATE:
-    GUI launches and runs, labJack shows no errors. Not tested with actual sensors. Real time plotting working with
-    two independent axis, two tabs that are for manual control and life cycle testing.
-    Motor control debugged and working, and will stop on AIN0 voltage flag. LCD will update, but real-time plot bogs
-    down program and does not seem to be working.
-MODIFIED DATE: 9.12.19
+    Working. Load cell actual output it needed (conversion from mA) and potentially a display function to
+    slow down updated of pressure and load cell to make easier to read (delay). Use encoder prox sensors to
+    calculate the linear feed rate and display.
+
+    Potentially automated function to lower reel from
+
+
+MODIFIED DATE: 11.1.19
 Author: Chris Antle
-Configuration Details:
-Motor Direction I/O: DIO1
-Motor
 '''
+
+
 
 from PyQt5 import QtWidgets, QtGui, QtCore
 from PyQt5.QtCore import QThread
@@ -41,10 +43,10 @@ motorEnabled = False # Control for motor logic
 lifeTestMotorDirection = 1 # Assume motor starts in forward direction
 lifeTestActive = False
 handle = ""
-microstep = 1000 # Microstep setting on Kollmorgen stepper drive
+microstep = 400 # Microstep setting on Kollmorgen stepper drive
 defaultFreq = 20000# Default PWM Freq
 defaultDuty = 0.05
-defaultsampleFreq = 1 # Defined in Hz
+sampleRate = 10 # defined in mS
 
 #Life Test Globals
 startTime = 0
@@ -60,12 +62,11 @@ baseMax = 2 # Defined as DIO pin number with signal generator - pulled high to d
 stopRun = 0 #defined as DIO pin
 pressureVoltage = "AIN0"
 loadVoltage = "AIN1"
-px1Low = "AIN2" # Tool stop, pin 1 EuroSwitch Prox Sensor
-px1High = "AIN3" # Tool stop, pin 3, EuroSwitch Prox Sensor
-px2Low = "AIN8" # RPM1
-px2High = "AIN9" # RPM1
-px3Low = "AIN10" # RPM2
-px3High = "AIN11" # RPM2
+
+hoseStop = "AIN2"
+RPMprox1 = "AIN3"
+RPMprox2 = "AIN4"
+
 
 #Define prox style sheet for toggle
 redProxStyle = "QRadioButton::indicator {width: 15px; height: 15px; border-radius: 7px;}"\
@@ -115,14 +116,8 @@ class Worker(QRunnable):
         '''
         Initialise the runner function with passed args, kwargs.
         '''
+        self.fn(*self.args, **self.kwargs)
 
-        # Retrieve args/kwargs here; and fire processing using them
-        try:
-            result = self.fn(*self.args, **self.kwargs)
-        except:
-            traceback.print_exc()
-            exctype, value = sys.exc_info()[:2]
-            self.signals.error.emit((exctype, value, traceback.format_exc()))
 
 class mywindow(QtWidgets.QMainWindow):
     def __init__(self):
@@ -143,19 +138,20 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui.plotWidget.setLabel('bottom', 'Elapsed Time', 's')
         self.ui.plotWidget.setLabel('left', 'Pressure', 'PSI')
         self.ui.plotWidget.setLabel('right', 'Force', 'Lbf')
-        self.ui.RPMoutLineEdit.setText(str(1000))
-        self.ui.RPMinLineEdit.setText(str(300))
+        self.ui.RPMoutLineEdit.setText(str(600))
+        self.ui.RPMinLineEdit.setText(str(1200))
 
         # set up button control
         # Control tab
-        self.ui.stepFwdBTN.clicked.connect(lambda:self.goStep(baseMax, 1, self.ui.spinBox.value(), 100, 0.1))
-        self.ui.stepRevBTN.clicked.connect(lambda:self.goStep(baseMax, 0, self.ui.spinBox.value(), 100, 0.1))
         self.ui.enableBTN.clicked.connect(lambda:self.enableMotorToggle())
         self.ui.startStopBTN.clicked.connect(lambda:self.motorRun())
         self.ui.sensorBTN.clicked.connect(lambda:self.runSensorSession())
         self.ui.proxRadio1.setStyleSheet(greenProxStyle)
         self.ui.proxRadio2.setStyleSheet(greenProxStyle)
         self.ui.proxRadio3.setStyleSheet(greenProxStyle)
+        self.ui.microStepLCD.display(str(microstep))
+        sampleFreq = 1/(sampleRate/1000)
+        self.ui.lineEdit.setText(str(sampleFreq))
 
         # Life cycle tab
         self.ui.paramSaveBTN.clicked.connect(lambda:self.lifeTestParamSample())
@@ -167,6 +163,7 @@ class mywindow(QtWidgets.QMainWindow):
         self.ui.proxLifeRadio3.setStyleSheet(greenProxStyle)
         self.ui.RPMinEdit.setText("25")
         self.ui.RPMoutEdit.setText("100")
+
 
         #labjack setup
         self.labJackSetUp()
@@ -279,31 +276,54 @@ class mywindow(QtWidgets.QMainWindow):
         P1 = 61.121*V1-43.622
         #L1 = 61.121 * V2 - 43.622
 
-        self.checkProx(px1High)
-
         # print(P1)
         self.ui.pressureLCD1.display(P1)# display data on GUI
         self.ui.load1LCD.display(L1)
 
+
+    def runSensorSession2(self):
+        sessionActive = self.ui.sensorBTN.isChecked()  # Check initial state
+        global sessionData, hoseStop, RPMprox1, RPMprox2
+
+        if sessionActive:
+            #sessionData = []  # Generate empty list for local session data
+            self.ui.sensorBTN.setText("STOP")
+            sessionActive = self.ui.sensorBTN.isChecked() # Check that session is running
+            #self.sampleSensorData() # sample data and write to session list
+            #self.checkProx(hoseStop, RPMprox1, RPMprox2)
+            #self.plotSessionData2(sessionData)
+            proxWorker = Worker(self.checkProx)  # Any other args, kwargs are passed to the run function
+            self.threadpool.start(proxWorker)
+
+        else:
+            self.ui.sensorBTN.setText("START")
+
+
     def runSensorSession(self):
-        def session():
-            sessionActive = self.ui.sensorBTN.isChecked()  # Check initial state
-            global sessionData
-            if sessionActive:
-                #sessionData = []  # Generate empty list for local session data
-                self.ui.sensorBTN.setText("STOP")
+        global sessionActive
+        sessionActive = self.ui.sensorBTN.isChecked()  # Check initial state
+        global timerOn
+        print(sessionActive)
 
-                while sessionActive:
-                    QApplication.processEvents()  # Check to see if session ended
-                    sessionActive = self.ui.sensorBTN.isChecked() # Check that session is running
-                    self.sampleSensorData() # sample data and write to session list
-                    #self.plotSessionData2(sessionData)
+        if sessionActive:
+            #sessionData = []  # Generate empty list for local session data
+            self.ui.sensorBTN.setText("STOP")
 
-            else:
-                self.ui.sensorBTN.setText("START")
+            self.qTimer = QTimer()
+            # set interval to 1 s
+            self.qTimer.setInterval(sampleRate)  # 1000 ms = 1 s
+            # connect timeout signal to signal handler
+            self.qTimer.timeout.connect(self.checkProx)
+            # start timer
+            self.qTimer.start()
 
-        dataThread = threading.Thread(name='dataThread', target=session(), daemon=True)
-        dataThread.start()
+        else:
+            self.ui.proxRadio1.setStyleSheet(yellowProxStyle)
+            self.ui.proxRadio2.setStyleSheet(yellowProxStyle)
+            self.ui.proxRadio3.setStyleSheet(yellowProxStyle)
+            self.ui.sensorBTN.setText("START")
+            self.qTimer.stop()
+
 
     def plotSessionData2(self, sessionData):
         def plot():
@@ -354,7 +374,7 @@ class mywindow(QtWidgets.QMainWindow):
 
             timer = QtCore.QTimer()
             timer.timeout.connect(update)
-            timer.start(10000)  # wait to refresh
+            timer.start(1000)  # wait to refresh
 
         plotThread = threading.Thread(name='plotThread', target=plot(), daemon=True)
         plotThread.start()
@@ -668,55 +688,75 @@ class mywindow(QtWidgets.QMainWindow):
             motorEnable = 5
             ljm.eWriteName(handle, "DAC" + str(motorEnablePin), motorEnable)  # 0V high to disable
 
-    def checkProx(self, pxHigh):
-        proxHigh = ljm.eReadName(handle, pxHigh)  # read proximity sensor low
-        if proxHigh > 3: #and not actionTaken:
-            print("Prox flagged, motor stopped)")
-            self.ui.proxLifeRadio1.setStyleSheet(redProxStyle)
-            ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 5)  # 5V high to disable motor
-            ljm.eWriteName(handle, "DIO" + str(baseMax), 1) #prox detected, ramp down to stop
-            self.ui.proxLifeRadio1.setStyleSheet(yellowProxStyle)
-            time.sleep(0.25)
-            self.ui.proxLifeRadio1.setStyleSheet(redProxStyle)
-            # start timer to give a stop delay
-            # print("5 second dwell....")
-            # time.sleep(5)
-            # print("toggling motor direction")
-            # self.lifeCycleToggle()  # Toggle the motor direction and RPM
-            # print("New Motor Direction: " + str(lifeTestMotorDirection))
-            # print("")
+    def checkProx(self):
+        global hoseStop, RPMprox1, RPMprox2
+        global sessionActive, motorEnabled
+        toolStatus = ljm.eReadName(handle, hoseStop)  #Tool status should read high if prox sensor is flagged
+        RPM1Status = ljm.eReadName(handle, RPMprox1)
+        RPM2Status = ljm.eReadName(handle, RPMprox2)
+        load = ljm.eReadName(handle, loadVoltage)
+        pressure = ljm.eReadName(handle, pressureVoltage)
 
-            # actionTaken = True  # action has been taken based off of sensor flag
-            # motorEnabled = True  # set indicator to true
-            # motorEnable = 0  # set global variable to allow motor to be durned on
-            # ljm.eWriteName(handle, "DAC" + str(motorEnablePin), motorEnable)  # Ov low to enable motor
-        # elif prox1High > 3: # and actionTaken:  # condition where sensor is still flagging but action has been taken
-        #     timeVal = 0
-        #     timeout = 10
-        #     print("Timeout starting for " + str(timeout) + " seconds")
-        #     time.sleep(timeout)
-        #     prox1High = ljm.eReadName(handle, px1High)
-        #
-        #     if prox1High > 3:  # see if sensor resets, if not, shut it down
-        #         print("No sensor reset, shutting down permanently)")
-        #         motorEnable = 5  # shut down motor
-        #         ljm.eWriteName(handle, "DAC" + str(motorEnablePin), motorEnable)  # 5V high to disable motor
-        #         ljm.eWriteName(handle, "DIO" + str(motorPWM) + "_EF_ENABLE", 0)  # Disable the EF system
-        #         lifeTestActive = False
-        #
-        #     else:  # sensor reset, all clear
-        #         actionTaken = False
-        #         self.ui.proxLifeRadio1.setStyleSheet(greenProxStyle)
+        loadmA = (8.475*load)
+        pressurePSI = 5556.3*pressure-2579.2
 
-        elif proxHigh < 3:
-            self.ui.proxLifeRadio1.setStyleSheet(greenProxStyle)
-            actionTaken = False
+        self.ui.load1LCD.display(str(int(loadmA)))
+        self.ui.pressureLCD1.display(str(int(pressurePSI)))
+
+        # Check tool stop
+        if toolStatus > 3 and sessionActive:
+            ljm.eWriteName(handle, "DIO" + str(baseMax), 1)  # prox detected, ramp down to stop
+            sessionActive = False
+
+            self.ui.proxRadio1.setStyleSheet(redProxStyle)
+            self.ui.proxRadio2.setStyleSheet(redProxStyle)
+            self.ui.proxRadio3.setStyleSheet(redProxStyle)
+
+            self.ui.startStopBTN.setChecked(False)
+
+
+            prompt = QMessageBox.warning(self, 'TOOL STOP TRIPPED',
+                                         'TOOL STOP TRIPPED',
+                                         QMessageBox.Ok | QMessageBox.Cancel)
+            if prompt == QMessageBox.Ok:
+                print("Ok")
+                self.ui.startStopBTN.setChecked(False)
+                self.ui.startStopBTN.setText("START")
+                self.ui.revDirRadioBTN.setChecked(True)
+                self.ui.sensorBTN.setText("START")
+                self.ui.sensorBTN.setChecked(False)
+
+                motorEnabled = False
+                ljm.eWriteName(handle, "DAC" + str(motorEnablePin), 5)  # 5V high to disable motor
+                self.ui.enableBTN.setText("ENABLE")  # Reset label
+                self.ui.enableBTN.setChecked(False)  # Reset label
+                self.ui.startStopBTN.setChecked(False)
+                self.ui.startStopBTN.setText("START")
+
+                self.runSensorSession()
+            else:
+                sys.exit(app.exec_())
+
+
+        elif toolStatus < 3 and sessionActive:
+            self.ui.proxRadio1.setStyleSheet(greenProxStyle)
+            #print("Tool Stop Low: " + str(toolStatus))
+
+            if RPM1Status > 3:
+                #print("Prox flagged, motor stopped)")
+                self.ui.proxRadio2.setStyleSheet(yellowProxStyle)
+            elif RPM1Status < 3:
+                self.ui.proxRadio2.setStyleSheet(greenProxStyle)
+
+            if RPM2Status > 3:
+                self.ui.proxRadio3.setStyleSheet(yellowProxStyle)
+            elif RPM2Status < 3:
+                self.ui.proxRadio3.setStyleSheet(greenProxStyle)
+
 
     def flipflop(self):
         time = 0
         direction = 1
-
-
         while lifeTestActive:
             time = 0
             timeout = 60

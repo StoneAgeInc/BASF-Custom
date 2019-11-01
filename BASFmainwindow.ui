@@ -251,7 +251,7 @@ QRadioButton::indicator:checked:disabled
 </string>
                </property>
                <property name="text">
-                <string>REV</string>
+                <string>LOWER</string>
                </property>
               </widget>
              </item>
@@ -316,7 +316,7 @@ QRadioButton::indicator:checked:disabled
 </string>
                </property>
                <property name="text">
-                <string>FWD</string>
+                <string>RAISE</string>
                </property>
                <property name="checked">
                 <bool>true</bool>
@@ -410,7 +410,7 @@ QPushButton:disabled
              <item>
               <widget class="QLabel" name="label_5">
                <property name="text">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; color:#bfbfbf;&quot;&gt;Target Out RPM:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; color:#bfbfbf;&quot;&gt;Target Lower RPM:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
               </widget>
              </item>
@@ -451,7 +451,7 @@ QLineEdit:disabled
              <item>
               <widget class="QLabel" name="label_15">
                <property name="text">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; color:#bfbfbf;&quot;&gt;Target In RPM:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; color:#bfbfbf;&quot;&gt;Target Raise RPM:&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
               </widget>
              </item>
@@ -502,251 +502,7 @@ QLineEdit:disabled
             </layout>
            </item>
            <item>
-            <layout class="QHBoxLayout" name="horizontalLayout">
-             <item>
-              <widget class="QPushButton" name="stepRevBTN">
-               <property name="enabled">
-                <bool>false</bool>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">QPushButton
-{
-  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                    stop: 0 rgb(120,120,120), stop: 1 rgb(80,80,80));
-  border: 1px solid rgb(20,20,20);
-  color: rgb(230,230,230);
-  padding: 4px 8px;
-}
-
-QPushButton:hover
-{
- background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                    stop: 0 rgb(0, 242, 0), stop: 1 rgb(0, 170, 0));
-}
-
-QPushButton:pressed
-{
-  border-color: rgb(125,75,0);
-  padding: 1px -1px -1px 1px;
-}
-
-/**** QPushButton (checkable) ****/
-QPushButton:checked
-{
-  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                    stop: 0 rgb(200,50,50), stop: 1 rgb(145,5,5));
-  color: rgb(20,20,20);
-}
-
-QPushButton:checked:hover
-{
-  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                    stop: 0 rgb(200,50,50), stop: 1 rgb(145,5,5));
-}
-
-/**** QPushButton (disabled) ****/
-QPushButton:disabled
-{
-  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                    stop: 0 rgb(160,160,160), stop: 1 rgb(120,120,120));
-  border-color: rgb(60,60,60);
-  color: rgb(40,40,40);
-}</string>
-               </property>
-               <property name="text">
-                <string>&lt;&lt; STEP REV</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QPushButton" name="stepFwdBTN">
-               <property name="enabled">
-                <bool>false</bool>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">QPushButton
-{
-  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                    stop: 0 rgb(120,120,120), stop: 1 rgb(80,80,80));
-  border: 1px solid rgb(20,20,20);
-  color: rgb(230,230,230);
-  padding: 4px 8px;
-}
-
-QPushButton:hover
-{
- background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                    stop: 0 rgb(0, 242, 0), stop: 1 rgb(0, 170, 0));
-}
-
-QPushButton:pressed
-{
-  border-color: rgb(125,75,0);
-  padding: 1px -1px -1px 1px;
-}
-
-/**** QPushButton (checkable) ****/
-QPushButton:checked
-{
-  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                    stop: 0 rgb(200,50,50), stop: 1 rgb(145,5,5));
-  color: rgb(20,20,20);
-}
-
-QPushButton:checked:hover
-{
-  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                    stop: 0 rgb(200,50,50), stop: 1 rgb(145,5,5));
-}
-
-/**** QPushButton (disabled) ****/
-QPushButton:disabled
-{
-  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,
-                                    stop: 0 rgb(160,160,160), stop: 1 rgb(120,120,120));
-  border-color: rgb(60,60,60);
-  color: rgb(40,40,40);
-}</string>
-               </property>
-               <property name="text">
-                <string>STEP FWD &gt;&gt;</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QLabel" name="label_11">
-               <property name="styleSheet">
-                <string notr="true">QLabel:
-{
-color: rgb(220, 220, 220);
-}</string>
-               </property>
-               <property name="frameShape">
-                <enum>QFrame::Panel</enum>
-               </property>
-               <property name="text">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; color:#ffffff;&quot;&gt;STEP SIZE&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
-               </property>
-              </widget>
-             </item>
-             <item>
-              <widget class="QSpinBox" name="spinBox">
-               <property name="enabled">
-                <bool>false</bool>
-               </property>
-               <property name="styleSheet">
-                <string notr="true">QSpinBox,
-QDoubleSpinBox,
-QTimeEdit,
-QDateEdit,
-QDateTimeEdit
-{
-  background-color: rgb(80,80,80);
-  border: 1px solid rgb(20,20,20);
-  color: rgb(220,220,220);
-  padding: 4px;
-  selection-background-color: rgb(70,110,130);
-  selection-color: white;
-}
-
-QSpinBox:focus,
-QDoubleSpinBox:focus,
-QTimeEdit:focus,
-QDateEdit:focus,
-QDateTimeEdit:focus
-{
-  border-color: rgb(90,200,255);
-}
-
-QSpinBox::up-button,
-QDoubleSpinBox::up-button,
-QTimeEdit::up-button,
-QDateEdit::up-button,
-QDateTimeEdit::up-button
-{
-
-  width: 16px;
-}
-
-QSpinBox::up-button:hover,
-QDoubleSpinBox::up-button:hover,
-QTimeEdit::up-button:hover,
-QDateEdit::up-button:hover,
-QDateTimeEdit::up-button:hover
-{
-  background-color: rgb(70,110,130);
-}
-
-QSpinBox::up-button:pressed,
-QDoubleSpinBox::up-button:pressed,
-QTimeEdit::up-button:pressed,
-QDateEdit::up-button:pressed,
-QDateTimeEdit::up-button:pressed
-{
-
-}
-
-QSpinBox::down-button,
-QDoubleSpinBox::down-button,
-QTimeEdit::down-button,
-QDateEdit::down-button,
-QDateTimeEdit::down-button
-{
-
-  width: 16px;
-}
-
-QSpinBox::down-button:hover,
-QDoubleSpinBox::down-button:hover,
-QTimeEdit::down-button:hover,
-QDateEdit::down-button:hover,
-QDateTimeEdit::down-button:hover
-{
-  background-color: rgb(70,110,130);
-}
-
-QSpinBox::down-button:pressed,
-QDoubleSpinBox::down-button:pressed,
-QTimeEdit::down-button:pressed,
-QDateEdit::down-button:pressed,
-QDateTimeEdit::down-button:pressed
-{
-
-}
-
-/**** QSpinBox, QDoubleSpinBox, QTimeEdit, QDateEdit and QDateTimeEdit (disabled) ****/
-QSpinBox:disabled,
-QDoubleSpinBox:disabled,
-QTimeEdit:disabled,
-QDateEdit:disabled,
-QDateTimeEdit:disabled
-{
-  background-color: rgb(120,120,120);
-  border-color: rgb(60,60,60);
-  color: rgb(40,40,40);
-}
-
-QSpinBox::up-button:disabled,
-QDoubleSpinBox::up-button:disabled,
-QTimeEdit::up-button:disabled,
-QDateEdit::up-button:disabled,
-QDateTimeEdit::up-button:disabled
-{
-
-}
-
-QSpinBox::down-button:disabled,
-QDoubleSpinBox::down-button:disabled,
-QTimeEdit::down-button:disabled,
-QDateEdit::down-button:disabled,
-QDateTimeEdit::down-button:disabled
-{
-
-}</string>
-               </property>
-              </widget>
-             </item>
-            </layout>
+            <layout class="QHBoxLayout" name="horizontalLayout"/>
            </item>
            <item>
             <layout class="QHBoxLayout" name="horizontalLayout_3">
@@ -817,7 +573,7 @@ QLCDNumber:disabled
               </widget>
              </item>
              <item>
-              <widget class="QLCDNumber" name="motorRPMLCD">
+              <widget class="QLCDNumber" name="microStepLCD">
                <property name="enabled">
                 <bool>true</bool>
                </property>
@@ -915,7 +671,7 @@ border: 2px solid gray;}</string>
              <item row="1" column="0">
               <widget class="QLabel" name="s1MSLabel">
                <property name="text">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; color:#bfbfbf;&quot;&gt;PX1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; color:#bfbfbf;&quot;&gt;TOOL STOP&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
               </widget>
              </item>
@@ -938,7 +694,7 @@ border: 2px solid gray;}</string>
              <item row="2" column="0">
               <widget class="QLabel" name="label_10">
                <property name="text">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; color:#bfbfbf;&quot;&gt;PX2&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; color:#bfbfbf;&quot;&gt;RPM 1&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
               </widget>
              </item>
@@ -948,7 +704,7 @@ border: 2px solid gray;}</string>
                 <bool>false</bool>
                </property>
                <property name="text">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; color:#bfbfbf;&quot;&gt;PX3&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-size:12pt; font-weight:600; color:#bfbfbf;&quot;&gt;RPM 2&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
               </widget>
              </item>
@@ -1080,7 +836,7 @@ QLineEdit:disabled
              <item row="3" column="2">
               <widget class="QLabel" name="label">
                <property name="text">
-                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-style:italic; color:#bfbfbf;&quot;&gt;Fs (Hz):&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+                <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot;&gt;&lt;span style=&quot; font-weight:600; font-style:italic; color:#bfbfbf;&quot;&gt;Fs (Hz):&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
                </property>
               </widget>
              </item>
@@ -2181,9 +1937,6 @@ QPushButton:disabled
   <tabstop>revDirRadioBTN</tabstop>
   <tabstop>fwdDirRadioBTN</tabstop>
   <tabstop>RPMinLineEdit</tabstop>
-  <tabstop>stepRevBTN</tabstop>
-  <tabstop>stepFwdBTN</tabstop>
-  <tabstop>spinBox</tabstop>
   <tabstop>proxRadio2</tabstop>
   <tabstop>proxRadio3</tabstop>
   <tabstop>proxRadio1</tabstop>

@@ -2,7 +2,7 @@
 
 # Form implementation generated from reading ui file 'BASFmainwindow.ui'
 #
-# Created by: PyQt5 UI code generator 5.12.2
+# Created by: PyQt5 UI code generator 5.12.1
 #
 # WARNING! All changes made in this file will be lost!
 
@@ -406,220 +406,6 @@ class Ui_MainWindow(object):
         self.horizontalLayout = QtWidgets.QHBoxLayout()
         self.horizontalLayout.setSpacing(6)
         self.horizontalLayout.setObjectName("horizontalLayout")
-        self.stepRevBTN = QtWidgets.QPushButton(self.controlWidget)
-        self.stepRevBTN.setEnabled(False)
-        self.stepRevBTN.setStyleSheet("QPushButton\n"
-"{\n"
-"  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                    stop: 0 rgb(120,120,120), stop: 1 rgb(80,80,80));\n"
-"  border: 1px solid rgb(20,20,20);\n"
-"  color: rgb(230,230,230);\n"
-"  padding: 4px 8px;\n"
-"}\n"
-"\n"
-"QPushButton:hover\n"
-"{\n"
-" background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                    stop: 0 rgb(0, 242, 0), stop: 1 rgb(0, 170, 0));\n"
-"}\n"
-"\n"
-"QPushButton:pressed\n"
-"{\n"
-"  border-color: rgb(125,75,0);\n"
-"  padding: 1px -1px -1px 1px;\n"
-"}\n"
-"\n"
-"/**** QPushButton (checkable) ****/\n"
-"QPushButton:checked\n"
-"{\n"
-"  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                    stop: 0 rgb(200,50,50), stop: 1 rgb(145,5,5));\n"
-"  color: rgb(20,20,20);\n"
-"}\n"
-"\n"
-"QPushButton:checked:hover\n"
-"{\n"
-"  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                    stop: 0 rgb(200,50,50), stop: 1 rgb(145,5,5));\n"
-"}\n"
-"\n"
-"/**** QPushButton (disabled) ****/\n"
-"QPushButton:disabled\n"
-"{\n"
-"  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                    stop: 0 rgb(160,160,160), stop: 1 rgb(120,120,120));\n"
-"  border-color: rgb(60,60,60);\n"
-"  color: rgb(40,40,40);\n"
-"}")
-        self.stepRevBTN.setObjectName("stepRevBTN")
-        self.horizontalLayout.addWidget(self.stepRevBTN)
-        self.stepFwdBTN = QtWidgets.QPushButton(self.controlWidget)
-        self.stepFwdBTN.setEnabled(False)
-        self.stepFwdBTN.setStyleSheet("QPushButton\n"
-"{\n"
-"  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                    stop: 0 rgb(120,120,120), stop: 1 rgb(80,80,80));\n"
-"  border: 1px solid rgb(20,20,20);\n"
-"  color: rgb(230,230,230);\n"
-"  padding: 4px 8px;\n"
-"}\n"
-"\n"
-"QPushButton:hover\n"
-"{\n"
-" background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                    stop: 0 rgb(0, 242, 0), stop: 1 rgb(0, 170, 0));\n"
-"}\n"
-"\n"
-"QPushButton:pressed\n"
-"{\n"
-"  border-color: rgb(125,75,0);\n"
-"  padding: 1px -1px -1px 1px;\n"
-"}\n"
-"\n"
-"/**** QPushButton (checkable) ****/\n"
-"QPushButton:checked\n"
-"{\n"
-"  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                    stop: 0 rgb(200,50,50), stop: 1 rgb(145,5,5));\n"
-"  color: rgb(20,20,20);\n"
-"}\n"
-"\n"
-"QPushButton:checked:hover\n"
-"{\n"
-"  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                    stop: 0 rgb(200,50,50), stop: 1 rgb(145,5,5));\n"
-"}\n"
-"\n"
-"/**** QPushButton (disabled) ****/\n"
-"QPushButton:disabled\n"
-"{\n"
-"  background-color: qlineargradient(x1: 0, y1: 0, x2: 0, y2: 1,\n"
-"                                    stop: 0 rgb(160,160,160), stop: 1 rgb(120,120,120));\n"
-"  border-color: rgb(60,60,60);\n"
-"  color: rgb(40,40,40);\n"
-"}")
-        self.stepFwdBTN.setObjectName("stepFwdBTN")
-        self.horizontalLayout.addWidget(self.stepFwdBTN)
-        self.label_11 = QtWidgets.QLabel(self.controlWidget)
-        self.label_11.setStyleSheet("QLabel:\n"
-"{\n"
-"color: rgb(220, 220, 220);\n"
-"}")
-        self.label_11.setFrameShape(QtWidgets.QFrame.Panel)
-        self.label_11.setObjectName("label_11")
-        self.horizontalLayout.addWidget(self.label_11)
-        self.spinBox = QtWidgets.QSpinBox(self.controlWidget)
-        self.spinBox.setEnabled(False)
-        self.spinBox.setStyleSheet("QSpinBox,\n"
-"QDoubleSpinBox,\n"
-"QTimeEdit,\n"
-"QDateEdit,\n"
-"QDateTimeEdit\n"
-"{\n"
-"  background-color: rgb(80,80,80);\n"
-"  border: 1px solid rgb(20,20,20);\n"
-"  color: rgb(220,220,220);\n"
-"  padding: 4px;\n"
-"  selection-background-color: rgb(70,110,130);\n"
-"  selection-color: white;\n"
-"}\n"
-"\n"
-"QSpinBox:focus,\n"
-"QDoubleSpinBox:focus,\n"
-"QTimeEdit:focus,\n"
-"QDateEdit:focus,\n"
-"QDateTimeEdit:focus\n"
-"{\n"
-"  border-color: rgb(90,200,255);\n"
-"}\n"
-"\n"
-"QSpinBox::up-button,\n"
-"QDoubleSpinBox::up-button,\n"
-"QTimeEdit::up-button,\n"
-"QDateEdit::up-button,\n"
-"QDateTimeEdit::up-button\n"
-"{\n"
-"\n"
-"  width: 16px;\n"
-"}\n"
-"\n"
-"QSpinBox::up-button:hover,\n"
-"QDoubleSpinBox::up-button:hover,\n"
-"QTimeEdit::up-button:hover,\n"
-"QDateEdit::up-button:hover,\n"
-"QDateTimeEdit::up-button:hover\n"
-"{\n"
-"  background-color: rgb(70,110,130);\n"
-"}\n"
-"\n"
-"QSpinBox::up-button:pressed,\n"
-"QDoubleSpinBox::up-button:pressed,\n"
-"QTimeEdit::up-button:pressed,\n"
-"QDateEdit::up-button:pressed,\n"
-"QDateTimeEdit::up-button:pressed\n"
-"{\n"
-"\n"
-"}\n"
-"\n"
-"QSpinBox::down-button,\n"
-"QDoubleSpinBox::down-button,\n"
-"QTimeEdit::down-button,\n"
-"QDateEdit::down-button,\n"
-"QDateTimeEdit::down-button\n"
-"{\n"
-"\n"
-"  width: 16px;\n"
-"}\n"
-"\n"
-"QSpinBox::down-button:hover,\n"
-"QDoubleSpinBox::down-button:hover,\n"
-"QTimeEdit::down-button:hover,\n"
-"QDateEdit::down-button:hover,\n"
-"QDateTimeEdit::down-button:hover\n"
-"{\n"
-"  background-color: rgb(70,110,130);\n"
-"}\n"
-"\n"
-"QSpinBox::down-button:pressed,\n"
-"QDoubleSpinBox::down-button:pressed,\n"
-"QTimeEdit::down-button:pressed,\n"
-"QDateEdit::down-button:pressed,\n"
-"QDateTimeEdit::down-button:pressed\n"
-"{\n"
-"\n"
-"}\n"
-"\n"
-"/**** QSpinBox, QDoubleSpinBox, QTimeEdit, QDateEdit and QDateTimeEdit (disabled) ****/\n"
-"QSpinBox:disabled,\n"
-"QDoubleSpinBox:disabled,\n"
-"QTimeEdit:disabled,\n"
-"QDateEdit:disabled,\n"
-"QDateTimeEdit:disabled\n"
-"{\n"
-"  background-color: rgb(120,120,120);\n"
-"  border-color: rgb(60,60,60);\n"
-"  color: rgb(40,40,40);\n"
-"}\n"
-"\n"
-"QSpinBox::up-button:disabled,\n"
-"QDoubleSpinBox::up-button:disabled,\n"
-"QTimeEdit::up-button:disabled,\n"
-"QDateEdit::up-button:disabled,\n"
-"QDateTimeEdit::up-button:disabled\n"
-"{\n"
-"\n"
-"}\n"
-"\n"
-"QSpinBox::down-button:disabled,\n"
-"QDoubleSpinBox::down-button:disabled,\n"
-"QTimeEdit::down-button:disabled,\n"
-"QDateEdit::down-button:disabled,\n"
-"QDateTimeEdit::down-button:disabled\n"
-"{\n"
-"\n"
-"}")
-        self.spinBox.setObjectName("spinBox")
-        self.horizontalLayout.addWidget(self.spinBox)
         self.controlLayout.addLayout(self.horizontalLayout)
         self.horizontalLayout_3 = QtWidgets.QHBoxLayout()
         self.horizontalLayout_3.setSpacing(6)
@@ -660,9 +446,9 @@ class Ui_MainWindow(object):
         self.label_9 = QtWidgets.QLabel(self.controlWidget)
         self.label_9.setObjectName("label_9")
         self.horizontalLayout_2.addWidget(self.label_9)
-        self.motorRPMLCD = QtWidgets.QLCDNumber(self.controlWidget)
-        self.motorRPMLCD.setEnabled(True)
-        self.motorRPMLCD.setStyleSheet("QLCDNumber\n"
+        self.microStepLCD = QtWidgets.QLCDNumber(self.controlWidget)
+        self.microStepLCD.setEnabled(True)
+        self.microStepLCD.setStyleSheet("QLCDNumber\n"
 "{\n"
 "  background-color: rgb(40,40,40);\n"
 "  border: 1px solid rgb(20,20,20);\n"
@@ -674,8 +460,8 @@ class Ui_MainWindow(object):
 "  background-color: rgb(120,120,120);\n"
 "  border: 1px solid rgb(60,60,60);\n"
 "}")
-        self.motorRPMLCD.setObjectName("motorRPMLCD")
-        self.horizontalLayout_2.addWidget(self.motorRPMLCD)
+        self.microStepLCD.setObjectName("microStepLCD")
+        self.horizontalLayout_2.addWidget(self.microStepLCD)
         self.controlLayout.addLayout(self.horizontalLayout_2)
         spacerItem3 = QtWidgets.QSpacerItem(20, 40, QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Expanding)
         self.controlLayout.addItem(spacerItem3)
@@ -1686,10 +1472,7 @@ class Ui_MainWindow(object):
         MainWindow.setTabOrder(self.startStopBTN, self.revDirRadioBTN)
         MainWindow.setTabOrder(self.revDirRadioBTN, self.fwdDirRadioBTN)
         MainWindow.setTabOrder(self.fwdDirRadioBTN, self.RPMinLineEdit)
-        MainWindow.setTabOrder(self.RPMinLineEdit, self.stepRevBTN)
-        MainWindow.setTabOrder(self.stepRevBTN, self.stepFwdBTN)
-        MainWindow.setTabOrder(self.stepFwdBTN, self.spinBox)
-        MainWindow.setTabOrder(self.spinBox, self.proxRadio2)
+        MainWindow.setTabOrder(self.RPMinLineEdit, self.proxRadio2)
         MainWindow.setTabOrder(self.proxRadio2, self.proxRadio3)
         MainWindow.setTabOrder(self.proxRadio3, self.proxRadio1)
         MainWindow.setTabOrder(self.proxRadio1, self.lineEdit)
@@ -1719,25 +1502,22 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(_translate("MainWindow", "BASF-Custom"))
         self.label_7.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:14pt; font-weight:600; font-style:italic; color:#bfbfbf;\">MOTOR</span></p></body></html>"))
         self.startStopBTN.setText(_translate("MainWindow", "START"))
-        self.revDirRadioBTN.setText(_translate("MainWindow", "REV"))
-        self.fwdDirRadioBTN.setText(_translate("MainWindow", "FWD"))
+        self.revDirRadioBTN.setText(_translate("MainWindow", "LOWER"))
+        self.fwdDirRadioBTN.setText(_translate("MainWindow", "RAISE"))
         self.enableBTN.setText(_translate("MainWindow", "ENABLE"))
-        self.label_5.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" color:#bfbfbf;\">Target Out RPM:</span></p></body></html>"))
+        self.label_5.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" color:#bfbfbf;\">Target Lower RPM:</span></p></body></html>"))
         self.RPMinLineEdit.setPlaceholderText(_translate("MainWindow", "(Target RPM)"))
-        self.label_15.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" color:#bfbfbf;\">Target In RPM:</span></p></body></html>"))
+        self.label_15.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" color:#bfbfbf;\">Target Raise RPM:</span></p></body></html>"))
         self.RPMoutLineEdit.setPlaceholderText(_translate("MainWindow", "(Target RPM)"))
-        self.stepRevBTN.setText(_translate("MainWindow", "<< STEP REV"))
-        self.stepFwdBTN.setText(_translate("MainWindow", "STEP FWD >>"))
-        self.label_11.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" color:#ffffff;\">STEP SIZE</span></p></body></html>"))
         self.label_13.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:14pt; font-weight:600; font-style:italic; color:#bfbfbf;\">SIGNAL</span></p></body></html>"))
         self.label_4.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" color:#bfbfbf;\">PWM Freq (Hz)</span></p></body></html>"))
         self.label_9.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" color:#bfbfbf;\">Microstep (steps/rev):</span></p></body></html>"))
         self.label_8.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:14pt; font-weight:600; font-style:italic; color:#bfbfbf;\">SENSORS</span></p></body></html>"))
-        self.s1MSLabel.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600; color:#bfbfbf;\">PX1</span></p></body></html>"))
-        self.label_10.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600; color:#bfbfbf;\">PX2</span></p></body></html>"))
-        self.label_17.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600; color:#bfbfbf;\">PX3</span></p></body></html>"))
+        self.s1MSLabel.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600; color:#bfbfbf;\">TOOL STOP</span></p></body></html>"))
+        self.label_10.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600; color:#bfbfbf;\">RPM 1</span></p></body></html>"))
+        self.label_17.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600; color:#bfbfbf;\">RPM 2</span></p></body></html>"))
         self.label_6.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600; color:#bfbfbf;\">P1 (PSI)</span></p></body></html>"))
-        self.label.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-style:italic; color:#bfbfbf;\">Fs (Hz):</span></p></body></html>"))
+        self.label.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-weight:600; font-style:italic; color:#bfbfbf;\">Fs (Hz):</span></p></body></html>"))
         self.sensorBTN.setText(_translate("MainWindow", "SAMPLE"))
         self.label_3.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600; color:#bfbfbf;\">L1 (lbf)</span></p></body></html>"))
         self.label_12.setText(_translate("MainWindow", "<html><head/><body><p align=\"center\"><span style=\" font-size:12pt; font-weight:600; color:#bfbfbf;\">FILE</span></p></body></html>"))
